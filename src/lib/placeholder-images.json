@@ -1,40 +1,40 @@
 {
   "placeholderImages": [
     {
-      "id": "invm",
+      "id": "inventory",
       "description": "Warehouse shelves with boxes, representing inventory management.",
-      "imageUrl": "https://images.unsplash.com/photo-1601602364439-591bc32e912e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8d2FyZWhvdXNlJTIwc2hlbHZlc3xlbnwwfHx8fDE3NjY1MTkzMTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "warehouse shelves"
+      "imageUrl": "https://images.unsplash.com/photo-1740914994657-f1cdffdc418e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx3YXJlaG91c2UlMjBpbnZlbnRvcnl8ZW58MHx8fHwxNzY2NTE5NTE4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "warehouse inventory"
     },
     {
-      "id": "gdwb",
+      "id": "design",
       "description": "A designer's workspace with a tablet and color swatches.",
-      "imageUrl": "https://images.unsplash.com/photo-1589183440456-34d255090e7b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxkZXNpZ25lciUyMHdvcmtzcGFjZXxlbnwwfHx8fDE3NjY1MTkzMTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "designer workspace"
+      "imageUrl": "https://images.unsplash.com/photo-1766342088275-c3081723881f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkaWdpdGFsJTIwYXJ0JTIwY2FudmFzfGVufDB8fHx8MTc2NjUxOTUxOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "digital art canvas"
     },
     {
-      "id": "finm",
+      "id": "finance",
       "description": "A screen showing financial charts and graphs.",
-      "imageUrl": "https://images.unsplash.com/photo-1723785735443-16ffd373f398?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxmaW5hbmNpYWwlMjBjaGFydHN8ZW58MHx8fHwxNzY2NDMzNTc5fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "financial charts"
+      "imageUrl": "https://images.unsplash.com/photo-1744473534558-efcd1664d14f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmaW5hbmNpYWwlMjBncmFwaHN8ZW58MHx8fHwxNzY2NDcxMjQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "financial graphs"
     },
     {
       "id": "lms",
       "description": "A person using a laptop for online learning.",
-      "imageUrl": "https://images.unsplash.com/photo-1610484826967-09c5720778c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxvbmxpbmUlMjBsZWFybmluZ3xlbnwwfHx8fDE3NjY0NDMxMzR8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "online learning"
+      "imageUrl": "https://images.unsplash.com/photo-1758612898304-1a6bb546ac44?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxzdHVkZW50JTIwbGVhcm5pbmclMjBvbmxpbmV8ZW58MHx8fHwxNzY2NTE5NTE5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "student learning online"
     },
     {
-      "id": "ewpA",
+      "id": "enterpriseA",
       "description": "A server room with racks of servers.",
-      "imageUrl": "https://images.unsplash.com/photo-1680992046626-418f7e910589?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzZXJ2ZXIlMjByb29tfGVufDB8fHx8MTc2NjQ0OTI4Mnww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "server room"
+      "imageUrl": "https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxkYXRhJTIwY2VudGVyJTIwc2VydmVyc3xlbnwwfHx8fDE3NjY1MTk1MTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "data center servers"
     },
     {
-      "id": "ewpB",
+      "id": "enterpriseB",
       "description": "Abstract visualization of a global network.",
-      "imageUrl": "https://images.unsplash.com/photo-1585858229735-cd08d8cb510d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxnbG9iYWwlMjBuZXR3b3JrfGVufDB8fHx8MTc2NjQxMDY3MXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "global network"
+      "imageUrl": "https://images.unsplash.com/photo-1690029670479-9fee2fa120eb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxhYnN0cmFjdCUyMG5ldHdvcmt8ZW58MHx8fHwxNzY2NTEyNDg3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract network"
     }
   ]
 }

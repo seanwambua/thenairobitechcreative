@@ -23,12 +23,6 @@ export async function generateBackgroundTexture(): Promise<BackgroundTextureOutp
   return backgroundTextureGeneratorFlow();
 }
 
-const prompt = ai.definePrompt({
-  name: 'backgroundTexturePrompt',
-  output: {schema: BackgroundTextureOutputSchema},
-  prompt: `Generate a seamless, subtle tribal background pattern as a data URI. The data URI must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'. Return only the data URI. Do not include any other text.`,
-});
-
 const backgroundTextureGeneratorFlow = ai.defineFlow(
   {
     name: 'backgroundTextureGeneratorFlow',
