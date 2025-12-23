@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react';
 import { Boxes, BookOpen, PenTool, LineChart, Globe, Server, type LucideProps } from 'lucide-react';
+import { placeholderImages } from './placeholder-images';
 
 export type IconName = 'Boxes' | 'BookOpen' | 'PenTool' | 'LineChart' | 'Globe' | 'Server';
 
@@ -17,7 +18,7 @@ export interface Project {
 export interface TimelineEvent {
   day: number;
   title: string;
-  description: string;
+  description:string;
 }
 
 export interface VentureMetrics {
@@ -31,8 +32,8 @@ export const projects: Project[] = [
     title: 'Inventory Management',
     description: 'Real-time supply chain tracking with M-Pesa API integration for SMEs.',
     keyFeatures: ['Real-time Tracking', 'M-Pesa API', 'Automated Reordering'],
-    imageUrl: 'https://picsum.photos/seed/inventory/600/400',
-    imageHint: 'warehouse inventory',
+    imageUrl: placeholderImages.inventory.imageUrl,
+    imageHint: placeholderImages.inventory.imageHint,
     gridSpan: 'col-span-1 md:col-span-1',
     icon: 'Boxes',
   },
@@ -41,8 +42,8 @@ export const projects: Project[] = [
     title: 'Graphic Design Workbench',
     description: 'Collaborative canvas for African creatives to build and share their work.',
     keyFeatures: ['Collaborative Canvas', 'Vector Tools', 'Asset Library'],
-    imageUrl: 'https://picsum.photos/seed/design/600/800',
-    imageHint: 'digital art canvas',
+    imageUrl: placeholderImages.design.imageUrl,
+    imageHint: placeholderImages.design.imageHint,
     gridSpan: 'col-span-1 md:col-span-2',
     icon: 'PenTool',
   },
@@ -51,8 +52,8 @@ export const projects: Project[] = [
     title: 'Financial Management Tool',
     description: 'Multi-currency (KES/USD) cash flow forecasting for African startups.',
     keyFeatures: ['KES/USD Support', 'Cash Flow Forecasting', 'Investor Reports'],
-    imageUrl: 'https://picsum.photos/seed/finance/600/400',
-    imageHint: 'financial graphs',
+    imageUrl: placeholderImages.finance.imageUrl,
+    imageHint: placeholderImages.finance.imageHint,
     gridSpan: 'col-span-1 md:col-span-1',
     icon: 'LineChart',
   },
@@ -61,8 +62,8 @@ export const projects: Project[] = [
     title: 'LMS',
     description: 'Offline-first video modules for remote learning in low-bandwidth areas.',
     keyFeatures: ['Offline-First', 'Video Modules', 'Progress Syncing'],
-    imageUrl: 'https://picsum.photos/seed/lms/600/400',
-    imageHint: 'student learning online',
+    imageUrl: placeholderImages.lms.imageUrl,
+    imageHint: placeholderImages.lms.imageHint,
     gridSpan: 'col-span-1 md:col-span-1',
     icon: 'BookOpen',
   },
@@ -71,8 +72,8 @@ export const projects: Project[] = [
     title: 'Enterprise Web Platform',
     description: 'Scalable web platform with a fully integrated CRM system.',
     keyFeatures: ['Integrated CRM', 'Microservices', 'High Availability'],
-    imageUrl: 'https://picsum.photos/seed/enterpriseA/600/400',
-    imageHint: 'data center servers',
+    imageUrl: placeholderImages.enterpriseA.imageUrl,
+    imageHint: placeholderImages.enterpriseA.imageHint,
     gridSpan: 'col-span-1 md:col-span-1',
     icon: 'Server',
   },
@@ -81,8 +82,8 @@ export const projects: Project[] = [
     title: 'Enterprise Web Platform',
     description: 'Secure, compliant enterprise solution with advanced CRM capabilities.',
     keyFeatures: ['Advanced CRM', 'Data Encryption', 'API Gateway'],
-    imageUrl: 'https://picsum.photos/seed/enterpriseB/600/400',
-    imageHint: 'abstract network',
+    imageUrl: placeholderImages.enterpriseB.imageUrl,
+    imageHint: placeholderImages.enterpriseB.imageHint,
     gridSpan: 'col-span-1 md:col-span-1',
     icon: 'Globe',
   },
