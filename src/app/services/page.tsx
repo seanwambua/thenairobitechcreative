@@ -4,13 +4,12 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { services } from '@/lib/data';
 import { motion } from 'framer-motion';
-import { Check, ScanSearch, LayoutTemplate, Rocket, Scaling, type Icon as LucideIcon } from 'lucide-react';
+import { Check, type Icon as LucideIcon, Briefcase, Computer, Wrench } from 'lucide-react';
 
 const iconMap: { [key: string]: LucideIcon } = {
-  ScanSearch,
-  LayoutTemplate,
-  Rocket,
-  Scaling,
+  Briefcase,
+  Computer,
+  Wrench,
 };
 
 export default function ServicesPage() {
@@ -22,7 +21,7 @@ export default function ServicesPage() {
           <div className="container mx-auto px-4">
             <div className="mx-auto mb-16 max-w-3xl text-center">
               <h1 className="font-headline text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl">
-                Our Process
+                Our Services
               </h1>
               <p className="mt-4 text-lg text-muted-foreground">
                 From concept to launch, we follow a structured process to ensure your vision comes
