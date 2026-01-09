@@ -59,6 +59,7 @@ export default function PricingPage() {
                             </span>
                           )}
                           <span className="font-headline text-4xl font-extrabold tracking-tight">
+                            {plan.price !== 'Custom' && 'KES '}
                             {plan.price}
                           </span>
                           <span className="ml-1 text-sm font-medium text-muted-foreground">
