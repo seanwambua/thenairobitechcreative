@@ -7,7 +7,6 @@ import { motion } from 'framer-motion';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -41,7 +40,7 @@ import {
 import { placeholderImages } from '@/lib/placeholder-images';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
-import { InquirySheet } from '../inquiry-sheet';
+import { InquirySheet } from '@/components/inquiry-sheet';
 
 const iconMap: { [key: string]: LucideIcon } = {
   ScanSearch,
@@ -85,7 +84,7 @@ export default function ServicesPage() {
               <HoverCard>
                 <HoverCardTrigger asChild>
                   <div className="group relative">
-                    <Avatar className="h-24 w-24 cursor-pointer grayscale transition-all duration-300 hover:grayscale-0 md:h-32 md:w-32">
+                    <Avatar className="h-24 w-24 cursor-pointer transition-all duration-300 md:h-32 md:w-32">
                       <AvatarFallback>{founderInitials}</AvatarFallback>
                     </Avatar>
                     <div className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-background bg-primary text-primary-foreground shadow-lg transition-transform duration-300 group-hover:scale-125">
