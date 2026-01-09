@@ -7,15 +7,8 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { placeholderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
 import { Cta } from '@/components/cta';
 import {
-  Check,
   type Icon as LucideIcon,
   Briefcase,
   Computer,
@@ -40,11 +33,17 @@ const iconMap: { [key: string]: LucideIcon } = {
 
 export default function ServicesPage() {
   const founderImage = placeholderImages.founder;
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0 },
+  };
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1">
-        <section className="py-20 lg:py-32">
+        <section className="py-20 lg:py-24">
           <div className="container mx-auto px-4">
             <div className="mx-auto mb-16 max-w-3xl text-center">
               <h1 className="font-headline text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl">
@@ -56,156 +55,122 @@ export default function ServicesPage() {
               </p>
             </div>
 
-            {/* Service Offerings */}
-            <div className="mx-auto max-w-4xl space-y-12">
-              <h2 className="mb-12 text-center font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-                What We Do
-              </h2>
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {/* Service Offerings */}
               {services.map((service, index) => {
                 const Icon = iconMap[service.icon as keyof typeof iconMap];
                 return (
                   <motion.div
                     key={service.id}
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.3 }}
+                    variants={cardVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.2 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                   >
-                    <Card className="overflow-hidden transition-all duration-300 hover:border-primary hover:shadow-2xl hover:shadow-primary/10">
-                      <div className="grid md:grid-cols-3">
-                        <div className="flex flex-col items-center justify-center gap-4 border-b p-8 text-center md:border-b-0 md:border-r">
-                          {Icon && <Icon className="h-16 w-16 text-primary" />}
-                          <h3 className="font-headline text-2xl font-semibold text-foreground">
-                            {service.title}
-                          </h3>
+                    <Card className="flex h-full flex-col p-6 transition-all duration-300 hover:border-primary hover:shadow-xl hover:shadow-primary/10">
+                      <CardHeader className="p-0">
+                        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                          {Icon && <Icon className="h-8 w-8" />}
                         </div>
-                        <div className="p-8 md:col-span-2">
-                          <p className="text-lg text-muted-foreground">{service.description}</p>
-                          <ul className="mt-6 space-y-3">
-                            {service.details.map((detail) => (
-                              <li key={detail} className="flex items-start">
-                                <Check className="mr-3 mt-1 h-5 w-5 flex-shrink-0 text-primary" />
-                                <span className="text-foreground">{detail}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
+                        <CardTitle className="font-headline text-2xl font-semibold text-foreground">
+                          {service.title}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="flex-1 p-0 pt-4">
+                        <p className="text-muted-foreground">{service.description}</p>
+                      </CardContent>
                     </Card>
                   </motion.div>
                 );
               })}
-            </div>
-          </div>
-        </section>
 
-        {/* Our Process Section */}
-        <section className="border-t bg-muted/50 py-20 lg:py-24">
-          <div className="container mx-auto px-4">
-            <div className="mx-auto mb-16 max-w-3xl text-center">
-              <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-                How We Do It: A Walkthrough
-              </h2>
-              <p className="mt-4 text-lg text-muted-foreground">
-                We follow a structured, transparent process to ensure your project's success from
-                concept to launch and beyond.
-              </p>
-            </div>
-            <div className="mx-auto max-w-3xl">
-              <Accordion type="single" collapsible className="w-full space-y-4">
-                {processSteps.map((step, index) => {
-                  const Icon = iconMap[step.icon as keyof typeof iconMap];
-                  return (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, x: -50 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true, amount: 0.3 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                    >
-                      <AccordionItem
-                        value={`item-${index}`}
-                        className="rounded-lg border bg-background shadow-sm transition-all hover:border-primary/50"
-                      >
-                        <AccordionTrigger className="p-6 text-left font-headline text-lg font-semibold hover:no-underline">
-                          <div className="flex items-center gap-4">
-                            {Icon && (
-                              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                                <Icon className="h-6 w-6" />
-                              </div>
-                            )}
-                            <span>{step.title}</span>
-                          </div>
-                        </AccordionTrigger>
-                        <AccordionContent className="p-6 pt-0">
-                          <p className="text-muted-foreground">{step.description}</p>
-                        </AccordionContent>
-                      </AccordionItem>
-                    </motion.div>
-                  );
-                })}
-              </Accordion>
-            </div>
-          </div>
-        </section>
-
-        {/* Founder and Vision Section */}
-        <section className="py-20 lg:py-32">
-          <div className="container mx-auto px-4">
-            <div className="mx-auto grid max-w-5xl items-center gap-12 md:grid-cols-2 lg:gap-16">
+              {/* Founder Quote & Vision */}
               <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ duration: 0.6 }}
+                className="lg:col-span-2"
+                variants={cardVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
               >
-                <div className="relative h-[400px] w-full overflow-hidden rounded-2xl shadow-lg">
+                <Card className="flex h-full flex-col items-center justify-center bg-muted/50 p-8 text-center lg:p-12">
+                  <h2 className="font-headline text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
+                    From the Founder
+                  </h2>
+                  <blockquote className="mt-4 max-w-lg text-lg italic text-muted-foreground">
+                    "Our journey began with a simple belief: that African ingenuity can solve
+                    global problems. We are not just building software; we are building bridges and
+                    crafting a new narrative for technology made in Africa."
+                  </blockquote>
+                </Card>
+              </motion.div>
+
+              {/* Founder Image */}
+              <motion.div
+                variants={cardVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                <Card className="relative h-full min-h-[250px] w-full overflow-hidden">
                   <Image
                     src={founderImage.imageUrl}
                     alt="Founder of The Nairobi Tech Creative"
                     fill
                     className="object-cover object-top"
-                    sizes="(max-width: 768px) 100vw, 50vw"
+                    sizes="(max-width: 768px) 100vw, 33vw"
                     data-ai-hint={founderImage.imageHint}
                   />
-                </div>
+                </Card>
               </motion.div>
-              <motion.div
-                initial={{ opacity: 0, x: 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
+
+              {/* Our Process Title */}
+               <motion.div
+                className="lg:col-span-3"
+                variants={cardVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
               >
-                <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-                  From the Founder
-                </h2>
-                <p className="mt-4 text-lg text-muted-foreground">
-                  "Our journey began with a simple belief: that African ingenuity can solve global
-                  problems. We are not just building software; we are building bridges, empowering
-                  communities, and crafting a new narrative for technology made in Africa."
-                </p>
-                <div className="mt-8 space-y-6">
-                  <div>
-                    <h3 className="font-headline text-xl font-semibold text-primary">
-                      Our Mission
-                    </h3>
-                    <p className="mt-2 text-muted-foreground">
-                      To empower businesses and creators with world-class digital solutions that are
-                      born from African insights and engineered for global impact.
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="font-headline text-xl font-semibold text-primary">
-                      Our Vision
-                    </h3>
-                    <p className="mt-2 text-muted-foreground">
-                      To be the leading catalyst for technological innovation in Africa, creating a
-                      sustainable ecosystem of talent and opportunity that resonates on a global
-                      scale.
-                    </p>
-                  </div>
-                </div>
+                <Card className="flex h-full flex-col items-center justify-center bg-primary/10 p-8 text-center">
+                   <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+                      How We Do It
+                    </h2>
+                </Card>
               </motion.div>
+
+              {/* Process Steps */}
+              {processSteps.map((step, index) => {
+                const Icon = iconMap[step.icon as keyof typeof iconMap];
+                return (
+                  <motion.div
+                    key={index}
+                    className={index === 0 || index === 3 ? 'lg:col-span-2' : ''}
+                    variants={cardVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
+                    <Card className="flex h-full flex-col p-6 text-center transition-all duration-300 hover:border-secondary hover:shadow-xl hover:shadow-secondary/10 md:text-left">
+                       <CardHeader className="flex flex-col items-center p-0 md:flex-row md:gap-4">
+                        <div className="mb-4 flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-secondary/10 text-secondary md:mb-0">
+                          {Icon && <Icon className="h-7 w-7" />}
+                        </div>
+                        <CardTitle className="font-headline text-xl font-semibold text-foreground">
+                          {step.title}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-0 pt-4">
+                        <p className="text-muted-foreground">{step.description}</p>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         </section>

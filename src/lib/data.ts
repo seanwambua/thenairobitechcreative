@@ -158,7 +158,7 @@ export const services: Service[] = [
     id: 1,
     title: 'Strategy & Discovery',
     icon: 'ScanSearch',
-    description: "We align your business goals with technology, providing the strategic roadmap for digital success and global impact.",
+    description: "We align your business goals with technology, providing the strategic roadmap for digital success.",
     details: [
       "Market & User Research",
       "Digital Transformation Roadmaps",
@@ -170,7 +170,7 @@ export const services: Service[] = [
     id: 2,
     title: 'Design & Development',
     icon: 'Rocket',
-    description: "From intuitive interfaces to robust backends, we build world-class digital solutions engineered for performance and scale.",
+    description: "From intuitive interfaces to robust backends, we build world-class digital solutions engineered for performance.",
     details: [
       "User-Centric UI/UX Design",
       "Full-Stack Web & Mobile App Development",
@@ -195,27 +195,27 @@ export const services: Service[] = [
 export const processSteps: ProcessStep[] = [
     {
       icon: 'ScanSearch',
-      title: '1. Discover: Understanding Your Vision',
+      title: '1. Discover',
       description:
-        'We kick off with collaborative workshops to dive deep into your business goals, target audience, and challenges. This foundational step ensures our strategy is perfectly aligned with your vision for success.',
+        'We kick off with collaborative workshops to dive deep into your business goals, target audience, and challenges.',
     },
     {
       icon: 'LayoutTemplate',
-      title: '2. Define: Crafting the Blueprint',
+      title: '2. Define',
       description:
-        'We translate our shared insights into a concrete plan. This includes creating user journeys, wireframes, and a technical roadmap. We define the project scope and deliverables, ensuring complete transparency before we write a single line of code.',
+        'We translate insights into a concrete plan, creating user journeys, wireframes, and a technical roadmap.',
     },
     {
       icon: 'Rocket',
-      title: '3. Develop: Building Your Solution',
+      title: '3. Develop',
       description:
-        'Our agile development team gets to work, building your product in iterative sprints. You’ll be involved every step of the way with regular demos and feedback sessions, allowing us to adapt and refine as we go.',
+        'Our agile team builds your product in iterative sprints with regular demos and feedback sessions.',
     },
     {
       icon: 'Scaling',
-      title: '4. Deploy: Launching & Growing',
+      title: '4. Deploy',
       description:
-        'We manage a smooth and seamless launch, from setting up scalable cloud infrastructure to final quality assurance. Post-launch, we transition to a support and growth phase, ensuring your product thrives and evolves with your user base.',
+        'We manage a seamless launch and transition to a support phase, ensuring your product thrives and evolves.',
     },
   ];
 
