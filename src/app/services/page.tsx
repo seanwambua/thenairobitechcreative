@@ -19,8 +19,6 @@ import {
   Rocket,
   Scaling,
   ServerCog,
-  ArrowDown,
-  ArrowRight,
 } from 'lucide-react';
 
 const iconMap: { [key: string]: LucideIcon } = {
