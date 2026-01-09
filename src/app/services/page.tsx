@@ -67,54 +67,39 @@ export default function ServicesPage() {
             </div>
             
             {/* Service Offerings */}
-            <div className="relative mx-auto max-w-3xl">
-              <h2 className="text-center font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl mb-12">
+            <div className="mx-auto max-w-4xl space-y-12">
+               <h2 className="text-center font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl mb-12">
                 What We Do
               </h2>
-              <div
-                className="absolute left-1/2 top-0 -ml-[1px] h-full w-0.5 bg-border"
-                aria-hidden="true"
-              />
               {services.map((service, index) => {
                 const Icon = iconMap[service.icon];
-                const isLeft = index % 2 === 0;
-
                 return (
                   <motion.div
                     key={service.id}
-                    className="relative mb-12"
                     initial={{ opacity: 0, y: 50 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, amount: 0.3 }}
-                    transition={{ duration: 0.5 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
                   >
-                    <div className="flex items-center">
-                      <div
-                        className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform`}
-                      >
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-primary bg-background">
-                          {Icon && <Icon className="h-6 w-6 text-primary" />}
+                    <Card className="overflow-hidden transition-all duration-300 hover:border-primary hover:shadow-2xl hover:shadow-primary/10">
+                      <div className="grid md:grid-cols-3">
+                        <div className="flex flex-col items-center justify-center gap-4 border-b p-8 text-center md:border-b-0 md:border-r">
+                           {Icon && <Icon className="h-16 w-16 text-primary" />}
+                           <h3 className="font-headline text-2xl font-semibold text-foreground">{service.title}</h3>
+                        </div>
+                        <div className="p-8 md:col-span-2">
+                           <p className="text-lg text-muted-foreground">{service.description}</p>
+                           <ul className="mt-6 space-y-3">
+                            {service.details.map((detail) => (
+                              <li key={detail} className="flex items-start">
+                                <Check className="mr-3 mt-1 h-5 w-5 flex-shrink-0 text-primary" />
+                                <span className="text-foreground">{detail}</span>
+                              </li>
+                            ))}
+                          </ul>
                         </div>
                       </div>
-                    </div>
-                    <div
-                      className={`relative w-[calc(50%-2.5rem)] rounded-lg border bg-card p-6 shadow-lg ${
-                        isLeft ? 'mr-auto' : 'ml-auto'
-                      }`}
-                    >
-                      <h3 className="font-headline text-xl font-semibold text-foreground">
-                        {service.title}
-                      </h3>
-                      <p className="mt-2 text-muted-foreground">{service.description}</p>
-                      <ul className="mt-4 space-y-2">
-                        {service.details.map((detail) => (
-                          <li key={detail} className="flex items-start">
-                            <Check className="mr-2 mt-1 h-4 w-4 flex-shrink-0 text-primary" />
-                            <span className="text-sm text-muted-foreground">{detail}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                    </Card>
                   </motion.div>
                 );
               })}
