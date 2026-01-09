@@ -51,6 +51,7 @@ export function InquirySheet({ children }: InquirySheetProps) {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const founderImage = placeholderImages.founder;
+  const founderInitials = founderImage.imageHint.split(' ').map((n) => n[0]).join('');
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -82,7 +83,7 @@ export function InquirySheet({ children }: InquirySheetProps) {
             <div className="mx-auto mb-4 flex items-center justify-center">
               <Avatar className="h-24 w-24">
                 <AvatarImage src={founderImage.imageUrl} alt={founderImage.imageHint} />
-                <AvatarFallback>{founderImage.imageHint.charAt(0)}</AvatarFallback>
+                <AvatarFallback>{founderInitials}</AvatarFallback>
               </Avatar>
             </div>
             <SheetTitle className="text-3xl font-bold">Project Inquiry</SheetTitle>

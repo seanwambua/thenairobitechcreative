@@ -51,6 +51,7 @@ export default function ServicesPage() {
   };
 
   const founderImage = placeholderImages.founder;
+  const founderInitials = founderImage.imageHint.split(' ').map((n) => n[0]).join('');
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -78,7 +79,7 @@ export default function ServicesPage() {
                         data-ai-hint={placeholderImages.founder.imageHint}
                       />
                       <AvatarFallback>
-                        {founderImage.imageHint.charAt(0)}
+                        {founderInitials}
                       </AvatarFallback>
                     </Avatar>
                     <div className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-background bg-primary text-primary-foreground shadow-lg transition-transform duration-300 group-hover:scale-125">
@@ -95,7 +96,7 @@ export default function ServicesPage() {
                           alt="Founder"
                           data-ai-hint={founderImage.imageHint}
                         />
-                        <AvatarFallback>{founderImage.imageHint.charAt(0)}</AvatarFallback>
+                        <AvatarFallback>{founderInitials}</AvatarFallback>
                       </Avatar>
                       <div className="space-y-1">
                         <h4 className="text-sm font-semibold">A Message from the Founder</h4>
