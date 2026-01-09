@@ -78,7 +78,7 @@ export default function ServicesPage() {
                         data-ai-hint={placeholderImages.founder.imageHint}
                       />
                       <AvatarFallback>
-                        {placeholderImages.founder.imageHint.charAt(0)}
+                        {founderImage.imageHint.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                     <div className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-background bg-primary text-primary-foreground shadow-lg transition-transform duration-300 group-hover:scale-125">
@@ -201,3 +201,4 @@ export default function ServicesPage() {
     </div>
   );
 }
+    
