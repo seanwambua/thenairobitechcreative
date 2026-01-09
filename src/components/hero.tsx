@@ -1,6 +1,5 @@
 'use client';
 import {Button} from '@/components/ui/button';
-import {Stamp} from '@/components/stamp';
 import {motion} from 'framer-motion';
 import {ChevronRight} from 'lucide-react';
 import Image from 'next/image';
@@ -48,14 +47,6 @@ export function Hero({heroImage}: {heroImage: string}) {
         animate="visible"
       >
         <div className="flex flex-col items-start text-left">
-          <motion.div
-            className="mb-4 flex h-24 w-24 items-center justify-center md:h-28 md:w-28"
-            initial={{opacity: 0, scale: 0.5}}
-            animate={{opacity: 1, scale: 1}}
-            transition={{duration: 0.5, delay: 0.5}}
-          >
-            <Stamp />
-          </motion.div>
           <motion.h1
             className="font-headline text-5xl font-extrabold tracking-tighter text-foreground sm:text-6xl md:text-7xl"
             variants={textItemVariants}
