@@ -58,7 +58,10 @@ export function Hero({heroImage}: {heroImage: string}) {
           className="font-headline text-5xl font-extrabold tracking-tighter text-white sm:text-6xl md:text-7xl lg:text-8xl"
           variants={itemVariants}
         >
-          African Solutions, <span className="bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">Global Problems.</span>
+          African Solutions,{' '}
+          <span className="bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">
+            Global Problems.
+          </span>
         </motion.h1>
         <motion.p
           className="mx-auto mt-6 max-w-[700px] text-lg text-zinc-300 md:text-xl"
