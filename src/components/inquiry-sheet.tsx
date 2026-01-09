@@ -24,11 +24,22 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { services } from '@/lib/data';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { placeholderImages } from '@/lib/placeholder-images';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
   email: z.string().email({ message: 'Please enter a valid email address.' }),
   company: z.string().optional(),
+  service: z.string().optional(),
   message: z.string().min(10, { message: 'Project details must be at least 10 characters.' }),
 });
 
@@ -39,6 +50,7 @@ interface InquirySheetProps {
 export function InquirySheet({ children }: InquirySheetProps) {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
+  const founderImage = placeholderImages.founder;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -46,6 +58,7 @@ export function InquirySheet({ children }: InquirySheetProps) {
       name: '',
       email: '',
       company: '',
+      service: '',
       message: '',
     },
   });
@@ -65,9 +78,15 @@ export function InquirySheet({ children }: InquirySheetProps) {
       <SheetTrigger asChild>{children}</SheetTrigger>
       <SheetContent className="h-full w-full overflow-y-auto sm:max-w-full">
         <div className="mx-auto max-w-2xl py-12">
-          <SheetHeader>
-            <SheetTitle className="text-center text-3xl font-bold">Project Inquiry</SheetTitle>
-            <SheetDescription className="text-center">
+          <SheetHeader className="text-center">
+            <div className="mx-auto mb-4 flex items-center justify-center">
+              <Avatar className="h-24 w-24">
+                <AvatarImage src={founderImage.imageUrl} alt={founderImage.imageHint} />
+                <AvatarFallback>{founderImage.imageHint.charAt(0)}</AvatarFallback>
+              </Avatar>
+            </div>
+            <SheetTitle className="text-3xl font-bold">Project Inquiry</SheetTitle>
+            <SheetDescription>
               Tell us a bit about your project. We're excited to learn more.
             </SheetDescription>
           </SheetHeader>
@@ -109,6 +128,30 @@ export function InquirySheet({ children }: InquirySheetProps) {
                       <FormControl>
                         <Input placeholder="Your Company Name" {...field} />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="service"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Service of Interest</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a service" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {services.map((service) => (
+                            <SelectItem key={service.id} value={service.title}>
+                              {service.title}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}

@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import { ContactSheet } from './contact-sheet';
+import { InquirySheet } from './inquiry-sheet';
 
 export function Cta() {
   return (
@@ -24,15 +24,15 @@ export function Cta() {
               your vision into a global success story.
             </p>
             <div className="mt-8">
-                <ContactSheet>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="border-white bg-transparent text-white hover:bg-white hover:text-primary"
-                  >
-                    Start a Conversation <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </ContactSheet>
+              <InquirySheet>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-white bg-transparent text-white hover:bg-white hover:text-primary"
+                >
+                  Start a Conversation <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </InquirySheet>
             </div>
           </div>
         </motion.div>

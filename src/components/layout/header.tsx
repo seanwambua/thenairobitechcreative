@@ -6,7 +6,7 @@ import {Menu, X} from 'lucide-react';
 import {useState} from 'react';
 import {cn} from '@/lib/utils';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { ContactSheet } from '../contact-sheet';
+import { InquirySheet } from '../inquiry-sheet';
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,9 +44,9 @@ export function Header() {
         </nav>
         <div className="hidden items-center gap-2 md:flex">
           <ThemeToggle />
-          <ContactSheet>
+          <InquirySheet>
             <Button>Get In Touch</Button>
-          </ContactSheet>
+          </InquirySheet>
         </div>
         <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle />
@@ -73,9 +73,9 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
-             <ContactSheet>
+             <InquirySheet>
                 <Button className="w-full">Get In Touch</Button>
-            </ContactSheet>
+            </InquirySheet>
           </nav>
         </div>
       )}
