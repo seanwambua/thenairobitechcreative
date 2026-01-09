@@ -32,7 +32,12 @@ const formSchema = z.object({
   message: z.string().min(10, { message: 'Project details must be at least 10 characters.' }),
 });
 
-export function InquirySheet({ children }: { children: React.ReactNode }) {
+interface InquirySheetProps {
+  children: React.ReactNode;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export function InquirySheet({ children, onOpenChange }: InquirySheetProps) {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
 
@@ -56,81 +61,90 @@ export function InquirySheet({ children }: { children: React.ReactNode }) {
     setOpen(false);
   }
 
+  const handleOpenChange = (isOpen: boolean) => {
+    setOpen(isOpen);
+    if (onOpenChange) {
+      onOpenChange(isOpen);
+    }
+  };
+
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>{children}</SheetTrigger>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>Project Inquiry</SheetTitle>
-          <SheetDescription>
-            Tell us a bit about your project. We're excited to learn more.
-          </SheetDescription>
-        </SheetHeader>
-        <div className="py-4">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Your Name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input placeholder="your.email@example.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="company"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Company (Optional)</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Your Company Name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="message"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Project Details</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Tell us about your project, goals, and timeline..."
-                        className="resize-none"
-                        rows={5}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" className="w-full">
-                Submit Inquiry
-              </Button>
-            </form>
-          </Form>
+      <SheetContent className="h-full w-full overflow-y-auto sm:max-w-full">
+        <div className="mx-auto max-w-2xl py-12">
+          <SheetHeader>
+            <SheetTitle className="text-center text-3xl font-bold">Project Inquiry</SheetTitle>
+            <SheetDescription className="text-center">
+              Tell us a bit about your project. We're excited to learn more.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="py-8">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Your Name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input placeholder="your.email@example.com" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="company"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company (Optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Your Company Name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="message"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Project Details</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Tell us about your project, goals, and timeline..."
+                          className="resize-none"
+                          rows={5}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" className="w-full" size="lg">
+                  Submit Inquiry
+                </Button>
+              </form>
+            </Form>
+          </div>
         </div>
       </SheetContent>
     </Sheet>
