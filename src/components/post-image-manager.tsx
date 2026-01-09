@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Upload } from 'lucide-react';
 import { usePostStore, type Post } from '@/store/posts';
 import { useToast } from '@/hooks/use-toast';
-import { Separator } from './ui/separator';
+import { Input } from '@/components/ui/input';
 
 interface PostImageManagerProps {
   post: Post;
@@ -51,13 +51,13 @@ export function PostImageManager({ post }: PostImageManagerProps) {
   return (
     <Card className="overflow-hidden">
       <CardHeader>
-        <CardTitle className="text-lg truncate">{post.title}</CardTitle>
+        <CardTitle className="truncate text-lg">{post.title}</CardTitle>
       </CardHeader>
-      <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+      <CardContent className="grid grid-cols-1 items-start gap-6 md:grid-cols-2">
         {/* Cover Image Section */}
         <div className="space-y-4">
-          <p className="font-medium text-sm text-muted-foreground">Cover Image</p>
-          <div className="relative w-full aspect-video rounded-md overflow-hidden">
+          <p className="text-sm font-medium text-muted-foreground">Cover Image</p>
+          <div className="relative aspect-video w-full overflow-hidden rounded-md">
             <Image
               src={post.imageUrl}
               alt={`Cover image for ${post.title}`}
@@ -85,7 +85,7 @@ export function PostImageManager({ post }: PostImageManagerProps) {
 
         {/* Avatar Image Section */}
         <div className="space-y-4">
-           <p className="font-medium text-sm text-muted-foreground">Author Avatar</p>
+           <p className="text-sm font-medium text-muted-foreground">Author Avatar</p>
            <div className="flex justify-center">
             <Avatar className="h-32 w-32 border-4 border-muted">
                 <AvatarImage src={post.authorAvatarUrl} alt={post.author} />
