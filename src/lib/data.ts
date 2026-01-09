@@ -25,6 +25,7 @@ export interface Testimonial {
 }
 
 export interface PostComment {
+    id: string;
     author: string;
     text: string;
     avatarUrl: string;
@@ -312,11 +313,13 @@ export const posts: Post[] = [
     likes: 128,
     comments: [
       {
+        id: 'comment-1',
         author: 'Amina Okoro',
         text: 'Great insights! The mobile-first approach is definitely the key to unlocking the African market.',
         avatarUrl: placeholderImages.testimonial3.imageUrl,
       },
       {
+        id: 'comment-2',
         author: 'John Smith',
         text: 'Well-written article. We\'ve seen the impact of this firsthand with EduScale.',
         avatarUrl: placeholderImages.testimonial2.imageUrl,
@@ -353,6 +356,7 @@ export const posts: Post[] = [
     likes: 210,
     comments: [
         {
+            id: 'comment-3',
             author: 'Kwame Annan',
             text: 'This is a crucial topic that is often overlooked. Thanks for sharing your framework!',
             avatarUrl: placeholderImages.testimonial4.imageUrl,
