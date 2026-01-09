@@ -128,11 +128,11 @@ export default function ServicesPage() {
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                   >
                     <Card className="flex h-full flex-col p-6 transition-all duration-300 hover:border-primary hover:shadow-xl hover:shadow-primary/10">
-                      <CardHeader className="p-0">
-                        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                      <CardHeader className="flex-row items-center gap-4 p-0">
+                        <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                           {Icon && <Icon className="h-8 w-8" />}
                         </div>
-                        <CardTitle className="font-headline text-2xl font-semibold text-foreground">
+                        <CardTitle className="font-headline text-xl font-semibold text-foreground">
                           {service.title}
                         </CardTitle>
                       </CardHeader>
