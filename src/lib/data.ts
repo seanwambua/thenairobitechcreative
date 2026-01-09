@@ -2,7 +2,7 @@ import type { ComponentType } from 'react';
 import { Boxes, BookOpen, PenTool, LineChart, Globe, Server, type LucideProps, ScanSearch, LayoutTemplate, Rocket, Scaling } from 'lucide-react';
 import { placeholderImages } from './placeholder-images';
 
-export type IconName = 'Boxes' | 'BookOpen' | 'PenTool' | 'LineChart' | 'Globe' | 'Server';
+export type IconName = 'Boxes' | 'BookOpen' | 'PenTool' | 'LineChart' | 'Globe' | 'Server' | 'ScanSearch' | 'LayoutTemplate' | 'Rocket' | 'Scaling';
 
 export interface Project {
   id: number;
