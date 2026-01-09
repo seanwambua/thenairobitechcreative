@@ -5,12 +5,14 @@ import {Stamp} from '@/components/stamp';
 import {Menu, X} from 'lucide-react';
 import {useState} from 'react';
 import {cn} from '@/lib/utils';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
     {href: '#portfolio', label: 'Portfolio'},
+    {href: '#testimonials', label: 'Testimonials'},
     {href: '#contact', label: 'Contact'},
   ];
 
@@ -36,10 +38,12 @@ export function Header() {
             </Link>
           ))}
         </nav>
-        <div className="hidden md:block">
+        <div className="hidden items-center gap-2 md:flex">
+          <ThemeToggle />
           <Button>Get In Touch</Button>
         </div>
-        <div className="md:hidden">
+        <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle />
           <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </Button>

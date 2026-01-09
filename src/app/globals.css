@@ -4,24 +4,24 @@
 
 @layer base {
   :root {
-    --background: 240 10% 4%; /* Zinc-950: #09090b */
-    --foreground: 240 5% 96%; /* Zinc-100 */
-    --card: 240 9% 10%; /* Zinc-900: #18181b */
-    --card-foreground: 240 5% 96%; /* Zinc-100 */
-    --popover: 240 10% 4%;
-    --popover-foreground: 240 5% 96%;
-    --primary: 25 95% 53%; /* Orange: #f97316 */
+    --background: 240 5% 96%;
+    --foreground: 240 10% 4%;
+    --card: 240 5% 96%;
+    --card-foreground: 240 10% 4%;
+    --popover: 240 5% 96%;
+    --popover-foreground: 240 10% 4%;
+    --primary: 25 95% 53%;
     --primary-foreground: 240 6% 10%;
-    --secondary: 45 93% 47%; /* Yellow: #eab308 */
+    --secondary: 45 93% 47%;
     --secondary-foreground: 240 6% 10%;
-    --muted: 240 4% 16%;
-    --muted-foreground: 240 5% 65%; /* Zinc-400 */
-    --accent: 240 4% 16%;
-    --accent-foreground: 240 5% 96%;
+    --muted: 240 5% 90%;
+    --muted-foreground: 240 5% 45%;
+    --accent: 240 5% 90%;
+    --accent-foreground: 240 10% 4%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 240 5% 96%;
-    --border: 240 4% 16%;
-    --input: 240 4% 16%;
+    --border: 240 6% 84%;
+    --input: 240 6% 84%;
     --ring: 25 95% 53%;
     --radius: 0.5rem;
   }
