@@ -30,14 +30,14 @@ export function Hero({heroImage}: {heroImage: string}) {
     <section className="relative flex min-h-[calc(100vh-4rem)] w-full items-center justify-center overflow-hidden text-center">
       <div className="absolute inset-0 z-0">
         <div
-          className="h-full w-full bg-black bg-cover bg-center"
+          className="h-full w-full bg-cover bg-center bg-black dark:bg-transparent"
         >
           <div
             className="h-full w-full bg-cover bg-center dark:bg-black"
             style={{backgroundImage: `url(${heroImage})`}}
           />
         </div>
-        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm dark:bg-black/80"></div>
       </div>
 
       <motion.div
@@ -58,7 +58,7 @@ export function Hero({heroImage}: {heroImage: string}) {
           className="font-headline text-5xl font-extrabold tracking-tighter text-white sm:text-6xl md:text-7xl lg:text-8xl"
           variants={itemVariants}
         >
-          Empowering ideas, <span className="text-primary">building enterprises.</span>
+          African Solutions, <span className="text-primary">Global Problems.</span>
         </motion.h1>
         <motion.p
           className="mx-auto mt-6 max-w-[700px] text-lg text-zinc-100 md:text-xl"
