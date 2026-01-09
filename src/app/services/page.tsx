@@ -73,11 +73,7 @@ export default function ServicesPage() {
                 <HoverCardTrigger asChild>
                   <div className="group relative">
                     <Avatar className="h-24 w-24 cursor-pointer grayscale transition-all duration-300 hover:grayscale-0 md:h-32 md:w-32">
-                      <AvatarImage
-                        src={placeholderImages.founder.imageUrl}
-                        alt="Founder"
-                        data-ai-hint={placeholderImages.founder.imageHint}
-                      />
+                      
                       <AvatarFallback>
                         {founderInitials}
                       </AvatarFallback>
@@ -91,11 +87,7 @@ export default function ServicesPage() {
                   <div className="flex flex-col gap-4">
                     <div className="flex justify-between space-x-4">
                       <Avatar>
-                        <AvatarImage
-                          src={founderImage.imageUrl}
-                          alt="Founder"
-                          data-ai-hint={founderImage.imageHint}
-                        />
+                        
                         <AvatarFallback>{founderInitials}</AvatarFallback>
                       </Avatar>
                       <div className="space-y-1">

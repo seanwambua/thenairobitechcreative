@@ -82,7 +82,7 @@ export function InquirySheet({ children }: InquirySheetProps) {
           <SheetHeader className="text-center">
             <div className="mx-auto mb-4 flex items-center justify-center">
               <Avatar className="h-24 w-24">
-                <AvatarImage src={founderImage.imageUrl} alt={founderImage.imageHint} />
+                
                 <AvatarFallback>{founderInitials}</AvatarFallback>
               </Avatar>
             </div>
