@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import * as React from 'react';
@@ -107,7 +108,7 @@ export default function DashboardLayout({
                 isActive={pathname.startsWith('/dashboard/projects')}
                 tooltip="Projects"
               >
-                <Link href="#">
+                <Link href="/dashboard/projects">
                   <Briefcase />
                   <span>Projects</span>
                 </Link>

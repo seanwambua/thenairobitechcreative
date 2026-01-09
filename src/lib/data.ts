@@ -1,8 +1,11 @@
 import type { ComponentType } from 'react';
 import { Boxes, BookOpen, PenTool, LineChart, Globe, Server, type LucideProps, ScanSearch, LayoutTemplate, Rocket, Scaling, Briefcase, Computer, Wrench, ServerCog } from 'lucide-react';
 import { placeholderImages } from './placeholder-images';
+import { z } from 'zod';
 
-export type IconName = 'Boxes' | 'BookOpen' | 'PenTool' | 'LineChart' | 'Globe' | 'Server' | 'ScanSearch' | 'LayoutTemplate' | 'Rocket' | 'Scaling' | 'Briefcase' | 'Computer' | 'Wrench' | 'ServerCog';
+export const iconNames = ['Boxes', 'BookOpen', 'PenTool', 'LineChart', 'Globe', 'Server', 'ScanSearch', 'LayoutTemplate', 'Rocket', 'Scaling', 'Briefcase', 'Computer', 'Wrench', 'ServerCog'] as const;
+export type IconName = (typeof iconNames)[number];
+
 
 export interface NavItem {
     href: string;
@@ -195,7 +198,7 @@ export const processSteps: ProcessStep[] = [
   ];
 
 
-export const projects: Project[] = [
+export const initialProjects: Project[] = [
   {
     id: 1,
     title: 'Inventory Management',

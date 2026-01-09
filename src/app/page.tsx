@@ -5,7 +5,7 @@ import { Footer } from '@/components/layout/footer';
 import { Hero } from '@/components/hero';
 import { ProspectsBanner } from '@/components/prospects-banner';
 import { BentoPortfolio } from '@/components/bento-portfolio';
-import { projects, testimonials, faqs } from '@/lib/data';
+import { testimonials, faqs } from '@/lib/data';
 import { Cta } from '@/components/cta';
 import { Testimonials } from '@/components/testimonials';
 import {
@@ -16,9 +16,11 @@ import {
 } from '@/components/ui/accordion';
 import { motion } from 'framer-motion';
 import { useMediaStore } from '@/store/media';
+import { useProjectStore } from '@/store/projects';
 
 export default function Home() {
   const { heroImage } = useMediaStore();
+  const { projects } = useProjectStore();
 
   const sectionVariants = {
     hidden: { opacity: 0, y: 50 },
