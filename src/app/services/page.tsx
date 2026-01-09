@@ -32,7 +32,6 @@ import {
 import { placeholderImages } from '@/lib/placeholder-images';
 import { Separator } from '@/components/ui/separator';
 
-
 const iconMap: { [key: string]: LucideIcon } = {
   ScanSearch,
   Rocket,
@@ -82,34 +81,36 @@ export default function ServicesPage() {
                   </Avatar>
                 </HoverCardTrigger>
                 <HoverCardContent className="w-80">
-                <div className="flex flex-col gap-4">
-                  <div className="flex justify-between space-x-4">
-                    <Avatar>
-                      <AvatarImage 
-                        src={founderImage.imageUrl}
-                        alt="Founder"
-                        data-ai-hint={founderImage.imageHint}
-                      />
-                      <AvatarFallback>
-                        {founderImage.imageHint.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="space-y-1">
-                      <h4 className="text-sm font-semibold">A Message from the Founder</h4>
+                  <div className="flex flex-col gap-4">
+                    <div className="flex justify-between space-x-4">
+                      <Avatar>
+                        <AvatarImage
+                          src={founderImage.imageUrl}
+                          alt="Founder"
+                          data-ai-hint={founderImage.imageHint}
+                        />
+                        <AvatarFallback>{founderImage.imageHint.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <div className="space-y-1">
+                        <h4 className="text-sm font-semibold">A Message from the Founder</h4>
+                      </div>
                     </div>
-                  </div>
-                  <Separator />
-                  <div className="text-sm text-muted-foreground">
-                    <p className="mb-2">
-                      "At The Nairobi Tech Creative, we believe in the power of African innovation to solve
-                      global problems. We are not just building software; we are crafting digital solutions
-                      that empower communities, drive growth, and create lasting impact."
-                    </p>
-                    <p className="mb-1 font-semibold text-foreground">Our Mission</p>
-                    <p className="mb-2">To empower African businesses and entrepreneurs with world-class digital products.</p>
-                    <p className="mb-1 font-semibold text-foreground">Our Vision</p>
-                    <p>To be the leading catalyst for digital transformation in Africa.</p>
-                  </div>
+                    <Separator />
+                    <div className="text-sm text-muted-foreground">
+                      <p className="mb-2">
+                        "At The Nairobi Tech Creative, we believe in the power of African innovation
+                        to solve global problems. We are not just building software; we are crafting
+                        digital solutions that empower communities, drive growth, and create lasting
+                        impact."
+                      </p>
+                      <p className="mb-1 font-semibold text-foreground">Our Mission</p>
+                      <p className="mb-2">
+                        To empower African businesses and entrepreneurs with world-class digital
+                        products.
+                      </p>
+                      <p className="mb-1 font-semibold text-foreground">Our Vision</p>
+                      <p>To be the leading catalyst for digital transformation in Africa.</p>
+                    </div>
                   </div>
                 </HoverCardContent>
               </HoverCard>
@@ -129,8 +130,8 @@ export default function ServicesPage() {
                   >
                     <Card className="flex h-full flex-col p-6 transition-all duration-300 hover:border-primary hover:shadow-xl hover:shadow-primary/10">
                       <CardHeader className="flex-row items-center gap-4 p-0">
-                        <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                          {Icon && <Icon className="h-8 w-8" />}
+                        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                          {Icon && <Icon className="h-6 w-6" />}
                         </div>
                         <CardTitle className="font-headline text-xl font-semibold text-foreground">
                           {service.title}
