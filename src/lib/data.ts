@@ -24,16 +24,26 @@ export interface Testimonial {
   avatarHint: string;
 }
 
+export interface PostComment {
+    author: string;
+    text: string;
+    avatarUrl: string;
+}
+
 export interface Post {
   id: number;
+  slug: string;
   title: string;
   description: string;
+  content: string;
   imageUrl: string;
   imageHint: string;
   author: string;
   authorAvatarUrl: string;
   authorAvatarHint: string;
   date: string;
+  likes: number;
+  comments: PostComment[];
 }
 
 export interface Service {
@@ -289,35 +299,64 @@ export const testimonials: Testimonial[] = [
 export const posts: Post[] = [
   {
     id: 1,
+    slug: 'the-rise-of-mobile-first-solutions-in-africa',
     title: 'The Rise of Mobile-First Solutions in Africa',
     description: 'Exploring how mobile technology is shaping the future of business and daily life across the continent.',
+    content: "Africa is not just a mobile-first continent; it's a mobile-only continent for a vast majority of its population. This paradigm shift has led to an explosion of innovation, with developers and entrepreneurs creating solutions tailored specifically for mobile users. From fintech to healthcare, mobile technology is leapfrogging traditional infrastructure, providing access to essential services for millions.\n\nIn this post, we'll explore the key drivers behind this trend, including the proliferation of affordable smartphones, expanding mobile network coverage, and the youthful, tech-savvy demographics of the continent. We'll also showcase some of the most exciting mobile-first companies that are making a global impact from their African headquarters. The future is mobile, and Africa is leading the charge.",
     imageUrl: placeholderImages.blog1.imageUrl,
     imageHint: placeholderImages.blog1.imageHint,
     author: 'Jalen Doe',
     authorAvatarUrl: placeholderImages.testimonial1.imageUrl,
     authorAvatarHint: placeholderImages.testimonial1.imageHint,
     date: 'Oct 10, 2024',
+    likes: 128,
+    comments: [
+      {
+        author: 'Amina Okoro',
+        text: 'Great insights! The mobile-first approach is definitely the key to unlocking the African market.',
+        avatarUrl: placeholderImages.testimonial3.imageUrl,
+      },
+      {
+        author: 'John Smith',
+        text: 'Well-written article. We\'ve seen the impact of this firsthand with EduScale.',
+        avatarUrl: placeholderImages.testimonial2.imageUrl,
+      },
+    ],
   },
   {
     id: 2,
+    slug: 'fintech-innovation-beyond-mobile-money',
     title: 'FinTech Innovation: Beyond Mobile Money',
     description: 'A deep dive into the next wave of financial technology emerging from African tech hubs.',
+    content: "While mobile money platforms like M-Pesa revolutionized financial inclusion in Africa, the story doesn't end there. A new wave of fintech innovation is building on this foundation, offering more complex financial products to a rapidly growing consumer base. We're seeing the rise of digital-only banks, micro-investment platforms, and AI-powered credit scoring systems that are democratizing access to wealth creation tools.\n\nThese new services are tackling everything from cross-border payments to personal financial management, all through a mobile-centric lens. The regulatory landscape is evolving to keep pace, creating a dynamic and sometimes challenging environment for innovators. This article examines the startups leading the charge and the potential for these African-born solutions to be adapted for global markets.",
     imageUrl: placeholderImages.blog2.imageUrl,
     imageHint: placeholderImages.blog2.imageHint,
     author: 'Maria Garcia',
     authorAvatarUrl: placeholderImages.testimonial3.imageUrl,
     authorAvatarHint: placeholderImages.testimonial3.imageHint,
     date: 'Oct 2, 2024',
+    likes: 95,
+    comments: [],
   },
   {
     id: 3,
+    slug: 'designing-for-accessibility-in-a-diverse-market',
     title: 'Designing for Accessibility in a Diverse Market',
     description: 'Key principles and practical tips for creating inclusive digital products for all users.',
+    content: "Designing for the African continent means designing for an incredible diversity of languages, cultures, and levels of digital literacy. It also means accounting for varying device capabilities and network conditions. True accessibility goes beyond screen readers and alt text; it's about creating products that are intuitive, resilient, and respectful of the user's context.\n\nThis post outlines a framework for inclusive design that we follow at The Nairobi Tech Creative. We'll cover topics like offline-first architecture, performance optimization for low-end devices, localization best practices, and the importance of user research with diverse community groups. By prioritizing accessibility from day one, we can build products that truly serve everyone.",
     imageUrl: placeholderImages.blog3.imageUrl,
     imageHint: placeholderImages.blog3.imageHint,
     author: 'David Kim',
     authorAvatarUrl: placeholderImages.testimonial2.imageUrl,
     authorAvatarHint: placeholderImages.testimonial2.imageHint,
     date: 'Sep 25, 2024',
+    likes: 210,
+    comments: [
+        {
+            author: 'Kwame Annan',
+            text: 'This is a crucial topic that is often overlooked. Thanks for sharing your framework!',
+            avatarUrl: placeholderImages.testimonial4.imageUrl,
+        }
+    ],
   },
 ];
