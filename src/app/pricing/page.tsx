@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Cta } from '@/components/cta';
 
 export default function PricingPage() {
   return (
@@ -76,6 +77,7 @@ export default function PricingPage() {
             </div>
           </div>
         </section>
+        <Cta />
       </main>
       <Footer />
     </div>
