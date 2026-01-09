@@ -44,6 +44,98 @@ export interface Service {
   details: string[];
 }
 
+export interface PricingPlan {
+  id: number;
+  title: string;
+  description: string;
+  price: string;
+  priceSuffix: string;
+  features: string[];
+  recommended: boolean;
+}
+
+export interface FAQ {
+  id: number;
+  question: string;
+  answer: string;
+}
+
+export const faqs: FAQ[] = [
+  {
+    id: 1,
+    question: "What is the typical timeline for a project?",
+    answer: "Project timelines vary depending on the scope and complexity. A typical project discovery and design phase takes 2-4 weeks, followed by development sprints of 2-3 months. We work closely with you to establish a detailed timeline upfront."
+  },
+  {
+    id: 2,
+    question: "How do you handle project management and communication?",
+    answer: "We use an agile project management approach with regular check-ins and demos. You'll have a dedicated project manager and direct access to the team through collaborative tools like Slack and Asana to ensure clear communication and transparency."
+  },
+  {
+    id: 3,
+    question: "Can you work with existing codebases or systems?",
+    answer: "Absolutely. We can audit your existing systems, identify areas for improvement, and integrate new features or build on top of your current infrastructure. Our goal is to enhance your technology, not necessarily replace it."
+  },
+  {
+    id: 4,
+    question: "What kind of post-launch support do you offer?",
+    answer: "We offer various levels of ongoing support and maintenance retainers to ensure your product remains secure, up-to-date, and optimized for performance. We can also provide support for future feature development and scaling."
+  },
+  {
+    id: 5,
+    question: "How do you ensure the quality of the final product?",
+    answer: "Quality is at the core of our process. We conduct rigorous testing at every stage, including unit testing, integration testing, and user acceptance testing (UAT). We also perform security audits and performance profiling before launch."
+  }
+];
+
+export const pricingPlans: PricingPlan[] = [
+  {
+    id: 1,
+    title: 'Ignite',
+    description: 'Perfect for startups and small projects to get off the ground.',
+    price: '$5K',
+    priceSuffix: '/project',
+    features: [
+      'UI/UX Design (Up to 10 screens)',
+      'Web/Mobile App Development',
+      'Basic CMS Integration',
+      '1 Month Post-Launch Support'
+    ],
+    recommended: false,
+  },
+  {
+    id: 2,
+    title: 'Accelerate',
+    description: 'Ideal for growing businesses looking to scale their digital presence.',
+    price: '$15K',
+    priceSuffix: '/project',
+    features: [
+      'Full UI/UX Design System',
+      'Scalable Architecture',
+      'Advanced API Integration',
+      'CI/CD & DevOps Setup',
+      '3 Months Post-Launch Support'
+    ],
+    recommended: true,
+  },
+  {
+    id: 3,
+    title: 'Innovate',
+    description: 'Comprehensive solutions for enterprises and complex digital products.',
+    price: 'Custom',
+    priceSuffix: '',
+    features: [
+      'Dedicated Product Team',
+      'Enterprise-Grade Solution',
+      'Advanced Security & Compliance',
+      'On-going Optimization & Scaling',
+      'Dedicated Support Retainer'
+    ],
+    recommended: false,
+  },
+];
+
+
 export const services: Service[] = [
   {
     id: 1,
