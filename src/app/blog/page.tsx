@@ -1,14 +1,15 @@
 'use client';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { posts } from '@/lib/data';
 import { BlogPostCard } from '@/components/blog-post-card';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { usePostStore } from '@/store/posts';
 
 export default function BlogPage() {
+  const { posts } = usePostStore();
   const featuredPosts = posts.slice(0, 3);
   const otherArticles = posts.slice(3);
 

@@ -1,15 +1,17 @@
-import { notFound } from 'next/navigation';
+'use client';
+import { notFound, useParams } from 'next/navigation';
 import Image from 'next/image';
-import { posts } from '@/lib/data';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { PostInteractions } from '@/components/post-interactions';
+import { usePostStore } from '@/store/posts';
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+export default function BlogPostPage() {
+  const { slug } = useParams<{ slug: string }>();
+  const { posts } = usePostStore();
   const post = posts.find((p) => p.slug === slug);
 
   if (!post) {
@@ -43,7 +45,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             </div>
           </header>
 
-          <div className="relative mb-12 h-96 w-full overflow-hidden rounded-2xl shadow-lg">
+          <div className="relative mb-12 h-[600px] w-full overflow-hidden rounded-2xl shadow-lg md:h-full">
             <Image
               src={post.imageUrl}
               alt={post.title}
