@@ -185,18 +185,6 @@ export const services: Service[] = [
     ],
   },
   {
-    id: 4,
-    title: 'Custom Tooling',
-    icon: 'Wrench',
-    description: "We build bespoke software tools, extensions, and integrations to streamline your unique workflows and solve specific business challenges.",
-    details: [
-      "Internal Dashboards & Admin Panels",
-      "Custom API Integrations",
-      "Workflow Automation Scripts",
-      "Data Processing & Migration Tools",
-    ],
-  },
-  {
     id: 5,
     title: 'Technical Support',
     icon: 'ServerCog',
