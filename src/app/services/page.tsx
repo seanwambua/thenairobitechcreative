@@ -22,11 +22,9 @@ import {
 } from 'lucide-react';
 
 const iconMap: { [key: string]: LucideIcon } = {
-  Briefcase,
-  Computer,
-  Wrench,
-  ServerCog,
+  ScanSearch,
   Rocket,
+  Scaling,
 };
 
 const processSteps = [
