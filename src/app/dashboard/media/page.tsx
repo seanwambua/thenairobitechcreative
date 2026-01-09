@@ -1,4 +1,3 @@
-
 'use client';
 import { useRef, ChangeEvent, useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -17,6 +16,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Logo } from '@/components/logo';
 import { Input } from '@/components/ui/input';
 import { useMediaStore } from '@/store/media';
+import { usePostStore } from '@/store/posts';
+import { PostImageManager } from '@/components/post-image-manager';
 
 const defaultHeroImages = [
   placeholderImages.hero,
@@ -27,6 +28,7 @@ const defaultHeroImages = [
 
 export default function MediaPage() {
   const { heroImage, setHeroImage, logo, setLogo } = useMediaStore();
+  const { posts } = usePostStore();
   const [heroImageOptions, setHeroImageOptions] = useState<ImagePlaceholder[]>(defaultHeroImages);
 
   const logoFileInputRef = useRef<HTMLInputElement>(null);
@@ -101,17 +103,17 @@ export default function MediaPage() {
   };
 
   return (
-    <div className="grid gap-6 lg:grid-cols-2">
-      <div className="space-y-6">
+    <div className="grid gap-6 lg:grid-cols-3">
+      <div className="space-y-6 lg:col-span-1">
         <Card>
           <CardHeader>
             <CardTitle>Hero Image</CardTitle>
             <CardDescription>
-              Select an image for the homepage hero section or upload your own. Changes are reflected live.
+              Select an image for the homepage hero section or upload your own.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4 max-h-[50vh] overflow-y-auto">
-            <div className="grid grid-cols-2 gap-4 pr-2">
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-4 pr-2 max-h-[40vh] overflow-y-auto">
               {heroImageOptions.map((image) => (
                 <div
                   key={image.id}
@@ -152,13 +154,11 @@ export default function MediaPage() {
               </Button>
           </CardContent>
         </Card>
-      </div>
-      <div className="space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>Logo Management</CardTitle>
             <CardDescription>
-              Upload and manage your brand logo. The change will be reflected live.
+              Upload and manage your brand logo.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center gap-6">
@@ -176,6 +176,21 @@ export default function MediaPage() {
                 <Upload className="mr-2 h-4 w-4" />
                 Upload New Logo
               </Button>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="space-y-6 lg:col-span-2">
+        <Card>
+           <CardHeader>
+            <CardTitle>Blog & Author Images</CardTitle>
+            <CardDescription>
+              Manage cover images and author avatars for your blog posts.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6 max-h-[calc(100vh-12rem)] overflow-y-auto">
+            {posts.map((post) => (
+              <PostImageManager key={post.id} post={post} />
+            ))}
           </CardContent>
         </Card>
       </div>
