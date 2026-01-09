@@ -11,7 +11,7 @@ export function ProspectsBanner() {
 
   const bannerVariants = {
     hidden: { y: '100%' },
-    visible: { y: 0, transition: { type: 'spring', stiffness: 100, damping: 20 } },
+    visible: { y: 0, transition: { type: 'spring', stiffness: 100, damping: 20, delay: 2 } },
     exit: { y: '100%', transition: { type: 'tween', duration: 0.3 } },
   };
 
