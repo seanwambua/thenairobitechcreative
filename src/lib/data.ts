@@ -15,17 +15,6 @@ export interface Project {
   icon: IconName;
 }
 
-export interface TimelineEvent {
-  day: number;
-  title: string;
-  description:string;
-}
-
-export interface VentureMetrics {
-    startupName: string;
-    timeline: TimelineEvent[];
-}
-
 export const projects: Project[] = [
   {
     id: 1,
@@ -88,26 +77,3 @@ export const projects: Project[] = [
     icon: 'Globe',
   },
 ];
-
-export const ventureMetrics: VentureMetrics[] = [
-    {
-        startupName: "TechSavannah",
-        timeline: [
-            { day: 1, title: 'Concept Finalized', description: 'Initial idea refined into a solid business concept.' },
-            { day: 15, title: 'MVP Development Begins', description: 'Core development started on the Minimum Viable Product.' },
-            { day: 45, title: 'First Client Onboarded', description: 'Secured the first pilot program client, validating the solution.' },
-            { day: 60, title: 'Second Client Acquired', description: 'Expanded the pilot program with a second client.' },
-            { day: 90, title: 'Generating Revenue', description: 'Successfully converted pilot clients into paying customers.' },
-        ]
-    },
-    {
-        startupName: "ConnectSphere",
-        timeline: [
-            { day: 1, title: 'Concept Finalized', description: 'Initial idea refined into a solid business concept.' },
-            { day: 20, title: 'Prototype Developed', description: 'A functional prototype was created and tested internally.' },
-            { day: 50, title: 'First User Group Onboarded', description: 'Onboarded an initial group of users for beta testing.' },
-            { day: 75, title: 'First Paying Customer', description: 'Converted a beta user into the first paying customer.' },
-            { day: 90, title: 'Reached 100 Active Users', description: 'Achieved a key user milestone, indicating market traction.' },
-        ]
-    }
-]

@@ -2,8 +2,7 @@ import {Header} from '@/components/layout/header';
 import {Footer} from '@/components/layout/footer';
 import {Hero} from '@/components/hero';
 import {BentoPortfolio} from '@/components/bento-portfolio';
-import {ConversionTimeline} from '@/components/conversion-timeline';
-import {projects, ventureMetrics} from '@/lib/data';
+import {projects} from '@/lib/data';
 import {Cta} from '@/components/cta';
 import { placeholderImages } from '@/lib/placeholder-images';
 
@@ -41,20 +40,6 @@ export default async function Home() {
 
         <Cta />
 
-        <section id="timeline" className="bg-card/50 py-20 lg:py-32">
-          <div className="container mx-auto px-4">
-            <div className="mx-auto mb-16 max-w-3xl text-center">
-              <h2 className="font-headline text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl">
-                The 90-Day Conversion Engine
-              </h2>
-              <p className="mt-4 text-lg text-muted-foreground">
-                From concept to revenue, we accelerate the journey. Here’s how we scaled two
-                startups in one quarter.
-              </p>
-            </div>
-            <ConversionTimeline ventures={ventureMetrics} />
-          </div>
-        </section>
       </main>
       <Footer />
     </div>

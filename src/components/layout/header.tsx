@@ -11,7 +11,6 @@ export function Header() {
 
   const navItems = [
     {href: '#portfolio', label: 'Portfolio'},
-    {href: '#timeline', label: 'Timeline'},
     {href: '#contact', label: 'Contact'},
   ];
 
