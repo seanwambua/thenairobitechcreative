@@ -8,7 +8,6 @@ import { BentoPortfolio } from '@/components/bento-portfolio';
 import { projects, testimonials, faqs } from '@/lib/data';
 import { Cta } from '@/components/cta';
 import { Testimonials } from '@/components/testimonials';
-import { placeholderImages } from '@/lib/placeholder-images';
 import {
   Accordion,
   AccordionContent,
@@ -16,9 +15,10 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { motion } from 'framer-motion';
+import { useMediaStore } from '@/store/media';
 
 export default function Home() {
-  const heroImageDataUri = placeholderImages.hero.imageUrl;
+  const { heroImage } = useMediaStore();
 
   const sectionVariants = {
     hidden: { opacity: 0, y: 50 },
@@ -29,7 +29,7 @@ export default function Home() {
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1">
-        <Hero heroImage={heroImageDataUri} />
+        <Hero heroImage={heroImage} />
         <ProspectsBanner />
 
         <motion.section
