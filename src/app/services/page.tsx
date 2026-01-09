@@ -4,7 +4,6 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { services, processSteps } from '@/lib/data';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import { placeholderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Cta } from '@/components/cta';
@@ -58,14 +57,32 @@ export default function ServicesPage() {
       <main className="flex-1">
         <section className="py-20 lg:py-24">
           <div className="container mx-auto px-4">
-            <div className="mx-auto mb-16 max-w-3xl text-center">
-              <h1 className="font-headline text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl">
-                Our Services & Philosophy
-              </h1>
-              <p className="mt-4 text-lg text-muted-foreground">
-                We blend strategy, design, and engineering to transform your vision into a reality
-                that thrives.
-              </p>
+            <div className="mx-auto mb-16 flex max-w-4xl flex-col items-center justify-center gap-6 text-center md:flex-row md:text-left">
+              <div className='flex-1'>
+                <h1 className="font-headline text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl">
+                  Our Services & Philosophy
+                </h1>
+                <p className="mt-4 text-lg text-muted-foreground">
+                  We blend strategy, design, and engineering to transform your vision into a
+                  reality that thrives.
+                </p>
+              </div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Avatar className="h-24 w-24 cursor-pointer grayscale transition-all duration-300 hover:grayscale-0 md:h-32 md:w-32">
+                      <AvatarImage
+                        src={founderImage.imageUrl}
+                        alt="Founder"
+                        data-ai-hint={founderImage.imageHint}
+                      />
+                    </Avatar>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Meet the founder</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
 
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -104,32 +121,12 @@ export default function ServicesPage() {
         <section className="border-t py-20 lg:py-24">
           <div className="container mx-auto max-w-3xl px-4">
             <div className="relative mx-auto mb-16 text-center">
-              <div className="flex items-center justify-center gap-6">
-                <div>
-                  <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-                    How We Do It
-                  </h2>
-                  <p className="mt-3 text-lg text-muted-foreground">
-                    Our collaborative process ensures we build the right thing, the right way.
-                  </p>
-                </div>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Avatar className="h-16 w-16 cursor-pointer grayscale transition-all duration-300 hover:grayscale-0">
-                        <AvatarImage
-                          src={founderImage.imageUrl}
-                          alt="Founder"
-                          data-ai-hint={founderImage.imageHint}
-                        />
-                      </Avatar>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Meet the founder</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
+              <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+                How We Do It
+              </h2>
+              <p className="mt-3 text-lg text-muted-foreground">
+                Our collaborative process ensures we build the right thing, the right way.
+              </p>
             </div>
 
             <Accordion type="single" collapsible className="w-full">
