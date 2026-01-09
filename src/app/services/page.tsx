@@ -7,6 +7,13 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { placeholderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
 import { Cta } from '@/components/cta';
 import {
   Check,
@@ -36,22 +43,26 @@ const processSteps = [
   {
     icon: ScanSearch,
     title: '1. Discover',
-    description: 'We start with a deep dive into your vision, goals, and market to build a shared understanding and roadmap.',
+    description:
+      'Our journey begins with a deep-dive immersion into your world. We host collaborative workshops with your stakeholders to understand your vision, business goals, user needs, and market landscape. This phase is all about listening, learning, and building a shared understanding to lay a strong strategic foundation for the project.',
   },
   {
     icon: LayoutTemplate,
     title: '2. Define',
-    description: 'We translate our findings into a clear strategy, user flows, and technical architecture, defining the project scope.',
+    description:
+      'With the insights from discovery, we translate ideas into a concrete plan. This involves creating detailed user personas, mapping out user journeys, defining the technical architecture, and creating wireframes and interactive prototypes. We establish a clear project roadmap, scope, and timeline, ensuring everyone is aligned before we write a single line of code.',
   },
   {
     icon: Rocket,
     title: '3. Develop',
-    description: 'Using agile methods, our team builds, tests, and iterates on your product, with regular check-ins to ensure alignment.',
+    description:
+      'Using an agile, sprint-based approach, our cross-functional team gets to work. Designers and developers collaborate closely to build, test, and iterate on your product in rapid cycles. We hold regular demo sessions to show progress, gather feedback, and ensure the product is evolving in line with your expectations.',
   },
   {
     icon: Scaling,
     title: '4. Deploy',
-    description: 'We manage a seamless launch and provide ongoing support to ensure your product thrives and scales effectively.',
+    description:
+      "This is where your vision becomes a reality. We manage a seamless, phased launch, from setting up scalable cloud infrastructure to final quality assurance testing. After launch, we monitor performance and provide ongoing support and maintenance to ensure your product operates smoothly, thrives in the market, and scales effectively as your business grows.",
   },
 ];
 
@@ -68,13 +79,14 @@ export default function ServicesPage() {
                 Our Services & Philosophy
               </h1>
               <p className="mt-4 text-lg text-muted-foreground">
-                We blend strategy, design, and engineering to transform your vision into a reality that thrives.
+                We blend strategy, design, and engineering to transform your vision into a reality
+                that thrives.
               </p>
             </div>
-            
+
             {/* Service Offerings */}
             <div className="mx-auto max-w-4xl space-y-12">
-               <h2 className="text-center font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl mb-12">
+              <h2 className="mb-12 text-center font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
                 What We Do
               </h2>
               {services.map((service, index) => {
@@ -90,12 +102,14 @@ export default function ServicesPage() {
                     <Card className="overflow-hidden transition-all duration-300 hover:border-primary hover:shadow-2xl hover:shadow-primary/10">
                       <div className="grid md:grid-cols-3">
                         <div className="flex flex-col items-center justify-center gap-4 border-b p-8 text-center md:border-b-0 md:border-r">
-                           {Icon && <Icon className="h-16 w-16 text-primary" />}
-                           <h3 className="font-headline text-2xl font-semibold text-foreground">{service.title}</h3>
+                          {Icon && <Icon className="h-16 w-16 text-primary" />}
+                          <h3 className="font-headline text-2xl font-semibold text-foreground">
+                            {service.title}
+                          </h3>
                         </div>
                         <div className="p-8 md:col-span-2">
-                           <p className="text-lg text-muted-foreground">{service.description}</p>
-                           <ul className="mt-6 space-y-3">
+                          <p className="text-lg text-muted-foreground">{service.description}</p>
+                          <ul className="mt-6 space-y-3">
                             {service.details.map((detail) => (
                               <li key={detail} className="flex items-start">
                                 <Check className="mr-3 mt-1 h-5 w-5 flex-shrink-0 text-primary" />
@@ -121,50 +135,52 @@ export default function ServicesPage() {
                 How We Do It: A Walkthrough
               </h2>
               <p className="mt-4 text-lg text-muted-foreground">
-                We follow a structured, transparent process to ensure your project's success from concept to launch and beyond.
+                We follow a structured, transparent process to ensure your project's success from
+                concept to launch and beyond.
               </p>
             </div>
-            <div className="relative mx-auto max-w-2xl">
-              <div className="absolute left-1/2 top-0 h-full w-0.5 -translate-x-1/2 bg-border"></div>
-              {processSteps.map((step, index) => {
-                const Icon = step.icon;
-                const isEven = index % 2 === 0;
-                return (
-                  <motion.div
-                    key={index}
-                    className="relative mb-12 flex w-full items-center"
-                    initial={{ opacity: 0, x: isEven ? -100 : 100 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, amount: 0.5 }}
-                    transition={{ duration: 0.6 }}
-                  >
-                    <div
-                      className={`flex w-full items-center ${isEven ? 'justify-start' : 'justify-end'}`}
-                    >
-                      <div className={`w-1/2 ${isEven ? 'pr-8' : 'pl-8'}`}>
-                        <Card
-                          className={`w-full text-left ${isEven ? 'text-left' : 'md:text-right'}`}
-                        >
-                          <CardHeader>
+            <Carousel
+              opts={{
+                align: 'start',
+                loop: false,
+              }}
+              className="mx-auto w-full max-w-4xl"
+            >
+              <CarouselContent>
+                {processSteps.map((step, index) => {
+                  const Icon = step.icon;
+                  return (
+                    <CarouselItem key={index} className="md:basis-1/2">
+                      <motion.div
+                        className="p-2"
+                        initial={{ opacity: 0, y: 50 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, amount: 0.3 }}
+                        transition={{ duration: 0.5, delay: index * 0.1 }}
+                      >
+                        <Card className="flex h-full flex-col">
+                          <CardHeader className="items-center text-center">
+                            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border-4 border-background bg-primary text-primary-foreground">
+                              <Icon className="h-8 w-8" />
+                            </div>
                             <CardTitle className="font-headline text-xl font-semibold text-primary">
                               {step.title}
                             </CardTitle>
                           </CardHeader>
-                          <CardContent>
-                            <p className="text-muted-foreground">
+                          <CardContent className="flex-1">
+                            <p className="text-center text-muted-foreground">
                               {step.description}
                             </p>
                           </CardContent>
                         </Card>
-                      </div>
-                    </div>
-                    <div className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-4 border-background bg-primary text-primary-foreground">
-                      <Icon className="h-8 w-8" />
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
+                      </motion.div>
+                    </CarouselItem>
+                  );
+                })}
+              </CarouselContent>
+              <CarouselPrevious className="-left-4 md:-left-12" />
+              <CarouselNext className="-right-4 md:-right-12" />
+            </Carousel>
           </div>
         </section>
 
@@ -199,16 +215,29 @@ export default function ServicesPage() {
                   From the Founder
                 </h2>
                 <p className="mt-4 text-lg text-muted-foreground">
-                  "Our journey began with a simple belief: that African ingenuity can solve global problems. We are not just building software; we are building bridges, empowering communities, and crafting a new narrative for technology made in Africa."
+                  "Our journey began with a simple belief: that African ingenuity can solve global
+                  problems. We are not just building software; we are building bridges, empowering
+                  communities, and crafting a new narrative for technology made in Africa."
                 </p>
                 <div className="mt-8 space-y-6">
                   <div>
-                    <h3 className="font-headline text-xl font-semibold text-primary">Our Mission</h3>
-                    <p className="mt-2 text-muted-foreground">To empower businesses and creators with world-class digital solutions that are born from African insights and engineered for global impact.</p>
+                    <h3 className="font-headline text-xl font-semibold text-primary">
+                      Our Mission
+                    </h3>
+                    <p className="mt-2 text-muted-foreground">
+                      To empower businesses and creators with world-class digital solutions that are
+                      born from African insights and engineered for global impact.
+                    </p>
                   </div>
                   <div>
-                    <h3 className="font-headline text-xl font-semibold text-primary">Our Vision</h3>
-                    <p className="mt-2 text-muted-foreground">To be the leading catalyst for technological innovation in Africa, creating a sustainable ecosystem of talent and opportunity that resonates on a global scale.</p>
+                    <h3 className="font-headline text-xl font-semibold text-primary">
+                      Our Vision
+                    </h3>
+                    <p className="mt-2 text-muted-foreground">
+                      To be the leading catalyst for technological innovation in Africa, creating a
+                      sustainable ecosystem of talent and opportunity that resonates on a global
+                      scale.
+                    </p>
                   </div>
                 </div>
               </motion.div>
