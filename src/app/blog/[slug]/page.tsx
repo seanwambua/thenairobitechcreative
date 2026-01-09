@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { posts, PostComment } from '@/lib/data';
@@ -21,7 +21,8 @@ import { useToast } from '@/hooks/use-toast';
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
   const { toast } = useToast();
-  const post = posts.find((p) => p.slug === params.slug);
+  const { slug } = React.use(React.createContext(params));
+  const post = posts.find((p) => p.slug === slug);
 
   const [likes, setLikes] = useState(post?.likes || 0);
   const [isLiked, setIsLiked] = useState(false);
@@ -103,7 +104,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
             />
           </div>
 
-          <div className="prose prose-lg mx-auto max-w-none text-foreground dark:prose-invert prose-p:leading-relaxed prose-headings:font-headline prose-headings:text-foreground">
+          <div className="prose prose-lg mx-auto max-w-none text-pretty text-foreground dark:prose-invert prose-p:leading-relaxed prose-headings:font-headline prose-headings:text-foreground">
             <p className="lead text-xl text-muted-foreground">{post.description}</p>
             {post.content.split('\n\n').map((paragraph, index) => (
               <p key={index}>{paragraph}</p>
