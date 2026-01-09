@@ -38,11 +38,11 @@ export function ProspectsBanner() {
             <div className="container mx-auto flex h-full flex-col items-center justify-center text-center">
               <div>
                 <h2 className="font-headline text-2xl font-bold text-foreground sm:text-3xl">
-                  Now Accepting 2026 Prospects
+                  Now accepting 2026 projects
                 </h2>
                 <p className="mt-2 text-muted-foreground">
-                  Planning your next big project? Let's connect and explore how we can build the
-                  future, together.
+                  Looking to step into the digital space? Lets connect and explore what best works
+                  for you
                 </p>
               </div>
               <div className="mt-6">
