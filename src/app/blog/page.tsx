@@ -1,9 +1,18 @@
+'use client';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { posts } from '@/lib/data';
 import { BlogPostCard } from '@/components/blog-post-card';
+import { Card, CardContent } from '@/components/ui/card';
+import { ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function BlogPage() {
+  const otherArticles = [
+    { title: 'Global Infrastructure Systems' },
+    { title: 'Automation, Workflows, and AI' },
+  ];
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -19,9 +28,42 @@ export default function BlogPage() {
               </p>
             </div>
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {posts.map((post) => (
+              {posts.slice(0, 3).map((post) => (
                 <BlogPostCard key={post.id} post={post} />
               ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="border-t py-20 lg:py-24">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto mb-12 max-w-3xl text-center">
+              <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+                Other Articles
+              </h2>
+              <p className="mt-3 text-lg text-muted-foreground">
+                Explore more topics and insights from our team of experts.
+              </p>
+            </div>
+            <div className="mx-auto max-w-2xl">
+              <div className="space-y-4">
+                {otherArticles.map((article, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, amount: 0.5 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
+                    <Card className="group transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-primary/10">
+                      <CardContent className="flex items-center justify-between p-6">
+                        <h3 className="font-semibold text-foreground">{article.title}</h3>
+                        <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-primary" />
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
