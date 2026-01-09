@@ -234,7 +234,7 @@ export const projects: Project[] = [
     id: 6,
     title: 'Enterprise Web Platform',
     description: 'Secure, compliant enterprise solution with advanced CRM capabilities.',
-    keyFeatures: ['Advanced CRM', 'Data Encryption', 'API Gateway'],
+    keyFeatures: ['Advanced CRM', 'API Gateway'],
     imageUrl: placeholderImages.enterpriseB.imageUrl,
     imageHint: placeholderImages.enterpriseB.imageHint,
     gridSpan: 'col-span-1 md:col-span-2',
