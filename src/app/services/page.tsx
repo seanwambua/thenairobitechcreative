@@ -22,6 +22,7 @@ import {
   Rocket,
   Scaling,
   ServerCog,
+  Plus,
 } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import {
@@ -69,16 +70,21 @@ export default function ServicesPage() {
               </div>
               <HoverCard>
                 <HoverCardTrigger asChild>
-                  <Avatar className="h-24 w-24 cursor-pointer grayscale transition-all duration-300 hover:grayscale-0 md:h-32 md:w-32">
-                    <AvatarImage
-                      src={placeholderImages.founder.imageUrl}
-                      alt="Founder"
-                      data-ai-hint={placeholderImages.founder.imageHint}
-                    />
-                    <AvatarFallback>
-                      {placeholderImages.founder.imageHint.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
+                  <div className="group relative">
+                    <Avatar className="h-24 w-24 cursor-pointer grayscale transition-all duration-300 hover:grayscale-0 md:h-32 md:w-32">
+                      <AvatarImage
+                        src={placeholderImages.founder.imageUrl}
+                        alt="Founder"
+                        data-ai-hint={placeholderImages.founder.imageHint}
+                      />
+                      <AvatarFallback>
+                        {placeholderImages.founder.imageHint.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-background bg-primary text-primary-foreground shadow-lg transition-transform duration-300 group-hover:scale-125 animate-pulse">
+                      <Plus className="h-4 w-4" />
+                    </div>
+                  </div>
                 </HoverCardTrigger>
                 <HoverCardContent className="w-80">
                   <div className="flex flex-col gap-4">
