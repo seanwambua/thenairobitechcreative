@@ -1,6 +1,7 @@
 
 
 
+
 import type { ComponentType } from 'react';
 import { Boxes, BookOpen, PenTool, LineChart, Globe, Server, type LucideProps, ScanSearch, LayoutTemplate, Rocket, Scaling, Briefcase, Computer, Wrench, ServerCog, Star } from 'lucide-react';
 import { placeholderImages } from './placeholder-images';
@@ -144,6 +145,12 @@ export const services: Service[] = [
       icon: 'Rocket',
       description: 'We ensure a smooth launch and provide ongoing support to help you grow.',
     },
+    {
+      id: 4,
+      title: 'Initial Consult',
+      icon: 'Briefcase',
+      description: "One-on-one guidance to refine your idea, define your strategy, and create a clear roadmap for your project."
+    }
   ];
 
 export const pricingPlans: PricingPlan[] = [
