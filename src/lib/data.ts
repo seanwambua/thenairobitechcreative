@@ -55,6 +55,12 @@ export interface Service {
   details: string[];
 }
 
+export interface ProcessStep {
+    icon: IconName;
+    title: string;
+    description: string;
+}
+
 export interface PricingPlan {
   id: number;
   title: string;
@@ -185,6 +191,33 @@ export const services: Service[] = [
     ],
   },
 ];
+
+export const processSteps: ProcessStep[] = [
+    {
+      icon: 'ScanSearch',
+      title: '1. Discover: Understanding Your Vision',
+      description:
+        'We kick off with collaborative workshops to dive deep into your business goals, target audience, and challenges. This foundational step ensures our strategy is perfectly aligned with your vision for success.',
+    },
+    {
+      icon: 'LayoutTemplate',
+      title: '2. Define: Crafting the Blueprint',
+      description:
+        'We translate our shared insights into a concrete plan. This includes creating user journeys, wireframes, and a technical roadmap. We define the project scope and deliverables, ensuring complete transparency before we write a single line of code.',
+    },
+    {
+      icon: 'Rocket',
+      title: '3. Develop: Building Your Solution',
+      description:
+        'Our agile development team gets to work, building your product in iterative sprints. You’ll be involved every step of the way with regular demos and feedback sessions, allowing us to adapt and refine as we go.',
+    },
+    {
+      icon: 'Scaling',
+      title: '4. Deploy: Launching & Growing',
+      description:
+        'We manage a smooth and seamless launch, from setting up scalable cloud infrastructure to final quality assurance. Post-launch, we transition to a support and growth phase, ensuring your product thrives and evolves with your user base.',
+    },
+  ];
 
 
 export const projects: Project[] = [

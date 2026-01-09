@@ -2,11 +2,17 @@
 
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { services } from '@/lib/data';
+import { services, processSteps } from '@/lib/data';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { placeholderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { Cta } from '@/components/cta';
 import {
   Check,
@@ -31,33 +37,6 @@ const iconMap: { [key: string]: LucideIcon } = {
   ServerCog,
   LayoutTemplate,
 };
-
-const processSteps = [
-  {
-    icon: ScanSearch,
-    title: '1. Discover',
-    description:
-      'We start with collaborative workshops to deeply understand your vision, goals, and user needs, laying a strong strategic foundation.',
-  },
-  {
-    icon: LayoutTemplate,
-    title: '2. Define',
-    description:
-      'We translate insights into a concrete plan with user journeys, wireframes, and a clear project roadmap, ensuring full alignment before development begins.',
-  },
-  {
-    icon: Rocket,
-    title: '3. Develop',
-    description:
-      'Using an agile, sprint-based approach, our team builds, tests, and iterates on your product in rapid cycles, with regular demos to gather your feedback.',
-  },
-  {
-    icon: Scaling,
-    title: '4. Deploy',
-    description:
-      'We manage a seamless launch, from scalable cloud infrastructure to final QA. Post-launch, we provide ongoing support to ensure your product thrives.',
-  },
-];
 
 export default function ServicesPage() {
   const founderImage = placeholderImages.founder;
@@ -132,41 +111,40 @@ export default function ServicesPage() {
                 concept to launch and beyond.
               </p>
             </div>
-            <div className="relative mx-auto grid max-w-4xl gap-x-8 gap-y-12 md:grid-cols-2">
-              {/* Connector Lines for Desktop */}
-              <div className="absolute left-1/2 top-1/2 hidden h-1/2 w-px -translate-x-1/2 -translate-y-full bg-border md:block"></div>
-              <div className="absolute left-1/2 top-1/2 hidden w-1/2 -translate-x-full border-t border-border md:block"></div>
-              <div className="absolute left-1/2 top-1/2 hidden h-1/2 w-px -translate-x-1/2 translate-y-full bg-border md:block"></div>
-              
-              {processSteps.map((step, index) => {
-                const Icon = step.icon;
-                return (
-                  <motion.div
-                    key={index}
-                    className="relative"
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.3 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                  >
-                    <Card className="flex h-full flex-col">
-                      <CardHeader className="items-center text-center">
-                        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border-4 border-background bg-primary text-primary-foreground">
-                          <Icon className="h-8 w-8" />
-                        </div>
-                        <CardTitle className="font-headline text-xl font-semibold text-primary">
-                          {step.title}
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="flex-1">
-                        <p className="text-center text-muted-foreground">
-                          {step.description}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                );
-              })}
+            <div className="mx-auto max-w-3xl">
+              <Accordion type="single" collapsible className="w-full space-y-4">
+                {processSteps.map((step, index) => {
+                  const Icon = iconMap[step.icon as keyof typeof iconMap];
+                  return (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -50 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true, amount: 0.3 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                    >
+                      <AccordionItem
+                        value={`item-${index}`}
+                        className="rounded-lg border bg-background shadow-sm transition-all hover:border-primary/50"
+                      >
+                        <AccordionTrigger className="p-6 text-left font-headline text-lg font-semibold hover:no-underline">
+                          <div className="flex items-center gap-4">
+                            {Icon && (
+                              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                                <Icon className="h-6 w-6" />
+                              </div>
+                            )}
+                            <span>{step.title}</span>
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent className="p-6 pt-0">
+                          <p className="text-muted-foreground">{step.description}</p>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </motion.div>
+                  );
+                })}
+              </Accordion>
             </div>
           </div>
         </section>
