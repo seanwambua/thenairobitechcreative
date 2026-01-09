@@ -30,23 +30,23 @@ const iconMap: { [key: string]: LucideIcon } = {
 const processSteps = [
   {
     icon: ScanSearch,
-    title: 'Discovery & Strategy',
-    description: 'We start by understanding your vision, goals, and market landscape to build a comprehensive project roadmap.',
+    title: '1. Discover',
+    description: 'We start with a deep dive into your vision, goals, and market to build a shared understanding and roadmap.',
   },
   {
     icon: LayoutTemplate,
-    title: 'Design & Prototyping',
-    description: 'Our team creates intuitive UI/UX designs and interactive prototypes to visualize the end product and refine user flows.',
+    title: '2. Define',
+    description: 'We translate our findings into a clear strategy, user flows, and technical architecture, defining the project scope.',
   },
   {
     icon: Rocket,
-    title: 'Development & Launch',
-    description: 'Using agile methodologies, we build, test, and deploy your solution, ensuring a seamless and successful launch.',
+    title: '3. Develop',
+    description: 'Using agile methods, our team builds, tests, and iterates on your product, with regular check-ins to ensure alignment.',
   },
   {
     icon: Scaling,
-    title: 'Scaling & Support',
-    description: 'After launch, we provide ongoing support, monitoring, and optimization to help you scale and adapt to new challenges.',
+    title: '4. Deploy',
+    description: 'We manage a seamless launch and provide ongoing support to ensure your product thrives and scales effectively.',
   },
 ];
 
