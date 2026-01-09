@@ -150,6 +150,7 @@ export function InquirySheet({ children }: InquirySheetProps) {
                               {service.title}
                             </SelectItem>
                           ))}
+                          <SelectItem value="Other">Other</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
