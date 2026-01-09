@@ -1,5 +1,5 @@
 'use client';
-
+import * as React from 'react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { services, processSteps } from '@/lib/data';
