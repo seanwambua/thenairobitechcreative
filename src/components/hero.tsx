@@ -57,7 +57,7 @@ export function Hero({heroImage}: {heroImage: string}) {
           African Solutions, <span className="text-primary">Global Problems.</span>
         </motion.h1>
         <motion.p
-          className="mx-auto mt-6 max-w-[700px] text-lg text-zinc-300 md:text-xl"
+          className="mx-auto mt-6 max-w-[700px] text-lg text-zinc-100 md:text-xl"
           variants={itemVariants}
         >
           We build innovative digital products that empower businesses and communities across the
@@ -68,7 +68,7 @@ export function Hero({heroImage}: {heroImage: string}) {
           variants={itemVariants}
         >
           <Button size="lg">Explore Our Work</Button>
-          <Button size="lg" variant="outline" className="border-zinc-400 text-zinc-300">
+          <Button size="lg" variant="outline" className="border-zinc-400 text-zinc-100">
             Contact Us <ChevronRight className="ml-2 h-4 w-4" />
           </Button>
         </motion.div>
