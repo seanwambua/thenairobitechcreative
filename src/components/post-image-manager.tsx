@@ -5,10 +5,11 @@ import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Upload } from 'lucide-react';
+import { Upload, X } from 'lucide-react';
 import { usePostStore, type Post } from '@/store/posts';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
+import { posts as initialPostsData } from '@/lib/data';
 
 interface PostImageManagerProps {
   post: Post;
@@ -47,6 +48,28 @@ export function PostImageManager({ post }: PostImageManagerProps) {
       handleImageUpload(file, imageType);
     }
   };
+  
+  const handleImageReset = (imageType: 'cover' | 'avatar') => {
+    const originalPost = initialPostsData.find(p => p.id === post.id);
+    if (!originalPost) return;
+
+    const updatedPost = { ...post };
+    let message = '';
+
+    if (imageType === 'cover') {
+        updatedPost.imageUrl = originalPost.imageUrl;
+        message = 'Cover image';
+    } else {
+        updatedPost.authorAvatarUrl = originalPost.authorAvatarUrl;
+        message = 'Author avatar';
+    }
+
+    updatePost(updatedPost);
+    toast({
+        title: 'Image Reset',
+        description: `${message} for "${post.title}" has been reset to default.`
+    })
+  };
 
   return (
     <Card className="overflow-hidden">
@@ -73,14 +96,24 @@ export function PostImageManager({ post }: PostImageManagerProps) {
             onChange={(e) => onFileChange(e, 'cover')}
             accept="image/png, image/jpeg, image/webp"
           />
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={() => coverImageInputRef.current?.click()}
-          >
-            <Upload className="mr-2 h-4 w-4" />
-            Upload New Cover
-          </Button>
+          <div className="flex gap-2">
+            <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => coverImageInputRef.current?.click()}
+            >
+                <Upload className="mr-2 h-4 w-4" />
+                Upload
+            </Button>
+            <Button
+                variant="destructive"
+                className="w-full"
+                onClick={() => handleImageReset('cover')}
+            >
+                <X className="mr-2 h-4 w-4" />
+                Remove
+            </Button>
+          </div>
         </div>
 
         {/* Avatar Image Section */}
@@ -99,14 +132,24 @@ export function PostImageManager({ post }: PostImageManagerProps) {
             onChange={(e) => onFileChange(e, 'avatar')}
             accept="image/png, image/jpeg, image/webp"
           />
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={() => avatarImageInputRef.current?.click()}
-          >
-            <Upload className="mr-2 h-4 w-4" />
-            Upload New Avatar
-          </Button>
+          <div className="flex gap-2">
+            <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => avatarImageInputRef.current?.click()}
+            >
+                <Upload className="mr-2 h-4 w-4" />
+                Upload
+            </Button>
+             <Button
+                variant="destructive"
+                className="w-full"
+                onClick={() => handleImageReset('avatar')}
+            >
+                <X className="mr-2 h-4 w-4" />
+                Remove
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

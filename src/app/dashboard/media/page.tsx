@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { placeholderImages, type ImagePlaceholder } from '@/lib/placeholder-images';
-import { CheckCircle, Upload } from 'lucide-react';
+import { CheckCircle, Upload, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Logo } from '@/components/logo';
@@ -36,8 +36,6 @@ export default function MediaPage() {
   const { toast } = useToast();
   
   useEffect(() => {
-    // If the heroImage from the store is a custom one (not in default options),
-    // add it to the display list so it can be shown as active.
     const isCustomImage = !defaultHeroImages.some(opt => opt.imageUrl === heroImage);
     if (isCustomImage && heroImage) {
         const customImagePlaceholder: ImagePlaceholder = {
@@ -46,7 +44,6 @@ export default function MediaPage() {
             imageUrl: heroImage,
             imageHint: 'custom upload'
         };
-        // Avoid adding duplicates
         if (!heroImageOptions.some(opt => opt.imageUrl === heroImage)) {
             setHeroImageOptions([customImagePlaceholder, ...heroImageOptions]);
         }
@@ -64,6 +61,14 @@ export default function MediaPage() {
 
   const handleLogoUploadClick = () => {
     logoFileInputRef.current?.click();
+  };
+  
+  const handleRemoveLogo = () => {
+    setLogo(null);
+    toast({
+        title: 'Logo Removed',
+        description: 'The custom logo has been removed.'
+    });
   };
 
   const handleLogoFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -84,6 +89,17 @@ export default function MediaPage() {
 
   const handleHeroImageUploadClick = () => {
     heroImageFileInputRef.current?.click();
+  };
+  
+  const handleResetHeroImage = () => {
+    const defaultHero = placeholderImages.hero.imageUrl;
+    setHeroImage(defaultHero);
+    // Remove custom image from options if it exists
+    setHeroImageOptions(defaultHeroImages);
+    toast({
+      title: 'Hero Image Reset',
+      description: 'The hero image has been reset to the default.',
+    });
   };
 
   const handleHeroImageFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -148,10 +164,16 @@ export default function MediaPage() {
                 onChange={handleHeroImageFileChange}
                 accept="image/png, image/jpeg, image/webp"
               />
-              <Button onClick={handleHeroImageUploadClick} variant="outline" className="w-full">
-                <Upload className="mr-2 h-4 w-4" />
-                Upload Image
-              </Button>
+              <div className="flex gap-2">
+                <Button onClick={handleHeroImageUploadClick} variant="outline" className="w-full">
+                    <Upload className="mr-2 h-4 w-4" />
+                    Upload Image
+                </Button>
+                <Button onClick={handleResetHeroImage} variant="destructive" className="w-full">
+                    <X className="mr-2 h-4 w-4" />
+                    Reset to Default
+                </Button>
+              </div>
           </CardContent>
         </Card>
         <Card>
@@ -172,10 +194,18 @@ export default function MediaPage() {
                 onChange={handleLogoFileChange}
                 accept="image/png, image/jpeg, image/svg+xml"
               />
-              <Button onClick={handleLogoUploadClick}>
-                <Upload className="mr-2 h-4 w-4" />
-                Upload New Logo
-              </Button>
+              <div className="flex w-full gap-2">
+                <Button onClick={handleLogoUploadClick} className="w-full">
+                    <Upload className="mr-2 h-4 w-4" />
+                    Upload Logo
+                </Button>
+                {logo && (
+                    <Button onClick={handleRemoveLogo} variant="destructive" className="w-full">
+                        <X className="mr-2 h-4 w-4" />
+                        Remove Logo
+                    </Button>
+                )}
+              </div>
           </CardContent>
         </Card>
       </div>
