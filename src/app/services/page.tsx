@@ -9,6 +9,12 @@ import { placeholderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Cta } from '@/components/cta';
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import {
   type Icon as LucideIcon,
   Briefcase,
   Computer,
@@ -125,53 +131,48 @@ export default function ServicesPage() {
                   />
                 </Card>
               </motion.div>
-
-              {/* Our Process Title */}
-               <motion.div
-                className="lg:col-span-3"
-                variants={cardVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
-                <Card className="flex h-full flex-col items-center justify-center bg-primary/10 p-8 text-center">
-                   <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-                      How We Do It
-                    </h2>
-                </Card>
-              </motion.div>
-
-              {/* Process Steps */}
-              {processSteps.map((step, index) => {
-                const Icon = iconMap[step.icon as keyof typeof iconMap];
-                return (
-                  <motion.div
-                    key={index}
-                    className={index === 0 || index === 3 ? 'lg:col-span-2' : ''}
-                    variants={cardVariants}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, amount: 0.2 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                  >
-                    <Card className="flex h-full flex-col p-6 text-center transition-all duration-300 hover:border-secondary hover:shadow-xl hover:shadow-secondary/10 md:text-left">
-                       <CardHeader className="flex flex-col items-center p-0 md:flex-row md:gap-4">
-                        <div className="mb-4 flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-secondary/10 text-secondary md:mb-0">
-                          {Icon && <Icon className="h-7 w-7" />}
-                        </div>
-                        <CardTitle className="font-headline text-xl font-semibold text-foreground">
-                          {step.title}
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="p-0 pt-4">
-                        <p className="text-muted-foreground">{step.description}</p>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                );
-              })}
             </div>
+          </div>
+        </section>
+
+        <section className="border-t py-20 lg:py-24">
+          <div className="container mx-auto max-w-3xl px-4">
+             <div className="mx-auto mb-16 text-center">
+              <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+                How We Do It
+              </h2>
+              <p className="mt-3 text-lg text-muted-foreground">
+                Our collaborative process ensures we build the right thing, the right way.
+              </p>
+            </div>
+            
+            <Accordion type="single" collapsible className="w-full">
+              {processSteps.map((step, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <AccordionItem value={`item-${index}`}>
+                    <AccordionTrigger className="text-left text-lg font-semibold hover:no-underline">
+                      <div className="flex items-center gap-4">
+                        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-secondary/10 text-secondary">
+                          {React.createElement(iconMap[step.icon as keyof typeof iconMap], {
+                            className: 'h-6 w-6',
+                          })}
+                        </div>
+                        {step.title}
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="pl-16 text-base text-muted-foreground">
+                      {step.description}
+                    </AccordionContent>
+                  </AccordionItem>
+                </motion.div>
+              ))}
+            </Accordion>
           </div>
         </section>
 
