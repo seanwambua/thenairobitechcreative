@@ -8,10 +8,10 @@ export function Footer() {
            <div className="h-8 w-8">
              <Stamp />
            </div>
-          <span className="font-headline text-lg font-semibold">Nairobi Tech Creative</span>
+          <span className="font-headline text-lg font-semibold">The Nairobi Tech Creative</span>
         </div>
         <p className="text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Nairobi Tech Creative. All rights reserved.
+          © {new Date().getFullYear()} The Nairobi Tech Creative. All rights reserved.
         </p>
       </div>
     </footer>

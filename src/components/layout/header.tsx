@@ -25,7 +25,7 @@ export function Header() {
             <Stamp />
           </div>
           <span className="hidden font-headline text-xl font-semibold sm:inline-block">
-            Nairobi Tech Creative
+            The Nairobi Tech Creative
           </span>
         </Link>
         <nav className="hidden items-center gap-6 text-sm md:flex">

@@ -12,7 +12,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: 'Nairobi Tech Creative Hub',
+  title: 'The Nairobi Tech Creative Hub',
   description: 'African Solutions to Global Problems.',
 };
 
