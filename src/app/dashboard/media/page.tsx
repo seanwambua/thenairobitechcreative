@@ -27,7 +27,8 @@ const heroImageOptions = [
 
 export default function MediaPage() {
   const { heroImage, setHeroImage, logo, setLogo } = useMediaStore();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const logoFileInputRef = useRef<HTMLInputElement>(null);
+  const heroImageFileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   const handleSelectImage = (imageUrl: string) => {
@@ -39,10 +40,10 @@ export default function MediaPage() {
   };
 
   const handleLogoUploadClick = () => {
-    fileInputRef.current?.click();
+    logoFileInputRef.current?.click();
   };
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleLogoFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -58,6 +59,26 @@ export default function MediaPage() {
     }
   };
 
+  const handleHeroImageUploadClick = () => {
+    heroImageFileInputRef.current?.click();
+  };
+
+  const handleHeroImageFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const newHeroImageUrl = reader.result as string;
+        setHeroImage(newHeroImageUrl);
+        toast({
+          title: 'Hero Image Uploaded',
+          description: 'The homepage hero image has been updated with your uploaded image.',
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <div className="space-y-6">
@@ -65,7 +86,7 @@ export default function MediaPage() {
           <CardHeader>
             <CardTitle>Hero Image</CardTitle>
             <CardDescription>
-              Select the main image for the homepage hero section. The change will be reflected live.
+              Select an image for the homepage hero section or upload your own. Changes are reflected live.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -97,6 +118,17 @@ export default function MediaPage() {
                 </div>
               ))}
             </div>
+             <Input
+                type="file"
+                ref={heroImageFileInputRef}
+                className="hidden"
+                onChange={handleHeroImageFileChange}
+                accept="image/png, image/jpeg, image/webp"
+              />
+              <Button onClick={handleHeroImageUploadClick} variant="outline" className="mt-4 w-full">
+                <Upload className="mr-2 h-4 w-4" />
+                Upload Image
+              </Button>
           </CardContent>
         </Card>
       </div>
@@ -114,9 +146,9 @@ export default function MediaPage() {
             </div>
              <Input
                 type="file"
-                ref={fileInputRef}
+                ref={logoFileInputRef}
                 className="hidden"
-                onChange={handleFileChange}
+                onChange={handleLogoFileChange}
                 accept="image/png, image/jpeg, image/svg+xml"
               />
               <Button onClick={handleLogoUploadClick}>
