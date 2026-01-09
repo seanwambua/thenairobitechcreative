@@ -34,10 +34,9 @@ const formSchema = z.object({
 
 interface InquirySheetProps {
   children: React.ReactNode;
-  setIsBannerVisible: (visible: boolean) => void;
 }
 
-export function InquirySheet({ children, setIsBannerVisible }: InquirySheetProps) {
+export function InquirySheet({ children }: InquirySheetProps) {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
 
@@ -58,18 +57,11 @@ export function InquirySheet({ children, setIsBannerVisible }: InquirySheetProps
       description: "Thanks for your interest. We'll review your project details and get back to you shortly.",
     });
     form.reset();
-    handleOpenChange(false);
+    setOpen(false);
   }
 
-  const handleOpenChange = (isOpen: boolean) => {
-    setOpen(isOpen);
-    if(isOpen) {
-      setIsBannerVisible(false);
-    }
-  };
-
   return (
-    <Sheet open={open} onOpenChange={handleOpenChange}>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>{children}</SheetTrigger>
       <SheetContent className="h-full w-full overflow-y-auto sm:max-w-full">
         <div className="mx-auto max-w-2xl py-12">
