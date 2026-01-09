@@ -22,6 +22,43 @@ export function Stamp() {
         </clipPath>
       </defs>
 
+      {/* circles */}
+      <motion.g clipPath="url(#hand-clip)">
+        <motion.circle
+          cx="33"
+          cy="38"
+          r="15"
+          stroke="hsl(var(--primary))"
+          strokeWidth="1"
+          fill="none"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 1, ease: 'easeInOut' }}
+        />
+        <motion.circle
+          cx="67"
+          cy="38"
+          r="15"
+          stroke="hsl(var(--primary))"
+          strokeWidth="1"
+          fill="none"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 1, ease: 'easeInOut', delay: 0.2 }}
+        />
+        <motion.circle
+          cx="50"
+          cy="65"
+          r="20"
+          stroke="hsl(var(--primary))"
+          strokeWidth="1"
+          fill="none"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 1, ease: 'easeInOut', delay: 0.4 }}
+        />
+      </motion.g>
+
       {/* Hand Outline */}
       <motion.use
         href="#hand-outline"
