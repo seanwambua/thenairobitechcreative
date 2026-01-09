@@ -15,12 +15,6 @@ export function ProspectsBanner() {
     exit: { y: '100%', transition: { type: 'tween', duration: 0.3 } },
   };
 
-  const handleInquiryOpen = (open: boolean) => {
-    if (open) {
-      setIsVisible(false);
-    }
-  };
-
   if (!isVisible) return null;
 
   return (
@@ -54,7 +48,7 @@ export function ProspectsBanner() {
                 </p>
               </div>
               <div className="mt-6">
-                <InquirySheet onOpenChange={handleInquiryOpen}>
+                <InquirySheet>
                   <Button size="lg" className="flex-shrink-0">
                     Inquire Now <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
