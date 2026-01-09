@@ -34,10 +34,10 @@ const formSchema = z.object({
 
 interface InquirySheetProps {
   children: React.ReactNode;
-  onOpenChange?: (open: boolean) => void;
+  setIsBannerVisible: (visible: boolean) => void;
 }
 
-export function InquirySheet({ children, onOpenChange }: InquirySheetProps) {
+export function InquirySheet({ children, setIsBannerVisible }: InquirySheetProps) {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
 
@@ -63,8 +63,8 @@ export function InquirySheet({ children, onOpenChange }: InquirySheetProps) {
 
   const handleOpenChange = (isOpen: boolean) => {
     setOpen(isOpen);
-    if (onOpenChange) {
-      onOpenChange(isOpen);
+    if(isOpen) {
+      setIsBannerVisible(false);
     }
   };
 

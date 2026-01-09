@@ -25,9 +25,9 @@ export function ProspectsBanner() {
           initial="hidden"
           animate="visible"
           exit="exit"
-          className="fixed bottom-0 left-0 right-0 z-40 h-[40vh] w-full"
+          className="fixed bottom-0 left-0 right-0 z-40 w-full"
         >
-          <div className="relative h-full w-full border-t bg-muted/90 p-8 backdrop-blur-sm">
+          <div className="relative h-[40vh] w-full border-t bg-muted/90 p-8 backdrop-blur-sm">
             <Button
               variant="ghost"
               size="icon"
@@ -48,7 +48,7 @@ export function ProspectsBanner() {
                 </p>
               </div>
               <div className="mt-6">
-                <InquirySheet onOpenChange={() => setIsVisible(false)}>
+                <InquirySheet setIsBannerVisible={setIsVisible}>
                   <Button size="lg" className="flex-shrink-0">
                     Inquire Now <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
