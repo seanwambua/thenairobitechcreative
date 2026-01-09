@@ -39,9 +39,9 @@ export function Hero({heroImage}: {heroImage: string}) {
   };
 
   return (
-    <section className="flex w-full items-center bg-background">
+    <section className="flex w-full items-center bg-background min-h-[calc(100vh-4rem)]">
       <motion.div
-        className="container mx-auto grid min-h-[calc(100vh-4rem)] grid-cols-1 items-center gap-12 px-4 py-24 md:grid-cols-2 lg:gap-20"
+        className="container mx-auto grid grid-cols-1 items-center gap-12 px-4 py-24 md:grid-cols-2 lg:gap-20 ml-[15%]"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
