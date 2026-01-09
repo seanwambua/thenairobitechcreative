@@ -61,7 +61,7 @@ export function Hero({heroImage}: {heroImage: string}) {
           >
             African solutions for{' '}
             <span className="bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">
-              Global market fit
+              global markets
             </span>
           </motion.h1>
           <motion.p
