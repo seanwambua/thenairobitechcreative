@@ -5,14 +5,13 @@ import { Footer } from '@/components/layout/footer';
 import { services } from '@/lib/data';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { motion } from 'framer-motion';
-import { Check } from 'lucide-react';
-import type { Icon as LucideIcon } from 'lucide-react';
+import { Check, ScanSearch, LayoutTemplate, Rocket, Scaling, type Icon as LucideIcon } from 'lucide-react';
 
 const iconMap: { [key: string]: LucideIcon } = {
-  ScanSearch: require('lucide-react').ScanSearch,
-  LayoutTemplate: require('lucide-react').LayoutTemplate,
-  Rocket: require('lucide-react').Rocket,
-  Scaling: require('lucide-react').Scaling,
+  ScanSearch,
+  LayoutTemplate,
+  Rocket,
+  Scaling,
 };
 
 export default function ServicesPage() {
