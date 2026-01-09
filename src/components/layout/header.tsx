@@ -11,9 +11,10 @@ export function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
-    {href: '#portfolio', label: 'Portfolio'},
-    {href: '#testimonials', label: 'Testimonials'},
-    {href: '#contact', label: 'Contact'},
+    {href: '/#portfolio', label: 'Portfolio'},
+    {href: '/blog', label: 'Blog'},
+    {href: '/#testimonials', label: 'Testimonials'},
+    {href: '/#contact', label: 'Contact'},
   ];
 
   return (

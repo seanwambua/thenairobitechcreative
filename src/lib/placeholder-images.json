@@ -71,6 +71,24 @@
       "description": "Portrait of a male director in an art gallery.",
       "imageUrl": "https://images.unsplash.com/photo-1636990536161-710184e1047f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxtYWxlJTIwZGlyZWN0b3J8ZW58MHx8fHwxNzY3OTExOTM5fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "male director"
+    },
+    {
+      "id": "blog1",
+      "description": "A vibrant street scene in a modern African city with people using smartphones.",
+      "imageUrl": "https://images.unsplash.com/photo-1762766910426-6452a4c75734?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxhZnJpY2FuJTIwY2l0eSUyMG1vYmlsZXxlbnwwfHx8fDE3Njc5NjI0Nzh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "african city mobile"
+    },
+    {
+      "id": "blog2",
+      "description": "Close-up of a hand holding a smartphone with a fintech app on the screen.",
+      "imageUrl": "https://images.unsplash.com/photo-1748439281934-2803c6a3ee36?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8ZmludGVjaCUyMGFwcHxlbnwwfHx8fDE3Njc5NjI0Nzl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "fintech app"
+    },
+    {
+      "id": "blog3",
+      "description": "A person using a screen reader on a laptop, representing digital accessibility.",
+      "imageUrl": "https://images.unsplash.com/photo-1634947096822-3790a926271f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxkaWdpdGFsJTIwYWNjZXNzaWJpbGl0eXxlbnwwfHx8fDE3Njc5NjI0Nzh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "digital accessibility"
     }
   ]
 }

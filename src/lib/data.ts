@@ -24,6 +24,19 @@ export interface Testimonial {
   avatarHint: string;
 }
 
+export interface Post {
+  id: number;
+  title: string;
+  description: string;
+  imageUrl: string;
+  imageHint: string;
+  author: string;
+  authorAvatarUrl: string;
+  authorAvatarHint: string;
+  date: string;
+}
+
+
 export const projects: Project[] = [
   {
     id: 1,
@@ -119,5 +132,41 @@ export const testimonials: Testimonial[] = [
     title: "Director, Creative Guild Africa",
     avatarUrl: placeholderImages.testimonial4.imageUrl,
     avatarHint: placeholderImages.testimonial4.imageHint,
+  },
+];
+
+export const posts: Post[] = [
+  {
+    id: 1,
+    title: 'The Rise of Mobile-First Solutions in Africa',
+    description: 'Exploring how mobile technology is shaping the future of business and daily life across the continent.',
+    imageUrl: placeholderImages.blog1.imageUrl,
+    imageHint: placeholderImages.blog1.imageHint,
+    author: 'Jalen Doe',
+    authorAvatarUrl: placeholderImages.testimonial1.imageUrl,
+    authorAvatarHint: placeholderImages.testimonial1.imageHint,
+    date: 'Oct 10, 2024',
+  },
+  {
+    id: 2,
+    title: 'FinTech Innovation: Beyond Mobile Money',
+    description: 'A deep dive into the next wave of financial technology emerging from African tech hubs.',
+    imageUrl: placeholderImages.blog2.imageUrl,
+    imageHint: placeholderImages.blog2.imageHint,
+    author: 'Maria Garcia',
+    authorAvatarUrl: placeholderImages.testimonial3.imageUrl,
+    authorAvatarHint: placeholderImages.testimonial3.imageHint,
+    date: 'Oct 2, 2024',
+  },
+  {
+    id: 3,
+    title: 'Designing for Accessibility in a Diverse Market',
+    description: 'Key principles and practical tips for creating inclusive digital products for all users.',
+    imageUrl: placeholderImages.blog3.imageUrl,
+    imageHint: placeholderImages.blog3.imageHint,
+    author: 'David Kim',
+    authorAvatarUrl: placeholderImages.testimonial2.imageUrl,
+    authorAvatarHint: placeholderImages.testimonial2.imageHint,
+    date: 'Sep 25, 2024',
   },
 ];
