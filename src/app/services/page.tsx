@@ -23,15 +23,15 @@ import {
   Scaling,
   ServerCog,
 } from 'lucide-react';
-import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@/components/ui/hover-card';
 import { placeholderImages } from '@/lib/placeholder-images';
-import { FounderSheet } from '@/components/founder-sheet';
+import { Separator } from '@/components/ui/separator';
+
 
 const iconMap: { [key: string]: LucideIcon } = {
   ScanSearch,
@@ -50,6 +50,8 @@ export default function ServicesPage() {
     visible: { opacity: 1, y: 0 },
   };
 
+  const founderImage = placeholderImages.founder;
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -66,28 +68,54 @@ export default function ServicesPage() {
                   reality that thrives.
                 </p>
               </div>
-              <FounderSheet>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Avatar className="h-24 w-24 cursor-pointer grayscale transition-all duration-300 hover:grayscale-0 md:h-32 md:w-32">
-                        <AvatarImage
-                          src={placeholderImages.founder.imageUrl}
-                          alt="Founder"
-                          data-ai-hint={placeholderImages.founder.imageHint}
-                        />
-                      </Avatar>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Meet the founder</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </FounderSheet>
+              <HoverCard>
+                <HoverCardTrigger asChild>
+                  <Avatar className="h-24 w-24 cursor-pointer grayscale transition-all duration-300 hover:grayscale-0 md:h-32 md:w-32">
+                    <AvatarImage
+                      src={placeholderImages.founder.imageUrl}
+                      alt="Founder"
+                      data-ai-hint={placeholderImages.founder.imageHint}
+                    />
+                    <AvatarFallback>
+                      {placeholderImages.founder.imageHint.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                </HoverCardTrigger>
+                <HoverCardContent className="w-80">
+                <div className="flex flex-col gap-4">
+                  <div className="flex justify-between space-x-4">
+                    <Avatar>
+                      <AvatarImage 
+                        src={founderImage.imageUrl}
+                        alt="Founder"
+                        data-ai-hint={founderImage.imageHint}
+                      />
+                      <AvatarFallback>
+                        {founderImage.imageHint.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="space-y-1">
+                      <h4 className="text-sm font-semibold">A Message from the Founder</h4>
+                    </div>
+                  </div>
+                  <Separator />
+                  <div className="text-sm text-muted-foreground">
+                    <p className="mb-2">
+                      "At The Nairobi Tech Creative, we believe in the power of African innovation to solve
+                      global problems. We are not just building software; we are crafting digital solutions
+                      that empower communities, drive growth, and create lasting impact."
+                    </p>
+                    <p className="mb-1 font-semibold text-foreground">Our Mission</p>
+                    <p className="mb-2">To empower African businesses and entrepreneurs with world-class digital products.</p>
+                    <p className="mb-1 font-semibold text-foreground">Our Vision</p>
+                    <p>To be the leading catalyst for digital transformation in Africa.</p>
+                  </div>
+                  </div>
+                </HoverCardContent>
+              </HoverCard>
             </div>
 
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {/* Service Offerings */}
               {services.map((service, index) => {
                 const Icon = iconMap[service.icon as keyof typeof iconMap];
                 return (
