@@ -60,7 +60,7 @@ export function Cta() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.5 }}
-          className="relative overflow-hidden rounded-2xl bg-gradient-radial from-primary to-secondary p-8 text-center md:p-12"
+          className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary to-secondary p-8 text-center md:p-12"
         >
           <div className="relative z-10">
             <h2 className="font-headline text-3xl font-extrabold text-white sm:text-4xl">
