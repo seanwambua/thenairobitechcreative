@@ -27,65 +27,18 @@ export function Stamp() {
         href="#hand-outline"
         strokeWidth="1.5"
         stroke="hsl(var(--primary))"
+        fill="hsl(var(--primary))"
+        fillOpacity={0.1}
+      />
+
+      <motion.use
+        href="#hand-outline"
+        strokeWidth="2"
+        stroke="hsl(var(--primary))"
         fill="none"
         style={{ pathLength }}
         transition={{ duration: 2, ease: 'easeInOut' }}
       />
-
-      {/* Tribal Pattern Fill */}
-      <g clipPath="url(#hand-clip)">
-        <motion.g
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 1 }}
-        >
-          {/* Base fill */}
-          <motion.use href="#hand-outline" fill="hsl(var(--primary))" fillOpacity="0.1" />
-
-          {/* Palm circle */}
-          <motion.circle 
-            cx="49.5" 
-            cy="45" 
-            r="15" 
-            fill="hsl(var(--secondary))" 
-            opacity="0.7"
-            initial={{scale: 0}}
-            animate={{scale: 1}}
-            transition={{delay: 1.2, duration: 0.5}}
-          />
-          <motion.circle 
-            cx="49.5" 
-            cy="45" 
-            r="7" 
-            fill="hsl(var(--background))" 
-            initial={{scale: 0}}
-            animate={{scale: 1}}
-            transition={{delay: 1.4, duration: 0.5}}
-          />
-
-          {/* Finger lines */}
-          <motion.path
-            d="M24 78 l5-20 M38 80 l0-25 M52 82 l-2-25 M66 80 l-5-22"
-            stroke="hsl(var(--secondary))"
-            strokeWidth="1"
-            opacity="0.8"
-            style={{ pathLength }}
-            transition={{ duration: 1.5, ease: 'easeInOut', delay: 1.5 }}
-          />
-          
-          {/* Dashed lines */}
-           <motion.path
-            d="M15 60 h70"
-            stroke="hsl(var(--primary))"
-            strokeWidth="0.5"
-            strokeDasharray="2 3"
-            opacity="0.7"
-            style={{ pathLength }}
-            transition={{ duration: 1.5, ease: 'circOut', delay: 1.8 }}
-          />
-
-        </motion.g>
-      </g>
     </motion.svg>
   );
 }
