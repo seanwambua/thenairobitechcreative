@@ -9,16 +9,10 @@ import { placeholderImages } from '@/lib/placeholder-images';
 
 export default async function Home() {
   const heroImageDataUri = placeholderImages.hero.imageUrl;
-  const textureDataUri = placeholderImages.background.imageUrl;
 
   return (
     <div
       className="flex min-h-screen flex-col bg-background"
-      style={{
-        backgroundImage: `url(${textureDataUri})`,
-        backgroundSize: '300px 300px',
-        backgroundAttachment: 'fixed',
-      }}
     >
       <Header />
       <main className="flex-1">
@@ -30,7 +24,7 @@ export default async function Home() {
               <h2 className="font-headline text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl">
                 2025 Innovation Suite
               </h2>
-              <p className="mt-4 text-lg text-muted-foreground">
+              <p className="mt-4 text-lg text-zinc-500">
                 Showcasing our next generation of African-built digital solutions designed to
                 tackle global challenges.
               </p>
