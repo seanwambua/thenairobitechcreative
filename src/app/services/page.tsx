@@ -90,47 +90,6 @@ export default function ServicesPage() {
                   </motion.div>
                 );
               })}
-
-              {/* Founder Quote & Vision */}
-              <motion.div
-                className="lg:col-span-2"
-                variants={cardVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-              >
-                <Card className="flex h-full flex-col items-center justify-center bg-muted/50 p-8 text-center lg:p-12">
-                  <h2 className="font-headline text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
-                    From the Founder
-                  </h2>
-                  <blockquote className="mt-4 max-w-lg text-lg italic text-muted-foreground">
-                    "Our journey began with a simple belief: that African ingenuity can solve
-                    global problems. We are not just building software; we are building bridges and
-                    crafting a new narrative for technology made in Africa."
-                  </blockquote>
-                </Card>
-              </motion.div>
-
-              {/* Founder Image */}
-              <motion.div
-                variants={cardVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
-                <Card className="relative h-full min-h-[250px] w-full overflow-hidden">
-                  <Image
-                    src={founderImage.imageUrl}
-                    alt="Founder of The Nairobi Tech Creative"
-                    fill
-                    className="object-cover object-top"
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    data-ai-hint={founderImage.imageHint}
-                  />
-                </Card>
-              </motion.div>
             </div>
           </div>
         </section>
