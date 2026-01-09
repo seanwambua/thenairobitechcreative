@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef, useState, ChangeEvent } from 'react';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -35,6 +36,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useProjectStore, type Project } from '@/store/projects';
 import { placeholderImages } from '@/lib/placeholder-images';
 import { iconNames } from '@/lib/data';
+import { Upload } from 'lucide-react';
 
 const formSchema = z.object({
   title: z.string().min(5, 'Title must be at least 5 characters.'),
@@ -55,6 +57,8 @@ interface ProjectEditorSheetProps {
 export function ProjectEditorSheet({ isOpen, setIsOpen, project }: ProjectEditorSheetProps) {
   const { toast } = useToast();
   const { addProject, updateProject } = useProjectStore();
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(formSchema),
@@ -76,6 +80,7 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project }: ProjectEditor
         icon: project.icon,
         gridSpan: project.gridSpan,
       });
+      setImagePreview(project.imageUrl);
     } else {
       form.reset({
         title: '',
@@ -84,8 +89,20 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project }: ProjectEditor
         icon: 'Boxes',
         gridSpan: 'col-span-1 md:col-span-1',
       });
+      setImagePreview(placeholderImages.enterpriseB.imageUrl);
     }
   }, [project, form, isOpen]);
+
+  const handleImageFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   function onSubmit(values: ProjectFormValues) {
     const keyFeatures = values.keyFeatures.split(',').map((s) => s.trim());
@@ -96,6 +113,7 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project }: ProjectEditor
         ...project,
         ...values,
         keyFeatures,
+        imageUrl: imagePreview || project.imageUrl,
       };
       updateProject(updatedProject);
       toast({
@@ -108,7 +126,7 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project }: ProjectEditor
         id: Date.now(),
         ...values,
         keyFeatures,
-        imageUrl: placeholderImages.enterpriseB.imageUrl,
+        imageUrl: imagePreview || placeholderImages.enterpriseB.imageUrl,
         imageHint: 'abstract network',
       };
       addProject(newProject);
@@ -124,7 +142,7 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project }: ProjectEditor
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetContent className="w-full overflow-y-auto sm:max-w-2xl">
+      <SheetContent className="w-full overflow-y-auto sm:max-w-full">
         <SheetHeader>
           <SheetTitle>{project ? 'Edit Project' : 'Create New Project'}</SheetTitle>
           <SheetDescription>
@@ -135,110 +153,143 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project }: ProjectEditor
         </SheetHeader>
         <div className="py-8">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Title</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter project title" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Enter a short summary of the project"
-                        className="resize-none"
-                        {...field}
+            <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 gap-8 md:grid-cols-3">
+              {/* Image and Details Section */}
+              <div className="space-y-6 md:col-span-1">
+                <FormItem>
+                  <FormLabel>Project Image</FormLabel>
+                  <div className="relative aspect-video w-full overflow-hidden rounded-md">
+                    {imagePreview && (
+                      <Image
+                        src={imagePreview}
+                        alt="Project preview"
+                        fill
+                        className="object-cover"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="keyFeatures"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Key Features</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter features, separated by commas"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="icon"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Icon</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select an icon" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {iconNames.map((iconName) => (
-                            <SelectItem key={iconName} value={iconName}>
-                              {iconName}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                 <FormField
-                  control={form.control}
-                  name="gridSpan"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Grid Span</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select grid span" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                           <SelectItem value="col-span-1 md:col-span-1">Small</SelectItem>
-                           <SelectItem value="col-span-1 md:col-span-2">Medium</SelectItem>
-                           <SelectItem value="col-span-1 md:col-span-3">Large</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                    )}
+                  </div>
+                  <Input
+                    type="file"
+                    ref={imageInputRef}
+                    className="hidden"
+                    onChange={handleImageFileChange}
+                    accept="image/png, image/jpeg, image/webp"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => imageInputRef.current?.click()}
+                  >
+                    <Upload className="mr-2 h-4 w-4" />
+                    Upload Image
+                  </Button>
+                </FormItem>
               </div>
 
-              <SheetFooter>
-                <SheetClose asChild>
-                  <Button type="button" variant="outline">
-                    Cancel
-                  </Button>
-                </SheetClose>
-                <Button type="submit">Save Project</Button>
-              </SheetFooter>
+              {/* Form Fields Section */}
+              <div className="space-y-6 md:col-span-2">
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Title</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter project title" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Enter a short summary of the project"
+                          className="resize-none"
+                          rows={3}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="keyFeatures"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Key Features</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter features, separated by commas" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="icon"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Icon</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select an icon" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {iconNames.map((iconName) => (
+                              <SelectItem key={iconName} value={iconName}>
+                                {iconName}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="gridSpan"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Grid Span</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select grid span" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="col-span-1 md:col-span-1">Small</SelectItem>
+                            <SelectItem value="col-span-1 md:col-span-2">Medium</SelectItem>
+                            <SelectItem value="col-span-1 md:col-span-3">Large</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                 <SheetFooter className="col-span-full mt-4">
+                    <SheetClose asChild>
+                    <Button type="button" variant="outline">
+                        Cancel
+                    </Button>
+                    </SheetClose>
+                    <Button type="submit">Save Project</Button>
+                </SheetFooter>
+              </div>
             </form>
           </Form>
         </div>
