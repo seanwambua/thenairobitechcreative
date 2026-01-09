@@ -1,5 +1,6 @@
 
 
+
 import type { ComponentType } from 'react';
 import { Boxes, BookOpen, PenTool, LineChart, Globe, Server, type LucideProps, ScanSearch, LayoutTemplate, Rocket, Scaling, Briefcase, Computer, Wrench, ServerCog, Star } from 'lucide-react';
 import { placeholderImages } from './placeholder-images';
@@ -148,12 +149,12 @@ export const services: Service[] = [
 export const pricingPlans: PricingPlan[] = [
     {
       id: 1,
-      title: 'Consultation',
+      title: 'Initial Consult',
       description: "One-on-one guidance to refine your idea, define your strategy, and create a clear roadmap for your project.",
-      price: '5,000',
+      price: '3,500',
       priceSuffix: '',
       features: [
-        "1-Hour Intensive Strategy Session",
+        "2-Hour Intensive Strategy Session",
         "Actionable Project Roadmap",
       ],
     },
