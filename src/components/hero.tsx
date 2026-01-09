@@ -59,9 +59,9 @@ export function Hero({heroImage}: {heroImage: string}) {
             className="font-headline text-5xl font-extrabold tracking-tighter text-foreground sm:text-6xl md:text-7xl"
             variants={textItemVariants}
           >
-            African solutions,{' '}
+            African solutions{' '}
             <span className="bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">
-              Global markets.
+              global markets
             </span>
           </motion.h1>
           <motion.p
