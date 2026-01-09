@@ -134,8 +134,6 @@ export const pricingPlans: PricingPlan[] = [
       features: [
         "1-Hour Intensive Strategy Session",
         "Actionable Project Roadmap",
-        "Technical Feasibility Assessment",
-        "Initial UI/UX Recommendations",
       ],
     },
     {
