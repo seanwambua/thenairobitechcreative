@@ -130,8 +130,10 @@ export default function DashboardLayout({
         <SidebarFooter>
           <div className="flex items-center justify-between group-data-[collapsible=icon]:justify-center">
             <div className="flex items-center gap-3 group-data-[collapsible=icon]:hidden">
-              <Avatar className="h-10 w-10">
-                 <div className="w-full h-full p-1"><Logo /></div>
+              <Avatar className="h-10 w-10 bg-muted">
+                 <div className="flex h-full w-full items-center justify-center">
+                   <Logo />
+                 </div>
               </Avatar>
               <div>
                 <p className="font-semibold">{founderImage.imageHint}</p>
