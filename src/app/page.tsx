@@ -50,7 +50,7 @@ export default function Home() {
                 tackle global challenges.
               </p>
             </div>
-            <div className="ml-[10%] md:ml-0">
+            <div className="md:ml-0">
               <BentoPortfolio projects={projects} />
             </div>
           </div>

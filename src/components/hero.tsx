@@ -42,7 +42,7 @@ export function Hero({heroImage}: {heroImage: string}) {
   return (
     <section className="flex w-full items-center bg-background min-h-[calc(100vh-4rem)]">
       <motion.div
-        className="container mx-auto grid grid-cols-1 items-center gap-12 px-4 py-24 md:grid-cols-2 lg:gap-20 ml-[10%]"
+        className="container mx-auto grid grid-cols-1 items-center gap-12 px-4 py-24 md:grid-cols-2 lg:gap-20"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -97,6 +97,7 @@ export function Hero({heroImage}: {heroImage: string}) {
                 fill
                 className="rounded-3xl object-cover shadow-2xl"
                 sizes="(max-width: 768px) 100vw, 50vw"
+                data-ai-hint="futuristic nairobi"
             />
         </motion.div>
       </motion.div>
