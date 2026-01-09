@@ -1,37 +1,61 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, X } from 'lucide-react';
 import { InquirySheet } from './inquiry-sheet';
+import { useState } from 'react';
 
 export function ProspectsBanner() {
+  const [isVisible, setIsVisible] = useState(true);
+
+  const bannerVariants = {
+    hidden: { y: '100%' },
+    visible: { y: 0, transition: { type: 'spring', stiffness: 100, damping: 20 } },
+    exit: { y: '100%', transition: { type: 'tween', duration: 0.3 } },
+  };
+
   return (
-    <section className="border-y bg-muted/30">
-      <div className="container mx-auto px-4">
+    <AnimatePresence>
+      {isVisible && (
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.5 }}
-          className="flex flex-col items-center justify-between gap-6 rounded-lg p-8 text-center sm:flex-row sm:text-left"
+          variants={bannerVariants}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          className="fixed bottom-0 left-0 right-0 z-40 h-[40vh] w-full"
         >
-          <div>
-            <h2 className="font-headline text-2xl font-bold text-foreground sm:text-3xl">
-              Now Accepting 2026 Prospects
-            </h2>
-            <p className="mt-2 text-muted-foreground">
-              Planning your next big project? Let's connect and explore how we can build the future,
-              together.
-            </p>
-          </div>
-          <InquirySheet>
-            <Button size="lg" className="flex-shrink-0">
-              Inquire Now <ArrowRight className="ml-2 h-5 w-5" />
+          <div className="relative h-full w-full border-t bg-muted/90 p-8 backdrop-blur-sm">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-4 top-4"
+              onClick={() => setIsVisible(false)}
+            >
+              <X className="h-6 w-6" />
+              <span className="sr-only">Close banner</span>
             </Button>
-          </InquirySheet>
+            <div className="container mx-auto flex h-full flex-col items-center justify-center text-center">
+              <div>
+                <h2 className="font-headline text-2xl font-bold text-foreground sm:text-3xl">
+                  Now Accepting 2026 Prospects
+                </h2>
+                <p className="mt-2 text-muted-foreground">
+                  Planning your next big project? Let's connect and explore how we can build the
+                  future, together.
+                </p>
+              </div>
+              <div className="mt-6">
+                <InquirySheet>
+                  <Button size="lg" className="flex-shrink-0">
+                    Inquire Now <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </InquirySheet>
+              </div>
+            </div>
+          </div>
         </motion.div>
-      </div>
-    </section>
+      )}
+    </AnimatePresence>
   );
 }
