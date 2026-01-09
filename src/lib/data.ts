@@ -127,8 +127,8 @@ export const services: Service[] = [
 export const pricingPlans: PricingPlan[] = [
     {
       id: 1,
-      title: 'Expert Consultation',
-      description: "One-on-one expert guidance to refine your idea, define your strategy, and create a clear roadmap for your project.",
+      title: 'Consultation',
+      description: "One-on-one guidance to refine your idea, define your strategy, and create a clear roadmap for your project.",
       price: '$2k',
       priceSuffix: '',
       features: [
