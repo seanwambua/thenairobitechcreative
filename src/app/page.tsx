@@ -37,7 +37,9 @@ export default function Home() {
                 tackle global challenges.
               </p>
             </div>
-            <BentoPortfolio projects={projects} />
+            <div className="ml-[10%] md:ml-0">
+              <BentoPortfolio projects={projects} />
+            </div>
           </div>
         </section>
 
