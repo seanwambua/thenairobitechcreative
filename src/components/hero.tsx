@@ -37,7 +37,7 @@ export function Hero({heroImage}: {heroImage: string}) {
             style={{backgroundImage: `url(${heroImage})`}}
           />
         </div>
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm dark:bg-black/80"></div>
+        <div className="absolute inset-0 bg-black dark:bg-black/80"></div>
       </div>
 
       <motion.div
@@ -58,7 +58,7 @@ export function Hero({heroImage}: {heroImage: string}) {
           className="font-headline text-5xl font-extrabold tracking-tighter text-white sm:text-6xl md:text-7xl lg:text-8xl"
           variants={itemVariants}
         >
-          African Solutions, <span className="text-primary">Global Problems.</span>
+          African Solutions, <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Global Problems.</span>
         </motion.h1>
         <motion.p
           className="mx-auto mt-6 max-w-[700px] text-lg text-zinc-100 md:text-xl"
