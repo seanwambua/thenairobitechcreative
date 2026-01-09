@@ -174,14 +174,26 @@ export const services: Service[] = [
   },
   {
     id: 3,
-    title: 'Remote & On-prem Technical Support',
-    icon: 'Wrench',
+    title: 'Technical Support',
+    icon: 'ServerCog',
     description: "Reliable, expert support to keep your systems running smoothly, whether your infrastructure is in the cloud or on-site.",
     details: [
       "24/7 System Monitoring",
       "Helpdesk & End-User Support",
       "Proactive Maintenance & Patching",
       "Incident Response & Resolution",
+    ],
+  },
+  {
+    id: 4,
+    title: 'Custom Tooling',
+    icon: 'Wrench',
+    description: "We build bespoke software tools, extensions, and integrations to streamline your unique workflows and solve specific business challenges.",
+    details: [
+      "Internal Dashboards & Admin Panels",
+      "Custom API Integrations",
+      "Workflow Automation Scripts",
+      "Data Processing & Migration Tools",
     ],
   },
 ];
@@ -352,3 +364,5 @@ export const posts: Post[] = [
     ],
   },
 ];
+
+    

@@ -18,12 +18,14 @@ import {
   LayoutTemplate,
   Rocket,
   Scaling,
+  ServerCog,
 } from 'lucide-react';
 
 const iconMap: { [key: string]: LucideIcon } = {
   Briefcase,
   Computer,
   Wrench,
+  ServerCog,
 };
 
 const processSteps = [
@@ -198,3 +200,5 @@ export default function ServicesPage() {
     </div>
   );
 }
+
+    
