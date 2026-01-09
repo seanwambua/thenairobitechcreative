@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { services, processSteps, pricingPlans } from '@/lib/data';
+import { services, processSteps } from '@/lib/data';
 import { motion } from 'framer-motion';
 import {
   Card,
@@ -41,6 +41,7 @@ import {
 import { placeholderImages } from '@/lib/placeholder-images';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
+import { InquirySheet } from '../inquiry-sheet';
 
 const iconMap: { [key: string]: LucideIcon } = {
   ScanSearch,
@@ -135,7 +136,9 @@ export default function ServicesPage() {
                     viewport={{ once: true, amount: 0.2 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                   >
-                    <Card className="flex h-full flex-col p-6 transition-all duration-300 hover:border-primary hover:shadow-xl hover:shadow-primary/10">
+                    <Card
+                      className={`flex h-full flex-col p-6 transition-all duration-300 hover:border-primary hover:shadow-xl hover:shadow-primary/10`}
+                    >
                       <CardHeader className="flex-row items-center gap-4 p-0">
                         <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                           {Icon && <Icon className="h-6 w-6" />}
@@ -144,14 +147,48 @@ export default function ServicesPage() {
                           {service.title}
                         </CardTitle>
                       </CardHeader>
-                      <CardContent className="flex-1 p-0 pt-4">
-                        <p className="text-muted-foreground">{service.description}</p>
+                      <CardContent className="flex flex-1 flex-col p-0 pt-4">
+                        <p className="flex-1 text-muted-foreground">{service.description}</p>
+                        <div className="my-6">
+                            <div className="flex items-baseline">
+                                {service.price !== 'Custom' && (
+                                <span className="mr-2 text-sm font-medium text-muted-foreground">Starting from</span>
+                                )}
+                                <span className="font-headline text-4xl font-extrabold tracking-tight">
+                                {service.price}
+                                </span>
+                                <span className="ml-1 text-sm font-medium text-muted-foreground">
+                                {service.priceSuffix}
+                                </span>
+                            </div>
+                        </div>
+                        <ul className="space-y-3">
+                            {service.features.map((feature) => (
+                            <li key={feature} className="flex items-start">
+                                <Check className="mr-2 mt-1 h-5 w-5 flex-shrink-0 text-primary" />
+                                <span className="text-muted-foreground">{feature}</span>
+                            </li>
+                            ))}
+                        </ul>
                       </CardContent>
+                      <CardFooter className="p-0 pt-6">
+                        <InquirySheet>
+                            <Button
+                            className="w-full"
+                            variant='outline'
+                            >
+                            Get Started
+                            </Button>
+                        </InquirySheet>
+                      </CardFooter>
                     </Card>
                   </motion.div>
                 );
               })}
             </div>
+            <p className="mt-8 text-center text-sm text-muted-foreground">
+              *All prices are estimates. Final costs may vary depending on project requirements.
+            </p>
           </div>
         </section>
 
@@ -193,76 +230,6 @@ export default function ServicesPage() {
                 </motion.div>
               ))}
             </Accordion>
-          </div>
-        </section>
-
-        <section className="border-t py-20 lg:py-32">
-          <div className="container mx-auto px-4">
-            <div className="mx-auto mb-16 max-w-3xl text-center">
-              <h1 className="font-headline text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl">
-                Our Pricing
-              </h1>
-              <p className="mt-4 text-lg text-muted-foreground">
-                Flexible pricing for teams of all sizes. Choose the plan that fits your needs and
-                let's start building something amazing together.
-              </p>
-            </div>
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {pricingPlans.map((plan, index) => (
-                <motion.div
-                  key={plan.id}
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                >
-                  <Card
-                    className={`flex h-full flex-col ${
-                      plan.recommended ? 'border-primary shadow-2xl shadow-primary/20' : ''
-                    }`}
-                  >
-                    <CardHeader>
-                      <CardTitle className="font-headline text-2xl font-semibold text-foreground">
-                        {plan.title}
-                      </CardTitle>
-                      <CardDescription>{plan.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex-1 space-y-4">
-                      <div className="flex items-baseline">
-                        {plan.price !== 'Custom' && (
-                           <span className="mr-2 text-sm font-medium text-muted-foreground">Starting from</span>
-                        )}
-                        <span className="font-headline text-4xl font-extrabold tracking-tight">
-                          {plan.price}
-                        </span>
-                        <span className="ml-1 text-sm font-medium text-muted-foreground">
-                          {plan.priceSuffix}
-                        </span>
-                      </div>
-                      <ul className="space-y-3">
-                        {plan.features.map((feature) => (
-                          <li key={feature} className="flex items-start">
-                            <Check className="mr-2 mt-1 h-5 w-5 flex-shrink-0 text-primary" />
-                            <span className="text-muted-foreground">{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                    <CardFooter>
-                      <Button
-                        className="w-full"
-                        variant={plan.recommended ? 'default' : 'outline'}
-                      >
-                        Get Started
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-            <p className="mt-8 text-center text-sm text-muted-foreground">
-              *All prices are estimates. Final costs may vary depending on project requirements.
-            </p>
           </div>
         </section>
 

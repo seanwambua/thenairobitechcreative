@@ -52,23 +52,15 @@ export interface Service {
   title: string;
   icon: IconName;
   description: string;
-  details: string[];
+  price: string;
+  priceSuffix: string;
+  features: string[];
 }
 
 export interface ProcessStep {
     icon: IconName;
     title: string;
     description: string;
-}
-
-export interface PricingPlan {
-  id: number;
-  title: string;
-  description: string;
-  price: string;
-  priceSuffix: string;
-  features: string[];
-  recommended: boolean;
 }
 
 export interface FAQ {
@@ -105,61 +97,15 @@ export const faqs: FAQ[] = [
   }
 ];
 
-export const pricingPlans: PricingPlan[] = [
-  {
-    id: 1,
-    title: 'Ignite',
-    description: 'Perfect for startups and small projects to get off the ground.',
-    price: '$5K',
-    priceSuffix: '',
-    features: [
-      'UI/UX Design (Up to 10 screens)',
-      'Web/Mobile App Development',
-      'Basic CMS Integration',
-      '1 Month Post-Launch Support'
-    ],
-    recommended: false,
-  },
-  {
-    id: 2,
-    title: 'Accelerate',
-    description: 'Ideal for growing businesses looking to scale their digital presence.',
-    price: '$15K',
-    priceSuffix: '',
-    features: [
-      'Full UI/UX Design System',
-      'Scalable Architecture',
-      'Advanced API Integration',
-      'CI/CD & DevOps Setup',
-      '3 Months Post-Launch Support'
-    ],
-    recommended: true,
-  },
-  {
-    id: 3,
-    title: 'Innovate',
-    description: 'Comprehensive solutions for enterprises and complex digital products.',
-    price: 'Custom',
-    priceSuffix: '',
-    features: [
-      'Dedicated Product Team',
-      'Enterprise-Grade Solution',
-      'Advanced Security & Compliance',
-      'On-going Optimization & Scaling',
-      'Dedicated Support Retainer'
-    ],
-    recommended: false,
-  },
-];
-
-
 export const services: Service[] = [
   {
     id: 1,
     title: 'Strategy & Discovery',
     icon: 'ScanSearch',
     description: "We align your business goals with technology, providing the strategic roadmap for digital success.",
-    details: [
+    price: '$5K',
+    priceSuffix: '',
+    features: [
       "Market & User Research",
       "Digital Transformation Roadmaps",
       "Technical Feasibility Studies",
@@ -171,7 +117,9 @@ export const services: Service[] = [
     title: 'Design & Development',
     icon: 'Rocket',
     description: "From intuitive interfaces to robust backends, we build world-class digital solutions engineered for performance.",
-    details: [
+    price: '$15K',
+    priceSuffix: '',
+    features: [
       "User-Centric UI/UX Design",
       "Full-Stack Web & Mobile App Development",
       "Custom API & Systems Integration",
@@ -183,7 +131,9 @@ export const services: Service[] = [
     title: 'Launch & Scale',
     icon: 'Scaling',
     description: "We ensure a seamless launch and provide ongoing support to help you grow, adapt, and lead in your market.",
-    details: [
+    price: 'Custom',
+    priceSuffix: '',
+    features: [
       "Cloud & DevOps Strategy",
       "Performance Monitoring & Optimization",
       "Proactive Maintenance & Support",
