@@ -71,7 +71,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
       <Header />
       <main className="flex-1">
         <article className="container mx-auto max-w-4xl px-4 py-12">
-          <header className="mb-8 text-center">
+          <header className="mb-12 text-center">
             <h1 className="font-headline text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl">
               {post.title}
             </h1>
@@ -91,7 +91,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
             </div>
           </header>
 
-          <div className="relative mb-8 h-96 w-full overflow-hidden rounded-2xl shadow-lg">
+          <div className="relative mb-12 h-96 w-full overflow-hidden rounded-2xl shadow-lg">
             <Image
               src={post.imageUrl}
               alt={post.title}
