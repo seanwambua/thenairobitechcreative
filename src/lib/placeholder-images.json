@@ -47,6 +47,30 @@
       "description": "A subtle, seamless, repeatable tribal background pattern.",
       "imageUrl": "https://www.transparenttextures.com/patterns/aztec.png",
       "imageHint": "tribal pattern"
+    },
+    {
+      "id": "testimonial1",
+      "description": "Portrait of a female CEO in a modern office.",
+      "imageUrl": "https://images.unsplash.com/photo-1610631066894-62452ccb927c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxmZW1hbGUlMjBjZW98ZW58MHx8fHwxNzY3OTYxMjY0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "female ceo"
+    },
+    {
+      "id": "testimonial2",
+      "description": "Portrait of a male founder in a creative workspace.",
+      "imageUrl": "https://images.unsplash.com/photo-1659353220869-69b81aa34051?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtYWxlJTIwZm91bmRlcnxlbnwwfHx8fDE3Njc5NjEyNjR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "male founder"
+    },
+    {
+      "id": "testimonial3",
+      "description": "Portrait of a female CFO with a city background.",
+      "imageUrl": "https://picsum.photos/seed/t3/100/100",
+      "imageHint": "female cfo"
+    },
+    {
+      "id": "testimonial4",
+      "description": "Portrait of a male director in an art gallery.",
+      "imageUrl": "https://images.unsplash.com/photo-1636990536161-710184e1047f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxtYWxlJTIwZGlyZWN0b3J8ZW58MHx8fHwxNzY3OTExOTM5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "male director"
     }
   ]
 }

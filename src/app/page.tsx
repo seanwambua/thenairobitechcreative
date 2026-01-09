@@ -2,8 +2,9 @@ import {Header} from '@/components/layout/header';
 import {Footer} from '@/components/layout/footer';
 import {Hero} from '@/components/hero';
 import {BentoPortfolio} from '@/components/bento-portfolio';
-import {projects} from '@/lib/data';
+import {projects, testimonials} from '@/lib/data';
 import {Cta} from '@/components/cta';
+import {Testimonials} from '@/components/testimonials';
 import { placeholderImages } from '@/lib/placeholder-images';
 
 export default async function Home() {
@@ -37,6 +38,8 @@ export default async function Home() {
             <BentoPortfolio projects={projects} />
           </div>
         </section>
+
+        <Testimonials testimonials={testimonials} />
 
         <Cta />
 

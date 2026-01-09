@@ -15,6 +15,15 @@ export interface Project {
   icon: IconName;
 }
 
+export interface Testimonial {
+  id: number;
+  quote: string;
+  author: string;
+  title: string;
+  avatarUrl: string;
+  avatarHint: string;
+}
+
 export const projects: Project[] = [
   {
     id: 1,
@@ -75,5 +84,40 @@ export const projects: Project[] = [
     imageHint: placeholderImages.enterpriseB.imageHint,
     gridSpan: 'col-span-1 md:col-span-1',
     icon: 'Globe',
+  },
+];
+
+export const testimonials: Testimonial[] = [
+  {
+    id: 1,
+    quote: "Working with Nairobi Tech Creative was a game-changer. Their insights into the African market and their technical execution are second to none.",
+    author: "Jane Doe",
+    title: "CEO, AgriConnect",
+    avatarUrl: placeholderImages.testimonial1.imageUrl,
+    avatarHint: placeholderImages.testimonial1.imageHint,
+  },
+  {
+    id: 2,
+    quote: "The team's dedication to building scalable, offline-first solutions helped us reach communities we never thought possible. Truly innovative.",
+    author: "John Smith",
+    title: "Founder, EduScale",
+    avatarUrl: placeholderImages.testimonial2.imageUrl,
+    avatarHint: placeholderImages.testimonial2.imageHint,
+  },
+  {
+    id: 3,
+    quote: "Their financial forecasting tool, with its multi-currency support, was essential for our seed round. They understand the startup journey in Africa.",
+    author: "Amina Okoro",
+    title: "CFO, FinTech Innovators",
+    avatarUrl: placeholderImages.testimonial3.imageUrl,
+    avatarHint: placeholderImages.testimonial3.imageHint,
+  },
+  {
+    id: 4,
+    quote: "The collaborative design platform they built for us has become the central hub for our creative community. The user experience is flawless.",
+    author: "Kwame Annan",
+    title: "Director, Creative Guild Africa",
+    avatarUrl: placeholderImages.testimonial4.imageUrl,
+    avatarHint: placeholderImages.testimonial4.imageHint,
   },
 ];
