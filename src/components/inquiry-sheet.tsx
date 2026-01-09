@@ -79,7 +79,7 @@ export function InquirySheet({ children }: InquirySheetProps) {
       <SheetContent className="h-full w-full overflow-y-auto sm:max-w-full">
         <div className="mx-auto max-w-2xl py-12">
           <SheetHeader className="text-center">
-            <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center">
+            <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full overflow-hidden">
               <Logo />
             </div>
             <SheetTitle className="text-3xl font-bold">Project Inquiry</SheetTitle>

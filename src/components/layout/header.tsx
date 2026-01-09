@@ -18,7 +18,7 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-lg">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-3">
-          <div className="h-8 w-8">
+          <div className="h-8 w-8 rounded-full overflow-hidden flex items-center justify-center">
             <Stamp />
           </div>
           <span className="hidden font-headline text-xl font-semibold sm:inline-block">

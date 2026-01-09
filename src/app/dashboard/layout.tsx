@@ -55,7 +55,7 @@ export default function DashboardLayout({
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-3">
-            <div className="h-8 w-8">
+            <div className="h-8 w-8 rounded-full overflow-hidden flex items-center justify-center">
               <Stamp />
             </div>
             <span className="hidden font-headline text-xl font-semibold sm:inline-block group-data-[collapsible=icon]:hidden">
@@ -130,7 +130,7 @@ export default function DashboardLayout({
         <SidebarFooter>
           <div className="flex items-center justify-between group-data-[collapsible=icon]:justify-center">
             <div className="flex items-center gap-3 group-data-[collapsible=icon]:hidden">
-              <Avatar className="h-10 w-10 bg-muted">
+              <Avatar className="h-10 w-10 bg-muted rounded-full overflow-hidden">
                  <div className="flex h-full w-full items-center justify-center">
                    <Logo />
                  </div>

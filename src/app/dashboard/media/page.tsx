@@ -184,7 +184,7 @@ export default function MediaPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center gap-6">
-            <div className="flex h-48 w-48 items-center justify-center rounded-lg border-2 border-dashed bg-muted/50 p-4">
+            <div className="flex h-48 w-48 items-center justify-center rounded-full overflow-hidden border-2 border-dashed bg-muted/50 p-4">
               <Logo />
             </div>
              <Input
