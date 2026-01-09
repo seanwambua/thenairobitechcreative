@@ -6,12 +6,11 @@ import { BlogPostCard } from '@/components/blog-post-card';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 export default function BlogPage() {
-  const otherArticles = [
-    { title: 'Global Infrastructure Systems' },
-    { title: 'Automation, Workflows, and AI' },
-  ];
+  const featuredPosts = posts.slice(0, 3);
+  const otherArticles = posts.slice(3);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -28,7 +27,7 @@ export default function BlogPage() {
               </p>
             </div>
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {posts.slice(0, 3).map((post) => (
+              {featuredPosts.map((post) => (
                 <BlogPostCard key={post.id} post={post} />
               ))}
             </div>
@@ -49,18 +48,20 @@ export default function BlogPage() {
               <div className="space-y-4">
                 {otherArticles.map((article, index) => (
                   <motion.div
-                    key={index}
+                    key={article.id}
                     initial={{ opacity: 0, x: -50 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, amount: 0.5 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                   >
-                    <Card className="group transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-primary/10">
-                      <CardContent className="flex items-center justify-between p-6">
-                        <h3 className="font-semibold text-foreground">{article.title}</h3>
-                        <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-primary" />
-                      </CardContent>
-                    </Card>
+                    <Link href={`/blog/${article.slug}`} className="group block">
+                      <Card className="transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-primary/10">
+                        <CardContent className="flex items-center justify-between p-6">
+                          <h3 className="font-semibold text-foreground">{article.title}</h3>
+                          <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-primary" />
+                        </CardContent>
+                      </Card>
+                    </Link>
                   </motion.div>
                 ))}
               </div>
