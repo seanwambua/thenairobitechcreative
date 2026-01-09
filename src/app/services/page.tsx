@@ -25,6 +25,11 @@ const iconMap: { [key: string]: LucideIcon } = {
   ScanSearch,
   Rocket,
   Scaling,
+  Briefcase,
+  Computer,
+  Wrench,
+  ServerCog,
+  LayoutTemplate,
 };
 
 const processSteps = [
@@ -113,34 +118,52 @@ export default function ServicesPage() {
           <div className="container mx-auto px-4">
             <div className="mx-auto mb-16 max-w-3xl text-center">
               <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-                Our Collaborative Process
+                How We Do It: A Walkthrough
               </h2>
               <p className="mt-4 text-lg text-muted-foreground">
                 We follow a structured, transparent process to ensure your project's success from concept to launch and beyond.
               </p>
             </div>
-            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-              {processSteps.map((step, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                >
-                  <Card className="h-full text-center">
-                    <CardHeader>
-                      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
-                        <step.icon className="h-8 w-8" />
+            <div className="relative mx-auto max-w-2xl">
+              <div className="absolute left-1/2 top-0 h-full w-0.5 -translate-x-1/2 bg-border"></div>
+              {processSteps.map((step, index) => {
+                const Icon = step.icon;
+                const isEven = index % 2 === 0;
+                return (
+                  <motion.div
+                    key={index}
+                    className="relative mb-12 flex w-full items-center"
+                    initial={{ opacity: 0, x: isEven ? -100 : 100 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, amount: 0.5 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <div
+                      className={`flex w-full items-center ${isEven ? 'justify-start' : 'justify-end'}`}
+                    >
+                      <div className={`w-1/2 ${isEven ? 'pr-8' : 'pl-8'}`}>
+                        <Card
+                          className={`w-full text-left ${isEven ? 'text-left' : 'md:text-right'}`}
+                        >
+                          <CardHeader>
+                            <CardTitle className="font-headline text-xl font-semibold text-primary">
+                              {step.title}
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <p className="text-muted-foreground">
+                              {step.description}
+                            </p>
+                          </CardContent>
+                        </Card>
                       </div>
-                    </CardHeader>
-                    <CardContent>
-                      <CardTitle className="font-headline text-xl font-semibold text-foreground">{step.title}</CardTitle>
-                      <p className="mt-2 text-muted-foreground">{step.description}</p>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
+                    </div>
+                    <div className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-4 border-background bg-primary text-primary-foreground">
+                      <Icon className="h-8 w-8" />
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         </section>
