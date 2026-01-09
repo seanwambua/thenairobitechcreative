@@ -207,7 +207,7 @@ export const projects: Project[] = [
     keyFeatures: ['KES/USD Support', 'Cash Flow Forecasting', 'Investor Reports'],
     imageUrl: placeholderImages.finance.imageUrl,
     imageHint: placeholderImages.finance.imageHint,
-    gridSpan: 'col-span-1 md:col-span-1',
+    gridSpan: 'col-span-1 md:col-span-2',
     icon: 'LineChart',
   },
   {
@@ -237,7 +237,7 @@ export const projects: Project[] = [
     keyFeatures: ['Advanced CRM', 'Data Encryption', 'API Gateway'],
     imageUrl: placeholderImages.enterpriseB.imageUrl,
     imageHint: placeholderImages.enterpriseB.imageHint,
-    gridSpan: 'col-span-1 md:col-span-1',
+    gridSpan: 'col-span-1 md:col-span-2',
     icon: 'Globe',
   },
 ];
@@ -344,3 +344,5 @@ export const posts: Post[] = [
     ],
   },
 ];
+
+    

@@ -65,3 +65,5 @@ export function BentoPortfolio({ projects }: BentoPortfolioProps) {
     </div>
   );
 }
+
+    
