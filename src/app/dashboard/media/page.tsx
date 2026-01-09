@@ -110,8 +110,8 @@ export default function MediaPage() {
               Select an image for the homepage hero section or upload your own. Changes are reflected live.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4">
+          <CardContent className="space-y-4 max-h-[50vh] overflow-y-auto">
+            <div className="grid grid-cols-2 gap-4 pr-2">
               {heroImageOptions.map((image) => (
                 <div
                   key={image.id}
@@ -146,7 +146,7 @@ export default function MediaPage() {
                 onChange={handleHeroImageFileChange}
                 accept="image/png, image/jpeg, image/webp"
               />
-              <Button onClick={handleHeroImageUploadClick} variant="outline" className="mt-4 w-full">
+              <Button onClick={handleHeroImageUploadClick} variant="outline" className="w-full">
                 <Upload className="mr-2 h-4 w-4" />
                 Upload Image
               </Button>
