@@ -65,7 +65,7 @@ export function Testimonials({ testimonials }: TestimonialsProps) {
         >
           <CarouselContent>
             {testimonials.map((testimonial) => (
-              <CarouselItem key={testimonial.id} className="md:basis-1/2 lg:basis-1/1">
+              <CarouselItem key={testimonial.id} className="md:basis-1/2 lg:basis-1/2">
                 <motion.div variants={itemVariants} className="p-2">
                   <Card className="flex h-full flex-col justify-between overflow-hidden rounded-xl bg-card shadow-lg transition-all hover:shadow-primary/20">
                     <CardContent className="flex flex-1 flex-col p-8">
