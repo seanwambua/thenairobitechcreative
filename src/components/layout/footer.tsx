@@ -1,3 +1,4 @@
+'use client';
 import { Stamp } from '@/components/stamp';
 
 export function Footer() {
