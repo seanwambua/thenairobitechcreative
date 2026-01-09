@@ -4,6 +4,7 @@ import {Stamp} from '@/components/stamp';
 import {motion} from 'framer-motion';
 import {ChevronRight} from 'lucide-react';
 import Image from 'next/image';
+import { ContactSheet } from './contact-sheet';
 
 export function Hero({heroImage}: {heroImage: string}) {
   const containerVariants = {
@@ -76,12 +77,14 @@ export function Hero({heroImage}: {heroImage: string}) {
             variants={textItemVariants}
           >
             <Button size="lg">Explore Our Work</Button>
-            <Button
-              size="lg"
-              variant="outline"
-            >
-              Contact Us <ChevronRight className="ml-2 h-4 w-4" />
-            </Button>
+            <ContactSheet>
+              <Button
+                size="lg"
+                variant="outline"
+              >
+                Contact Us <ChevronRight className="ml-2 h-4 w-4" />
+              </Button>
+            </ContactSheet>
           </motion.div>
         </div>
         <motion.div 

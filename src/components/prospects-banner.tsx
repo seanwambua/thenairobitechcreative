@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import Link from 'next/link';
+import { ContactSheet } from './contact-sheet';
 
 export function ProspectsBanner() {
   return (
@@ -25,11 +25,11 @@ export function ProspectsBanner() {
               together.
             </p>
           </div>
-          <Link href="/#contact">
+          <ContactSheet>
             <Button size="lg" className="flex-shrink-0">
               Inquire Now <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-          </Link>
+          </ContactSheet>
         </motion.div>
       </div>
     </section>
