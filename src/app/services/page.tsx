@@ -7,7 +7,6 @@ import { motion } from 'framer-motion';
 import {
   Card,
   CardContent,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -29,7 +28,6 @@ import {
   Scaling,
   ServerCog,
   Plus,
-  Check,
 } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
@@ -123,7 +121,7 @@ export default function ServicesPage() {
               </HoverCard>
             </div>
 
-            <div className="mx-auto grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-2">
+            <div className="mx-auto grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-3">
               {services.map((service, index) => {
                 const Icon = iconMap[service.icon as keyof typeof iconMap];
                 return (
@@ -146,47 +144,14 @@ export default function ServicesPage() {
                           {service.title}
                         </CardTitle>
                       </CardHeader>
-                      <CardContent className="flex flex-1 flex-col p-0 pt-4">
+                      <CardContent className="flex-1 p-0 pt-4">
                         <p className="flex-1 text-muted-foreground">{service.description}</p>
-                        <div className="my-6">
-                          <div className="flex items-baseline">
-                            {service.price !== 'Custom' && (
-                              <span className="mr-2 text-sm font-medium text-muted-foreground">
-                                Starting from
-                              </span>
-                            )}
-                            <span className="font-headline text-4xl font-extrabold tracking-tight">
-                              {service.price}
-                            </span>
-                            <span className="ml-1 text-sm font-medium text-muted-foreground">
-                              {service.priceSuffix}
-                            </span>
-                          </div>
-                        </div>
-                        <ul className="space-y-3">
-                          {service.features.map((feature) => (
-                            <li key={feature} className="flex items-start">
-                              <Check className="mr-2 mt-1 h-5 w-5 flex-shrink-0 text-primary" />
-                              <span className="text-muted-foreground">{feature}</span>
-                            </li>
-                          ))}
-                        </ul>
                       </CardContent>
-                      <CardFooter className="p-0 pt-6">
-                        <InquirySheet>
-                          <Button className="w-full" variant="outline">
-                            Get Started
-                          </Button>
-                        </InquirySheet>
-                      </CardFooter>
                     </Card>
                   </motion.div>
                 );
               })}
             </div>
-            <p className="mt-8 text-center text-sm text-muted-foreground">
-              *All prices are estimates. Final costs may vary depending on project requirements.
-            </p>
           </div>
         </section>
 

@@ -52,9 +52,15 @@ export interface Service {
   title: string;
   icon: IconName;
   description: string;
-  price: string;
-  priceSuffix: string;
-  features: string[];
+}
+
+export interface PricingPlan {
+    id: number;
+    title: string;
+    description: string;
+    price: string;
+    priceSuffix: string;
+    features: string[];
 }
 
 export interface ProcessStep {
@@ -98,35 +104,54 @@ export const faqs: FAQ[] = [
 ];
 
 export const services: Service[] = [
-  {
-    id: 1,
-    title: 'Expert Consultation',
-    icon: 'Briefcase',
-    description: "One-on-one expert guidance to refine your idea, define your technical strategy, and create a clear roadmap for your project.",
-    price: '$2k',
-    priceSuffix: '',
-    features: [
-      "1-Hour Intensive Strategy Session",
-      "Actionable Project Roadmap",
-      "Technical Feasibility Assessment",
-      "Initial UI/UX Recommendations",
-    ],
-  },
-  {
-    id: 2,
-    title: 'Custom Solution',
-    icon: 'Wrench',
-    description: "End-to-end design and development of a bespoke digital product, tailored to your specific business needs and built to scale.",
-    price: 'Custom',
-    priceSuffix: '',
-    features: [
-      "Full Project Lifecycle (Strategy to Scale)",
-      "Dedicated Project Team",
-      "Custom UI/UX and System Architecture",
-      "Ongoing Support & Maintenance",
-    ],
-  },
-];
+    {
+      id: 1,
+      title: 'Strategy & Discovery',
+      icon: 'ScanSearch',
+      description: 'We help you refine your vision and create a solid technical and business strategy.',
+    },
+    {
+      id: 2,
+      title: 'Design & Development',
+      icon: 'LayoutTemplate',
+      description: 'We design and build beautiful, scalable, and user-centric digital products.',
+    },
+    {
+      id: 3,
+      title: 'Launch & Scale',
+      icon: 'Rocket',
+      description: 'We ensure a smooth launch and provide ongoing support to help you grow.',
+    },
+  ];
+
+export const pricingPlans: PricingPlan[] = [
+    {
+      id: 1,
+      title: 'Expert Consultation',
+      description: "One-on-one expert guidance to refine your idea, define your technical strategy, and create a clear roadmap for your project.",
+      price: '$2k',
+      priceSuffix: '',
+      features: [
+        "1-Hour Intensive Strategy Session",
+        "Actionable Project Roadmap",
+        "Technical Feasibility Assessment",
+        "Initial UI/UX Recommendations",
+      ],
+    },
+    {
+      id: 2,
+      title: 'Custom Solution',
+      description: "End-to-end design and development of a bespoke digital product, tailored to your specific business needs and built to scale.",
+      price: 'Custom',
+      priceSuffix: '',
+      features: [
+        "Full Project Lifecycle (Strategy to Scale)",
+        "Dedicated Project Team",
+        "Custom UI/UX and System Architecture",
+        "Ongoing Support & Maintenance",
+      ],
+    },
+  ];
 
 export const processSteps: ProcessStep[] = [
     {
