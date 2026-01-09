@@ -3,6 +3,7 @@
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Hero } from '@/components/hero';
+import { ProspectsBanner } from '@/components/prospects-banner';
 import { BentoPortfolio } from '@/components/bento-portfolio';
 import { projects, testimonials, faqs } from '@/lib/data';
 import { Cta } from '@/components/cta';
@@ -23,6 +24,7 @@ export default function Home() {
       <Header />
       <main className="flex-1">
         <Hero heroImage={heroImageDataUri} />
+        <ProspectsBanner />
 
         <section id="portfolio" className="py-20 lg:py-32">
           <div className="container mx-auto px-4">
