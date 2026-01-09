@@ -1,4 +1,3 @@
-
 'use client';
 import {Button} from '@/components/ui/button';
 import {Stamp} from '@/components/stamp';
@@ -31,10 +30,14 @@ export function Hero({heroImage}: {heroImage: string}) {
     <section className="relative flex min-h-[calc(100vh-4rem)] w-full items-center justify-center overflow-hidden text-center">
       <div className="absolute inset-0 z-0">
         <div
-          className="hidden h-full w-full bg-black bg-cover bg-center dark:block"
-          style={{backgroundImage: `url(${heroImage})`}}
-        ></div>
-        <div className="absolute inset-0 bg-black dark:bg-black/60 dark:backdrop-blur-sm"></div>
+          className="h-full w-full bg-black bg-cover bg-center"
+        >
+          <div
+            className="h-full w-full bg-cover bg-center dark:bg-black"
+            style={{backgroundImage: `url(${heroImage})`}}
+          />
+        </div>
+        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
       </div>
 
       <motion.div
@@ -55,7 +58,7 @@ export function Hero({heroImage}: {heroImage: string}) {
           className="font-headline text-5xl font-extrabold tracking-tighter text-white sm:text-6xl md:text-7xl lg:text-8xl"
           variants={itemVariants}
         >
-          Empowering Kenya's Visionaries, <span className="text-primary">Building Tomorrow's Enterprises.</span>
+          Empowering ideas, <span className="text-primary">building enterprises.</span>
         </motion.h1>
         <motion.p
           className="mx-auto mt-6 max-w-[700px] text-lg text-zinc-100 md:text-xl"
@@ -72,7 +75,7 @@ export function Hero({heroImage}: {heroImage: string}) {
           <Button
             size="lg"
             variant="outline"
-            className="border-zinc-100 text-white hover:bg-white hover:text-primary dark:border-zinc-400 dark:text-zinc-100"
+            className="border-zinc-100 text-zinc-300 hover:bg-primary hover:text-primary-foreground dark:border-zinc-400"
           >
             Contact Us <ChevronRight className="ml-2 h-4 w-4" />
           </Button>
