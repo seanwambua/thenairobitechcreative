@@ -111,7 +111,7 @@ export const pricingPlans: PricingPlan[] = [
     title: 'Ignite',
     description: 'Perfect for startups and small projects to get off the ground.',
     price: '$5K',
-    priceSuffix: '/project',
+    priceSuffix: '',
     features: [
       'UI/UX Design (Up to 10 screens)',
       'Web/Mobile App Development',
@@ -125,7 +125,7 @@ export const pricingPlans: PricingPlan[] = [
     title: 'Accelerate',
     description: 'Ideal for growing businesses looking to scale their digital presence.',
     price: '$15K',
-    priceSuffix: '/project',
+    priceSuffix: '',
     features: [
       'Full UI/UX Design System',
       'Scalable Architecture',
