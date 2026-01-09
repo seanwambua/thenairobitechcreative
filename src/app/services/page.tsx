@@ -4,7 +4,6 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { services, processSteps } from '@/lib/data';
 import { motion } from 'framer-motion';
-import { placeholderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Cta } from '@/components/cta';
 import {
@@ -31,6 +30,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { placeholderImages } from '@/lib/placeholder-images';
+import { FounderSheet } from '@/components/founder-sheet';
 
 const iconMap: { [key: string]: LucideIcon } = {
   ScanSearch,
@@ -44,8 +45,6 @@ const iconMap: { [key: string]: LucideIcon } = {
 };
 
 export default function ServicesPage() {
-  const founderImage = placeholderImages.founder;
-
   const cardVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0 },
@@ -58,7 +57,7 @@ export default function ServicesPage() {
         <section className="py-20 lg:py-24">
           <div className="container mx-auto px-4">
             <div className="mx-auto mb-16 flex max-w-4xl flex-col items-center justify-center gap-6 text-center md:flex-row md:text-left">
-              <div className='flex-1'>
+              <div className="flex-1">
                 <h1 className="font-headline text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl">
                   Our Services & Philosophy
                 </h1>
@@ -67,22 +66,24 @@ export default function ServicesPage() {
                   reality that thrives.
                 </p>
               </div>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Avatar className="h-24 w-24 cursor-pointer grayscale transition-all duration-300 hover:grayscale-0 md:h-32 md:w-32">
-                      <AvatarImage
-                        src={founderImage.imageUrl}
-                        alt="Founder"
-                        data-ai-hint={founderImage.imageHint}
-                      />
-                    </Avatar>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Meet the founder</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <FounderSheet>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Avatar className="h-24 w-24 cursor-pointer grayscale transition-all duration-300 hover:grayscale-0 md:h-32 md:w-32">
+                        <AvatarImage
+                          src={placeholderImages.founder.imageUrl}
+                          alt="Founder"
+                          data-ai-hint={placeholderImages.founder.imageHint}
+                        />
+                      </Avatar>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Meet the founder</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </FounderSheet>
             </div>
 
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
