@@ -35,6 +35,18 @@
       "description": "Abstract visualization of a global network.",
       "imageUrl": "https://images.unsplash.com/photo-1690029670479-9fee2fa120eb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxhYnN0cmFjdCUyMG5ldHdvcmt8ZW58MHx8fHwxNzY2NTEyNDg3fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "abstract network"
+    },
+    {
+      "id": "hero",
+      "description": "A high-tech, futuristic cityscape in Nairobi, Kenya, with subtle African patterns integrated into the architecture. Golden hour lighting, cinematic quality.",
+      "imageUrl": "https://images.unsplash.com/photo-1593959817782-70b3b45c2f82?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "futuristic nairobi"
+    },
+    {
+      "id": "background",
+      "description": "A subtle, seamless, repeatable tribal background pattern.",
+      "imageUrl": "https://www.transparenttextures.com/patterns/aztec.png",
+      "imageHint": "tribal pattern"
     }
   ]
 }

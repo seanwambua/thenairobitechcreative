@@ -5,14 +5,11 @@ import {BentoPortfolio} from '@/components/bento-portfolio';
 import {ConversionTimeline} from '@/components/conversion-timeline';
 import {projects, ventureMetrics} from '@/lib/data';
 import {Cta} from '@/components/cta';
-import {generateBackgroundTexture} from '@/ai/flows/background-texture-generator';
-import {generateHeroImage} from '@/ai/flows/hero-image-generator';
+import { placeholderImages } from '@/lib/placeholder-images';
 
 export default async function Home() {
-  const [{textureDataUri}, {heroImageDataUri}] = await Promise.all([
-    generateBackgroundTexture(),
-    generateHeroImage(),
-  ]);
+  const heroImageDataUri = placeholderImages.hero.imageUrl;
+  const textureDataUri = placeholderImages.background.imageUrl;
 
   return (
     <div
