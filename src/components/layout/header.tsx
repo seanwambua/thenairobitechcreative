@@ -12,6 +12,7 @@ export function Header() {
 
   const navItems = [
     {href: '/#portfolio', label: 'Portfolio'},
+    {href: '/services', label: 'Services'},
     {href: '/blog', label: 'Blog'},
     {href: '/#testimonials', label: 'Testimonials'},
     {href: '/#contact', label: 'Contact'},

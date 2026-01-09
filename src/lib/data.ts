@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react';
-import { Boxes, BookOpen, PenTool, LineChart, Globe, Server, type LucideProps } from 'lucide-react';
+import { Boxes, BookOpen, PenTool, LineChart, Globe, Server, type LucideProps, ScanSearch, LayoutTemplate, Rocket, Scaling } from 'lucide-react';
 import { placeholderImages } from './placeholder-images';
 
 export type IconName = 'Boxes' | 'BookOpen' | 'PenTool' | 'LineChart' | 'Globe' | 'Server';
@@ -35,6 +35,65 @@ export interface Post {
   authorAvatarHint: string;
   date: string;
 }
+
+export interface Service {
+  id: number;
+  title: string;
+  icon: string;
+  description: string;
+  details: string[];
+}
+
+export const services: Service[] = [
+  {
+    id: 1,
+    title: 'Discovery & Strategy',
+    icon: 'ScanSearch',
+    description: "We start by understanding your vision, market, and challenges to define a clear roadmap for success.",
+    details: [
+      "Stakeholder Workshops",
+      "Market & Competitor Analysis",
+      "Technical Feasibility Study",
+      "Product Roadmap Definition",
+    ],
+  },
+  {
+    id: 2,
+    title: 'Design & Prototyping',
+    icon: 'LayoutTemplate',
+    description: "Our team crafts intuitive, user-centric designs that are both beautiful and functional, bringing your ideas to life.",
+    details: [
+      "User Experience (UX) & User Interface (UI) Design",
+      "Interactive Prototyping",
+      "Brand Identity & Style Guides",
+      "Usability Testing",
+    ],
+  },
+  {
+    id: 3,
+    title: 'Development & Launch',
+    icon: 'Rocket',
+    description: "We build robust, scalable solutions using modern technologies and deploy them seamlessly for a successful launch.",
+    details: [
+      "Agile Development Sprints",
+      "Front-end & Back-end Engineering",
+      "Cloud Infrastructure Setup (AWS/GCP)",
+      "CI/CD & Automated Deployment",
+    ],
+  },
+  {
+    id: 4,
+    title: 'Scale & Optimize',
+    icon: 'Scaling',
+    description: "After launch, we monitor performance, gather user feedback, and iterate to ensure long-term growth and success.",
+    details: [
+      "Performance Monitoring & Analytics",
+      "User Feedback & Iteration Cycles",
+      "Scalability & Architecture Reviews",
+      "Ongoing Support & Maintenance",
+    ],
+  },
+];
 
 
 export const projects: Project[] = [
