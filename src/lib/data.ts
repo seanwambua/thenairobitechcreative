@@ -1,8 +1,8 @@
 import type { ComponentType } from 'react';
-import { Boxes, BookOpen, PenTool, LineChart, Globe, Server, type LucideProps, ScanSearch, LayoutTemplate, Rocket, Scaling } from 'lucide-react';
+import { Boxes, BookOpen, PenTool, LineChart, Globe, Server, type LucideProps, ScanSearch, LayoutTemplate, Rocket, Scaling, Briefcase, Computer, Wrench, ServerCog } from 'lucide-react';
 import { placeholderImages } from './placeholder-images';
 
-export type IconName = 'Boxes' | 'BookOpen' | 'PenTool' | 'LineChart' | 'Globe' | 'Server' | 'ScanSearch' | 'LayoutTemplate' | 'Rocket' | 'Scaling';
+export type IconName = 'Boxes' | 'BookOpen' | 'PenTool' | 'LineChart' | 'Globe' | 'Server' | 'ScanSearch' | 'LayoutTemplate' | 'Rocket' | 'Scaling' | 'Briefcase' | 'Computer' | 'Wrench' | 'ServerCog';
 
 export interface Project {
   id: number;
@@ -50,7 +50,7 @@ export interface Post {
 export interface Service {
   id: number;
   title: string;
-  icon: string;
+  icon: IconName;
   description: string;
   details: string[];
 }
@@ -150,6 +150,18 @@ export const pricingPlans: PricingPlan[] = [
 export const services: Service[] = [
   {
     id: 1,
+    title: 'Digital Product Development',
+    icon: 'Rocket',
+    description: "From idea to launch, we build innovative and scalable digital products that empower your business and delight your users.",
+    details: [
+      "MVPs & Prototypes",
+      "Full-Stack Web & Mobile App Development",
+      "User-Centric UI/UX Design",
+      "Agile Development & Project Management",
+    ],
+  },
+  {
+    id: 2,
     title: 'Business Consultancy',
     icon: 'Briefcase',
     description: "We partner with you to align your business goals with your technology strategy, ensuring every digital initiative drives tangible results.",
@@ -161,7 +173,7 @@ export const services: Service[] = [
     ],
   },
   {
-    id: 2,
+    id: 3,
     title: 'IT Consultancy',
     icon: 'Computer',
     description: "Our experts provide technical leadership to help you navigate complex decisions around architecture, security, and scalability.",
@@ -170,18 +182,6 @@ export const services: Service[] = [
       "Cybersecurity Assessments",
       "Cloud & DevOps Strategy",
       "Technology Stack Audits",
-    ],
-  },
-  {
-    id: 3,
-    title: 'Technical Support',
-    icon: 'ServerCog',
-    description: "Reliable, expert support to keep your systems running smoothly, whether your infrastructure is in the cloud or on-site.",
-    details: [
-      "24/7 System Monitoring",
-      "Helpdesk & End-User Support",
-      "Proactive Maintenance & Patching",
-      "Incident Response & Resolution",
     ],
   },
   {
@@ -194,6 +194,18 @@ export const services: Service[] = [
       "Custom API Integrations",
       "Workflow Automation Scripts",
       "Data Processing & Migration Tools",
+    ],
+  },
+  {
+    id: 5,
+    title: 'Technical Support',
+    icon: 'ServerCog',
+    description: "Reliable, expert support to keep your systems running smoothly, whether your infrastructure is in the cloud or on-site.",
+    details: [
+      "24/7 System Monitoring",
+      "Helpdesk & End-User Support",
+      "Proactive Maintenance & Patching",
+      "Incident Response & Resolution",
     ],
   },
 ];
@@ -364,5 +376,3 @@ export const posts: Post[] = [
     ],
   },
 ];
-
-    

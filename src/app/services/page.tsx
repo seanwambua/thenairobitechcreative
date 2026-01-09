@@ -26,6 +26,7 @@ const iconMap: { [key: string]: LucideIcon } = {
   Computer,
   Wrench,
   ServerCog,
+  Rocket,
 };
 
 const processSteps = [
@@ -74,7 +75,7 @@ export default function ServicesPage() {
                 What We Do
               </h2>
               {services.map((service, index) => {
-                const Icon = iconMap[service.icon];
+                const Icon = iconMap[service.icon as keyof typeof iconMap];
                 return (
                   <motion.div
                     key={service.id}
@@ -200,5 +201,3 @@ export default function ServicesPage() {
     </div>
   );
 }
-
-    
