@@ -40,6 +40,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { Logo } from '@/components/logo';
 
 export default function DashboardLayout({
   children,
@@ -48,11 +49,7 @@ export default function DashboardLayout({
 }) {
   const pathname = usePathname();
   const founderImage = placeholderImages.founder;
-  const founderInitials = founderImage.imageHint
-    .split(' ')
-    .map((n) => n[0])
-    .join('');
-
+  
   return (
     <SidebarProvider>
       <Sidebar>
@@ -134,8 +131,7 @@ export default function DashboardLayout({
           <div className="flex items-center justify-between group-data-[collapsible=icon]:justify-center">
             <div className="flex items-center gap-3 group-data-[collapsible=icon]:hidden">
               <Avatar className="h-10 w-10">
-                <AvatarImage src={founderImage.imageUrl} alt={founderImage.imageHint} />
-                <AvatarFallback>{founderInitials}</AvatarFallback>
+                 <div className="w-full h-full p-1"><Logo /></div>
               </Avatar>
               <div>
                 <p className="font-semibold">{founderImage.imageHint}</p>

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -32,8 +33,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { services } from '@/lib/data';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { placeholderImages } from '@/lib/placeholder-images';
+import { Avatar } from './ui/avatar';
+import { Logo } from './logo';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -50,8 +51,6 @@ interface InquirySheetProps {
 export function InquirySheet({ children }: InquirySheetProps) {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
-  const founderImage = placeholderImages.founder;
-  const founderInitials = founderImage.imageHint.split(' ').map((n) => n[0]).join('');
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -80,11 +79,8 @@ export function InquirySheet({ children }: InquirySheetProps) {
       <SheetContent className="h-full w-full overflow-y-auto sm:max-w-full">
         <div className="mx-auto max-w-2xl py-12">
           <SheetHeader className="text-center">
-            <div className="mx-auto mb-4 flex items-center justify-center">
-              <Avatar className="h-24 w-24">
-                
-                <AvatarFallback>{founderInitials}</AvatarFallback>
-              </Avatar>
+            <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center">
+              <Logo />
             </div>
             <SheetTitle className="text-3xl font-bold">Project Inquiry</SheetTitle>
             <SheetDescription>
