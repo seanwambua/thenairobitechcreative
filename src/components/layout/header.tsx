@@ -7,18 +7,12 @@ import {useState} from 'react';
 import {cn} from '@/lib/utils';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { InquirySheet } from '../inquiry-sheet';
+import { navItems } from '@/lib/data';
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
-  const navItems = [
-    {href: '/#portfolio', label: 'Portfolio'},
-    {href: '/services', label: 'Services'},
-    {href: '/pricing', label: 'Pricing'},
-    {href: '/blog', label: 'Blog'},
-    {href: '/#testimonials', label: 'Testimonials'},
-    {href: '/#contact', label: 'Contact'},
-  ];
+  const visibleNavItems = navItems.filter(item => !item.hidden);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-lg">
@@ -32,7 +26,7 @@ export function Header() {
           </span>
         </Link>
         <nav className="hidden items-center gap-6 text-sm md:flex">
-          {navItems.map(item => (
+          {visibleNavItems.map(item => (
             <Link
               key={item.label}
               href={item.href}
@@ -63,7 +57,7 @@ export function Header() {
           )}
         >
           <nav className="container mx-auto flex flex-col items-center gap-4 px-4 py-8">
-            {navItems.map(item => (
+            {visibleNavItems.map(item => (
               <Link
                 key={item.label}
                 href={item.href}

@@ -4,6 +4,12 @@ import { placeholderImages } from './placeholder-images';
 
 export type IconName = 'Boxes' | 'BookOpen' | 'PenTool' | 'LineChart' | 'Globe' | 'Server' | 'ScanSearch' | 'LayoutTemplate' | 'Rocket' | 'Scaling' | 'Briefcase' | 'Computer' | 'Wrench' | 'ServerCog';
 
+export interface NavItem {
+    href: string;
+    label: string;
+    hidden?: boolean;
+}
+
 export interface Project {
   id: number;
   title: string;
@@ -74,6 +80,16 @@ export interface FAQ {
   question: string;
   answer: string;
 }
+
+export const navItems: NavItem[] = [
+    {href: '/#portfolio', label: 'Portfolio'},
+    {href: '/services', label: 'Services'},
+    {href: '/pricing', label: 'Pricing'},
+    {href: '/blog', label: 'Blog'},
+    {href: '/#testimonials', label: 'Testimonials'},
+    {href: '/#contact', label: 'Contact'},
+    {href: '/dashboard', label: 'Comprehensive Dashboard', hidden: true},
+  ];
 
 export const faqs: FAQ[] = [
   {
