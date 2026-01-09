@@ -58,7 +58,7 @@ export function InquirySheet({ children, onOpenChange }: InquirySheetProps) {
       description: "Thanks for your interest. We'll review your project details and get back to you shortly.",
     });
     form.reset();
-    setOpen(false);
+    handleOpenChange(false);
   }
 
   const handleOpenChange = (isOpen: boolean) => {

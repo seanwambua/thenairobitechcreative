@@ -48,7 +48,7 @@ export function ProspectsBanner() {
                 </p>
               </div>
               <div className="mt-6">
-                <InquirySheet>
+                <InquirySheet onOpenChange={() => setIsVisible(false)}>
                   <Button size="lg" className="flex-shrink-0">
                     Inquire Now <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
