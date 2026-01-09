@@ -3,6 +3,7 @@ import {Button} from '@/components/ui/button';
 import {Stamp} from '@/components/stamp';
 import {motion} from 'framer-motion';
 import {ChevronRight} from 'lucide-react';
+import Image from 'next/image';
 
 export function Hero({heroImage}: {heroImage: string}) {
   const containerVariants = {
@@ -10,16 +11,27 @@ export function Hero({heroImage}: {heroImage: string}) {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.2,
       },
     },
   };
 
-  const itemVariants = {
-    hidden: {opacity: 0, y: 20},
+  const textItemVariants = {
+    hidden: {opacity: 0, x: -20},
     visible: {
       opacity: 1,
-      y: 0,
+      x: 0,
+      transition: {
+        duration: 0.5,
+      },
+    },
+  };
+  
+  const imageItemVariants = {
+    hidden: {opacity: 0, x: 20},
+    visible: {
+      opacity: 1,
+      x: 0,
       transition: {
         duration: 0.5,
       },
@@ -27,61 +39,62 @@ export function Hero({heroImage}: {heroImage: string}) {
   };
 
   return (
-    <section className="relative flex min-h-[calc(100vh-4rem)] w-full items-center justify-center overflow-hidden text-center">
-      <div className="absolute inset-0 z-0">
-        <div
-          className="h-full w-full bg-cover bg-center bg-black dark:bg-transparent"
-        >
-          <div
-            className="h-full w-full bg-cover bg-center dark:bg-black"
-            style={{backgroundImage: `url(${heroImage})`}}
-          />
-        </div>
-        <div className="absolute inset-0 bg-black/60 dark:bg-black/80"></div>
-      </div>
-
+    <section className="flex w-full items-center bg-background">
       <motion.div
-        className="container relative z-10 mx-auto flex flex-col items-center px-4 py-24"
+        className="container mx-auto grid min-h-[calc(100vh-4rem)] grid-cols-1 items-center gap-12 px-4 py-24 md:grid-cols-2 lg:gap-20"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
-        <motion.div
-          className="mb-8 flex h-24 w-24 items-center justify-center md:h-32 md:w-32"
-          initial={{opacity: 0, scale: 0.5}}
-          animate={{opacity: 1, scale: 1}}
-          transition={{duration: 0.5, delay: 0.5}}
-        >
-          <Stamp />
-        </motion.div>
-        <motion.h1
-          className="font-headline text-5xl font-extrabold tracking-tighter text-white sm:text-6xl md:text-7xl lg:text-8xl"
-          variants={itemVariants}
-        >
-          African Solutions,{' '}
-          <span className="bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">
-            Global Problems.
-          </span>
-        </motion.h1>
-        <motion.p
-          className="mx-auto mt-6 max-w-[700px] text-lg text-zinc-300 md:text-xl"
-          variants={itemVariants}
-        >
-          We build innovative digital products that empower businesses and communities across the
-          continent and beyond.
-        </motion.p>
-        <motion.div
-          className="mt-8 flex flex-col justify-center gap-4 sm:flex-row"
-          variants={itemVariants}
-        >
-          <Button size="lg">Explore Our Work</Button>
-          <Button
-            size="lg"
-            variant="outline"
-            className="border-zinc-100 text-zinc-300 hover:bg-white hover:text-primary-foreground dark:border-zinc-400"
+        <div className="flex flex-col items-start text-left">
+          <motion.div
+            className="mb-4 flex h-24 w-24 items-center justify-center md:h-28 md:w-28"
+            initial={{opacity: 0, scale: 0.5}}
+            animate={{opacity: 1, scale: 1}}
+            transition={{duration: 0.5, delay: 0.5}}
           >
-            Contact Us <ChevronRight className="ml-2 h-4 w-4" />
-          </Button>
+            <Stamp />
+          </motion.div>
+          <motion.h1
+            className="font-headline text-5xl font-extrabold tracking-tighter text-foreground sm:text-6xl md:text-7xl"
+            variants={textItemVariants}
+          >
+            African Solutions,{' '}
+            <span className="bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">
+              Global Problems.
+            </span>
+          </motion.h1>
+          <motion.p
+            className="mt-6 max-w-[600px] text-lg text-muted-foreground md:text-xl"
+            variants={textItemVariants}
+          >
+            We build innovative digital products that empower businesses and communities across the
+            continent and beyond.
+          </motion.p>
+          <motion.div
+            className="mt-8 flex flex-col justify-center gap-4 sm:flex-row"
+            variants={textItemVariants}
+          >
+            <Button size="lg">Explore Our Work</Button>
+            <Button
+              size="lg"
+              variant="outline"
+            >
+              Contact Us <ChevronRight className="ml-2 h-4 w-4" />
+            </Button>
+          </motion.div>
+        </div>
+        <motion.div 
+            className="relative h-80 w-full md:h-full"
+            variants={imageItemVariants}
+        >
+            <Image 
+                src={heroImage} 
+                alt="Nairobi Tech Hub" 
+                fill
+                className="rounded-3xl object-cover shadow-2xl"
+                sizes="(max-width: 768px) 100vw, 50vw"
+            />
         </motion.div>
       </motion.div>
     </section>
