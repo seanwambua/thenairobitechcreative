@@ -21,7 +21,7 @@ import { useToast } from '@/hooks/use-toast';
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
   const { toast } = useToast();
-  const { slug } = React.use(React.createContext(params));
+  const { slug } = params;
   const post = posts.find((p) => p.slug === slug);
 
   const [likes, setLikes] = useState(post?.likes || 0);
