@@ -1,3 +1,4 @@
+
 'use client';
 import { useRef, ChangeEvent, useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -13,11 +14,12 @@ import { placeholderImages, type ImagePlaceholder } from '@/lib/placeholder-imag
 import { CheckCircle, Upload, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
-import { Logo } from '@/components/logo';
 import { Input } from '@/components/ui/input';
 import { useMediaStore } from '@/store/media';
 import { usePostStore } from '@/store/posts';
 import { PostImageManager } from '@/components/post-image-manager';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Stamp } from '@/components/stamp';
 
 const defaultHeroImages = [
   placeholderImages.hero,
@@ -27,12 +29,17 @@ const defaultHeroImages = [
 ];
 
 export default function MediaPage() {
-  const { heroImage, setHeroImage, logo, setLogo } = useMediaStore();
+  const { 
+    heroImage, setHeroImage, 
+    logo, setLogo,
+    founderImage, setFounderImage
+  } = useMediaStore();
   const { posts } = usePostStore();
   const [heroImageOptions, setHeroImageOptions] = useState<ImagePlaceholder[]>(defaultHeroImages);
 
   const logoFileInputRef = useRef<HTMLInputElement>(null);
   const heroImageFileInputRef = useRef<HTMLInputElement>(null);
+  const founderImageFileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   
   useEffect(() => {
@@ -86,6 +93,34 @@ export default function MediaPage() {
       reader.readAsDataURL(file);
     }
   };
+  
+  const handleFounderImageUploadClick = () => {
+    founderImageFileInputRef.current?.click();
+  };
+
+  const handleRemoveFounderImage = () => {
+    setFounderImage(placeholderImages.founder.imageUrl);
+     toast({
+        title: 'Founder Image Reset',
+        description: 'The founder image has been reset to the default.',
+    });
+  };
+  
+  const handleFounderImageFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const newFounderImageUrl = reader.result as string;
+        setFounderImage(newFounderImageUrl);
+        toast({
+          title: 'Founder Image Updated',
+          description: 'Your new founder image has been set.',
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleHeroImageUploadClick = () => {
     heroImageFileInputRef.current?.click();
@@ -94,7 +129,6 @@ export default function MediaPage() {
   const handleResetHeroImage = () => {
     const defaultHero = placeholderImages.hero.imageUrl;
     setHeroImage(defaultHero);
-    // Remove custom image from options if it exists
     setHeroImageOptions(defaultHeroImages);
     toast({
       title: 'Hero Image Reset',
@@ -185,7 +219,7 @@ export default function MediaPage() {
           </CardHeader>
           <CardContent className="flex flex-col items-center gap-6">
             <div className="flex h-48 w-48 items-center justify-center rounded-full overflow-hidden border-2 border-dashed bg-muted/50 p-4">
-              <Logo />
+              <Stamp />
             </div>
              <Input
                 type="file"
@@ -205,6 +239,39 @@ export default function MediaPage() {
                         Remove Logo
                     </Button>
                 )}
+              </div>
+          </CardContent>
+        </Card>
+         <Card>
+          <CardHeader>
+            <CardTitle>Founder Image</CardTitle>
+            <CardDescription>
+              Manage the founder's photo for the dashboard.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col items-center gap-6">
+            <Avatar className="h-48 w-48 border-4 border-dashed bg-muted/50">
+              <AvatarImage src={founderImage} alt="Founder" />
+              <AvatarFallback>
+                {placeholderImages.founder.imageHint.split(' ').map(n => n[0]).join('')}
+              </AvatarFallback>
+            </Avatar>
+             <Input
+                type="file"
+                ref={founderImageFileInputRef}
+                className="hidden"
+                onChange={handleFounderImageFileChange}
+                accept="image/png, image/jpeg"
+              />
+              <div className="flex w-full gap-2">
+                <Button onClick={handleFounderImageUploadClick} className="w-full">
+                    <Upload className="mr-2 h-4 w-4" />
+                    Upload Photo
+                </Button>
+                <Button onClick={handleRemoveFounderImage} variant="destructive" className="w-full">
+                    <X className="mr-2 h-4 w-4" />
+                    Reset
+                </Button>
               </div>
           </CardContent>
         </Card>

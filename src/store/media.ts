@@ -1,3 +1,4 @@
+
 'use client';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
@@ -7,7 +8,9 @@ interface MediaState {
   heroImage: string;
   setHeroImage: (imageUrl: string) => void;
   logo: string | null;
-  setLogo: (logoUrl: string) => void;
+  setLogo: (logoUrl: string | null) => void;
+  founderImage: string;
+  setFounderImage: (imageUrl: string) => void;
 }
 
 export const useMediaStore = create(
@@ -17,6 +20,8 @@ export const useMediaStore = create(
       setHeroImage: (imageUrl) => set({ heroImage: imageUrl }),
       logo: null,
       setLogo: (logoUrl) => set({ logo: logoUrl }),
+      founderImage: placeholderImages.founder.imageUrl,
+      setFounderImage: (imageUrl) => set({ founderImage: imageUrl }),
     }),
     {
       name: 'media-storage',

@@ -23,13 +23,12 @@ import {
   LayoutGrid,
   LogOut,
   NotebookText,
-  Image,
+  Image as ImageIcon,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Stamp } from '@/components/stamp';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { placeholderImages } from '@/lib/placeholder-images';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,7 +39,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { Logo } from '@/components/logo';
+import { useMediaStore } from '@/store/media';
+import { placeholderImages } from '@/lib/placeholder-images';
 
 export default function DashboardLayout({
   children,
@@ -48,7 +48,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const founderImage = placeholderImages.founder;
+  const { founderImage } = useMediaStore();
   
   return (
     <SidebarProvider>
@@ -96,7 +96,7 @@ export default function DashboardLayout({
                 tooltip="Media"
               >
                 <Link href="/dashboard/media">
-                  <Image />
+                  <ImageIcon />
                   <span>Media</span>
                 </Link>
               </SidebarMenuButton>
@@ -130,13 +130,14 @@ export default function DashboardLayout({
         <SidebarFooter>
           <div className="flex items-center justify-between group-data-[collapsible=icon]:justify-center">
             <div className="flex items-center gap-3 group-data-[collapsible=icon]:hidden">
-              <Avatar className="h-10 w-10 bg-muted rounded-full overflow-hidden">
-                 <div className="flex h-full w-full items-center justify-center">
-                   <Logo />
-                 </div>
+              <Avatar className="h-10 w-10">
+                 <AvatarImage src={founderImage} alt={placeholderImages.founder.imageHint} />
+                 <AvatarFallback>
+                  {placeholderImages.founder.imageHint.split(' ').map((n) => n[0]).join('')}
+                 </AvatarFallback>
               </Avatar>
               <div>
-                <p className="font-semibold">{founderImage.imageHint}</p>
+                <p className="font-semibold">{placeholderImages.founder.imageHint}</p>
                 <p className="text-sm text-muted-foreground">Admin</p>
               </div>
             </div>
