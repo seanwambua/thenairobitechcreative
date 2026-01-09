@@ -27,7 +27,6 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Stamp } from '@/components/stamp';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -41,6 +40,7 @@ import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { useMediaStore } from '@/store/media';
 import { placeholderImages } from '@/lib/placeholder-images';
+import { Logo } from '@/components/logo';
 
 export default function DashboardLayout({
   children,
@@ -56,7 +56,7 @@ export default function DashboardLayout({
         <SidebarHeader>
           <div className="flex items-center gap-3">
             <div className="h-8 w-8 rounded-full overflow-hidden flex items-center justify-center">
-              <Stamp />
+              <Logo />
             </div>
             <span className="hidden font-headline text-xl font-semibold sm:inline-block group-data-[collapsible=icon]:hidden">
               Dashboard

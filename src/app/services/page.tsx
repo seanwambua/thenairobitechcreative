@@ -1,3 +1,4 @@
+
 'use client';
 import * as React from 'react';
 import { Header } from '@/components/layout/header';
@@ -29,7 +30,7 @@ import {
   ServerCog,
   Plus,
 } from 'lucide-react';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   HoverCard,
   HoverCardContent,
@@ -37,7 +38,7 @@ import {
 } from '@/components/ui/hover-card';
 import { placeholderImages } from '@/lib/placeholder-images';
 import { Separator } from '@/components/ui/separator';
-import { Button } from '@/components/ui/button';
+import { useMediaStore } from '@/store/media';
 import { InquirySheet } from '@/components/inquiry-sheet';
 
 const iconMap: { [key: string]: LucideIcon } = {
@@ -57,8 +58,9 @@ export default function ServicesPage() {
     visible: { opacity: 1, y: 0 },
   };
 
-  const founderImage = placeholderImages.founder;
-  const founderInitials = founderImage.imageHint
+  const { founderImage } = useMediaStore();
+  const founderInfo = placeholderImages.founder;
+  const founderInitials = founderInfo.imageHint
     .split(' ')
     .map((n) => n[0])
     .join('');
@@ -83,6 +85,7 @@ export default function ServicesPage() {
                 <HoverCardTrigger asChild>
                   <div className="group relative">
                     <Avatar className="h-24 w-24 cursor-pointer transition-all duration-300 md:h-32 md:w-32">
+                      <AvatarImage src={founderImage} alt={founderInfo.imageHint} />
                       <AvatarFallback>{founderInitials}</AvatarFallback>
                     </Avatar>
                     <div className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-background bg-primary text-primary-foreground shadow-lg transition-transform duration-300 group-hover:scale-125">
@@ -94,10 +97,12 @@ export default function ServicesPage() {
                   <div className="flex flex-col gap-4">
                     <div className="flex justify-between space-x-4">
                       <Avatar>
+                        <AvatarImage src={founderImage} alt={founderInfo.imageHint} />
                         <AvatarFallback>{founderInitials}</AvatarFallback>
                       </Avatar>
                       <div className="space-y-1">
                         <h4 className="text-sm font-semibold">A Message from the Founder</h4>
+                        <p className="text-sm text-muted-foreground">{founderInfo.imageHint}</p>
                       </div>
                     </div>
                     <Separator />
