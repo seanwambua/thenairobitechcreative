@@ -22,6 +22,7 @@ import {
   MoreHorizontal,
   LayoutGrid,
   LogOut,
+  NotebookText,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -75,6 +76,18 @@ export default function DashboardLayout({
                 <Link href="/dashboard">
                   <LayoutGrid />
                   <span>Dashboard</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname.startsWith('/dashboard/content')}
+                tooltip="Content"
+              >
+                <Link href="/dashboard/content">
+                  <NotebookText />
+                  <span>Content</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
