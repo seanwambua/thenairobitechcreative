@@ -123,7 +123,7 @@ export default function ServicesPage() {
               </HoverCard>
             </div>
 
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <div className="mx-auto grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-2">
               {services.map((service, index) => {
                 const Icon = iconMap[service.icon as keyof typeof iconMap];
                 return (
@@ -149,35 +149,34 @@ export default function ServicesPage() {
                       <CardContent className="flex flex-1 flex-col p-0 pt-4">
                         <p className="flex-1 text-muted-foreground">{service.description}</p>
                         <div className="my-6">
-                            <div className="flex items-baseline">
-                                {service.price !== 'Custom' && (
-                                <span className="mr-2 text-sm font-medium text-muted-foreground">Starting from</span>
-                                )}
-                                <span className="font-headline text-4xl font-extrabold tracking-tight">
-                                {service.price}
-                                </span>
-                                <span className="ml-1 text-sm font-medium text-muted-foreground">
-                                {service.priceSuffix}
-                                </span>
-                            </div>
+                          <div className="flex items-baseline">
+                            {service.price !== 'Custom' && (
+                              <span className="mr-2 text-sm font-medium text-muted-foreground">
+                                Starting from
+                              </span>
+                            )}
+                            <span className="font-headline text-4xl font-extrabold tracking-tight">
+                              {service.price}
+                            </span>
+                            <span className="ml-1 text-sm font-medium text-muted-foreground">
+                              {service.priceSuffix}
+                            </span>
+                          </div>
                         </div>
                         <ul className="space-y-3">
-                            {service.features.map((feature) => (
+                          {service.features.map((feature) => (
                             <li key={feature} className="flex items-start">
-                                <Check className="mr-2 mt-1 h-5 w-5 flex-shrink-0 text-primary" />
-                                <span className="text-muted-foreground">{feature}</span>
+                              <Check className="mr-2 mt-1 h-5 w-5 flex-shrink-0 text-primary" />
+                              <span className="text-muted-foreground">{feature}</span>
                             </li>
-                            ))}
+                          ))}
                         </ul>
                       </CardContent>
                       <CardFooter className="p-0 pt-6">
                         <InquirySheet>
-                            <Button
-                            className="w-full"
-                            variant='outline'
-                            >
+                          <Button className="w-full" variant="outline">
                             Get Started
-                            </Button>
+                          </Button>
                         </InquirySheet>
                       </CardFooter>
                     </Card>
