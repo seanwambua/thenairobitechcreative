@@ -25,6 +25,7 @@ import {
   LogOut,
   NotebookText,
   Image as ImageIcon,
+  Star,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -50,6 +51,11 @@ export default function DashboardLayout({
 }) {
   const pathname = usePathname();
   const { founderImage } = useMediaStore();
+  const founderInfo = placeholderImages.founder;
+  const founderInitials = founderInfo.imageHint
+    .split(' ')
+    .map((n) => n[0])
+    .join('');
   
   return (
     <SidebarProvider>
@@ -117,6 +123,18 @@ export default function DashboardLayout({
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
+                isActive={pathname.startsWith('/dashboard/testimonials')}
+                tooltip="Testimonials"
+              >
+                <Link href="/dashboard/testimonials">
+                  <Star />
+                  <span>Testimonials</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
                 isActive={pathname.startsWith('/dashboard/analytics')}
                 tooltip="Analytics"
               >
@@ -132,13 +150,13 @@ export default function DashboardLayout({
           <div className="flex items-center justify-between group-data-[collapsible=icon]:justify-center">
             <div className="flex items-center gap-3 group-data-[collapsible=icon]:hidden">
               <Avatar className="h-10 w-10">
-                 <AvatarImage src={founderImage} alt={placeholderImages.founder.imageHint} />
+                 <AvatarImage src={founderImage} alt={founderInfo.imageHint} />
                  <AvatarFallback>
-                  {placeholderImages.founder.imageHint.split(' ').map((n) => n[0]).join('')}
+                  {founderInitials}
                  </AvatarFallback>
               </Avatar>
               <div>
-                <p className="font-semibold">{placeholderImages.founder.imageHint}</p>
+                <p className="font-semibold">{founderInfo.imageHint}</p>
                 <p className="text-sm text-muted-foreground">Admin</p>
               </div>
             </div>

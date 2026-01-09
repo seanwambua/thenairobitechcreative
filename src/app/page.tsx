@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Header } from '@/components/layout/header';
@@ -5,7 +6,7 @@ import { Footer } from '@/components/layout/footer';
 import { Hero } from '@/components/hero';
 import { ProspectsBanner } from '@/components/prospects-banner';
 import { BentoPortfolio } from '@/components/bento-portfolio';
-import { testimonials, faqs } from '@/lib/data';
+import { faqs } from '@/lib/data';
 import { Cta } from '@/components/cta';
 import { Testimonials } from '@/components/testimonials';
 import {
@@ -17,10 +18,12 @@ import {
 import { motion } from 'framer-motion';
 import { useMediaStore } from '@/store/media';
 import { useProjectStore } from '@/store/projects';
+import { useTestimonialStore } from '@/store/testimonials';
 
 export default function Home() {
   const { heroImage } = useMediaStore();
   const { projects } = useProjectStore();
+  const { testimonials } = useTestimonialStore();
 
   const sectionVariants = {
     hidden: { opacity: 0, y: 50 },
