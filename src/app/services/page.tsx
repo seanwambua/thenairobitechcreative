@@ -81,7 +81,7 @@ export default function ServicesPage() {
                         {placeholderImages.founder.imageHint.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-background bg-primary text-primary-foreground shadow-lg transition-transform duration-300 group-hover:scale-125 animate-pulse">
+                    <div className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-background bg-primary text-primary-foreground shadow-lg transition-transform duration-300 group-hover:scale-125">
                       <Plus className="h-4 w-4" />
                     </div>
                   </div>
