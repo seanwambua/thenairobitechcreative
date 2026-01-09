@@ -79,7 +79,7 @@ export function Hero({heroImage}: {heroImage: string}) {
           </motion.div>
         </div>
         <motion.div 
-            className="relative h-[600px] w-full md:h-full"
+            className="relative h-[1000px] w-full md:h-full"
             variants={imageItemVariants}
         >
             <Image 
