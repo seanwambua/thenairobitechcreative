@@ -25,6 +25,13 @@ import {
   Scaling,
   ServerCog,
 } from 'lucide-react';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 const iconMap: { [key: string]: LucideIcon } = {
   ScanSearch,
@@ -96,15 +103,35 @@ export default function ServicesPage() {
 
         <section className="border-t py-20 lg:py-24">
           <div className="container mx-auto max-w-3xl px-4">
-             <div className="mx-auto mb-16 text-center">
-              <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-                How We Do It
-              </h2>
-              <p className="mt-3 text-lg text-muted-foreground">
-                Our collaborative process ensures we build the right thing, the right way.
-              </p>
+            <div className="relative mx-auto mb-16 text-center">
+              <div className="flex items-center justify-center gap-6">
+                <div>
+                  <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+                    How We Do It
+                  </h2>
+                  <p className="mt-3 text-lg text-muted-foreground">
+                    Our collaborative process ensures we build the right thing, the right way.
+                  </p>
+                </div>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Avatar className="h-16 w-16 cursor-pointer grayscale transition-all duration-300 hover:grayscale-0">
+                        <AvatarImage
+                          src={founderImage.imageUrl}
+                          alt="Founder"
+                          data-ai-hint={founderImage.imageHint}
+                        />
+                      </Avatar>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Meet the founder</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </div>
-            
+
             <Accordion type="single" collapsible className="w-full">
               {processSteps.map((step, index) => (
                 <motion.div
