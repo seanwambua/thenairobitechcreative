@@ -150,7 +150,7 @@ export const pricingPlans: PricingPlan[] = [
       id: 1,
       title: 'Consultation',
       description: "One-on-one guidance to refine your idea, define your strategy, and create a clear roadmap for your project.",
-      price: '2,000',
+      price: '5,000',
       priceSuffix: '',
       features: [
         "1-Hour Intensive Strategy Session",
