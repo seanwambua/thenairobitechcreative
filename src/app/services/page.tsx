@@ -7,13 +7,6 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { placeholderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel';
 import { Cta } from '@/components/cta';
 import {
   Check,
@@ -26,6 +19,8 @@ import {
   Rocket,
   Scaling,
   ServerCog,
+  ArrowDown,
+  ArrowRight,
 } from 'lucide-react';
 
 const iconMap: { [key: string]: LucideIcon } = {
@@ -139,48 +134,41 @@ export default function ServicesPage() {
                 concept to launch and beyond.
               </p>
             </div>
-            <Carousel
-              opts={{
-                align: 'start',
-                loop: false,
-              }}
-              className="mx-auto w-full max-w-4xl"
-            >
-              <CarouselContent>
-                {processSteps.map((step, index) => {
-                  const Icon = step.icon;
-                  return (
-                    <CarouselItem key={index} className="md:basis-1/2">
-                      <motion.div
-                        className="p-2"
-                        initial={{ opacity: 0, y: 50 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, amount: 0.3 }}
-                        transition={{ duration: 0.5, delay: index * 0.1 }}
-                      >
-                        <Card className="flex h-full flex-col">
-                          <CardHeader className="items-center text-center">
-                            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border-4 border-background bg-primary text-primary-foreground">
-                              <Icon className="h-8 w-8" />
-                            </div>
-                            <CardTitle className="font-headline text-xl font-semibold text-primary">
-                              {step.title}
-                            </CardTitle>
-                          </CardHeader>
-                          <CardContent className="flex-1">
-                            <p className="text-center text-muted-foreground">
-                              {step.description}
-                            </p>
-                          </CardContent>
-                        </Card>
-                      </motion.div>
-                    </CarouselItem>
-                  );
-                })}
-              </CarouselContent>
-              <CarouselPrevious className="-left-4 md:-left-12" />
-              <CarouselNext className="-right-4 md:-right-12" />
-            </Carousel>
+            <div className="relative mx-auto grid max-w-4xl gap-x-8 gap-y-12 md:grid-cols-2">
+              {/* Connector Lines */}
+              <div className="absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-border md:block"></div>
+              <div className="absolute left-0 top-1/2 hidden w-full -translate-y-1/2 border-t border-border md:block"></div>
+              
+              {processSteps.map((step, index) => {
+                const Icon = step.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    className="relative"
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
+                    <Card className="flex h-full flex-col">
+                      <CardHeader className="items-center text-center">
+                        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border-4 border-background bg-primary text-primary-foreground">
+                          <Icon className="h-8 w-8" />
+                        </div>
+                        <CardTitle className="font-headline text-xl font-semibold text-primary">
+                          {step.title}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="flex-1">
+                        <p className="text-center text-muted-foreground">
+                          {step.description}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                );
+              })}
+            </div>
           </div>
         </section>
 
