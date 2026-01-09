@@ -39,25 +39,25 @@ const processSteps = [
     icon: ScanSearch,
     title: '1. Discover',
     description:
-      'Our journey begins with a deep-dive immersion into your world. We host collaborative workshops with your stakeholders to understand your vision, business goals, user needs, and market landscape. This phase is all about listening, learning, and building a shared understanding to lay a strong strategic foundation for the project.',
+      'We start with collaborative workshops to deeply understand your vision, goals, and user needs, laying a strong strategic foundation.',
   },
   {
     icon: LayoutTemplate,
     title: '2. Define',
     description:
-      'With the insights from discovery, we translate ideas into a concrete plan. This involves creating detailed user personas, mapping out user journeys, defining the technical architecture, and creating wireframes and interactive prototypes. We establish a clear project roadmap, scope, and timeline, ensuring everyone is aligned before we write a single line of code.',
+      'We translate insights into a concrete plan with user journeys, wireframes, and a clear project roadmap, ensuring full alignment before development begins.',
   },
   {
     icon: Rocket,
     title: '3. Develop',
     description:
-      'Using an agile, sprint-based approach, our cross-functional team gets to work. Designers and developers collaborate closely to build, test, and iterate on your product in rapid cycles. We hold regular demo sessions to show progress, gather feedback, and ensure the product is evolving in line with your expectations.',
+      'Using an agile, sprint-based approach, our team builds, tests, and iterates on your product in rapid cycles, with regular demos to gather your feedback.',
   },
   {
     icon: Scaling,
     title: '4. Deploy',
     description:
-      "This is where your vision becomes a reality. We manage a seamless, phased launch, from setting up scalable cloud infrastructure to final quality assurance testing. After launch, we monitor performance and provide ongoing support and maintenance to ensure your product operates smoothly, thrives in the market, and scales effectively as your business grows.",
+      'We manage a seamless launch, from scalable cloud infrastructure to final QA. Post-launch, we provide ongoing support to ensure your product thrives.',
   },
 ];
 
@@ -135,9 +135,10 @@ export default function ServicesPage() {
               </p>
             </div>
             <div className="relative mx-auto grid max-w-4xl gap-x-8 gap-y-12 md:grid-cols-2">
-              {/* Connector Lines */}
-              <div className="absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-border md:block"></div>
-              <div className="absolute left-0 top-1/2 hidden w-full -translate-y-1/2 border-t border-border md:block"></div>
+              {/* Connector Lines for Desktop */}
+              <div className="absolute left-1/2 top-1/2 hidden h-1/2 w-px -translate-x-1/2 -translate-y-full bg-border md:block"></div>
+              <div className="absolute left-1/2 top-1/2 hidden w-1/2 -translate-x-full border-t border-border md:block"></div>
+              <div className="absolute left-1/2 top-1/2 hidden h-1/2 w-px -translate-x-1/2 translate-y-full bg-border md:block"></div>
               
               {processSteps.map((step, index) => {
                 const Icon = step.icon;
