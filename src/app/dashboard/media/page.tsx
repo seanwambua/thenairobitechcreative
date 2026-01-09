@@ -1,6 +1,6 @@
 
 'use client';
-import { useRef, ChangeEvent } from 'react';
+import { useRef, ChangeEvent, useState, useEffect } from 'react';
 import Image from 'next/image';
 import {
   Card,
@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { placeholderImages } from '@/lib/placeholder-images';
+import { placeholderImages, type ImagePlaceholder } from '@/lib/placeholder-images';
 import { CheckCircle, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
@@ -18,7 +18,7 @@ import { Logo } from '@/components/logo';
 import { Input } from '@/components/ui/input';
 import { useMediaStore } from '@/store/media';
 
-const heroImageOptions = [
+const defaultHeroImages = [
   placeholderImages.hero,
   placeholderImages.design,
   placeholderImages.finance,
@@ -27,9 +27,30 @@ const heroImageOptions = [
 
 export default function MediaPage() {
   const { heroImage, setHeroImage, logo, setLogo } = useMediaStore();
+  const [heroImageOptions, setHeroImageOptions] = useState<ImagePlaceholder[]>(defaultHeroImages);
+
   const logoFileInputRef = useRef<HTMLInputElement>(null);
   const heroImageFileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  
+  useEffect(() => {
+    // If the heroImage from the store is a custom one (not in default options),
+    // add it to the display list so it can be shown as active.
+    const isCustomImage = !defaultHeroImages.some(opt => opt.imageUrl === heroImage);
+    if (isCustomImage && heroImage) {
+        const customImagePlaceholder: ImagePlaceholder = {
+            id: 'custom',
+            description: 'Custom uploaded image',
+            imageUrl: heroImage,
+            imageHint: 'custom upload'
+        };
+        // Avoid adding duplicates
+        if (!heroImageOptions.some(opt => opt.imageUrl === heroImage)) {
+            setHeroImageOptions([customImagePlaceholder, ...heroImageOptions]);
+        }
+    }
+  }, [heroImage, heroImageOptions]);
+
 
   const handleSelectImage = (imageUrl: string) => {
     setHeroImage(imageUrl);
