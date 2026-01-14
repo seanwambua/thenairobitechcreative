@@ -1,3 +1,4 @@
+
 'use client';
 import {Button} from '@/components/ui/button';
 import {motion} from 'framer-motion';
@@ -41,7 +42,7 @@ export function Hero({heroImage}: {heroImage: string}) {
   return (
     <section className="flex w-full h-auto items-center bg-background">
       <motion.div
-        className="container mx-auto grid grid-cols-1 items-center gap-12 px-4 py-24 md:grid-cols-2 lg:gap-20"
+        className="container mx-auto flex flex-col items-center gap-12 px-4 py-24 md:grid md:grid-cols-2 lg:gap-20 lg:px-8"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -79,7 +80,7 @@ export function Hero({heroImage}: {heroImage: string}) {
           </motion.div>
         </div>
         <motion.div 
-            className="relative h-80 w-full md:h-full"
+            className="relative h-[600px] w-full md:h-full"
             variants={imageItemVariants}
         >
             <Image 
@@ -96,3 +97,4 @@ export function Hero({heroImage}: {heroImage: string}) {
     </section>
   );
 }
+
