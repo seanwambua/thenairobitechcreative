@@ -76,7 +76,7 @@ export function InquirySheet({ children }: InquirySheetProps) {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>{children}</SheetTrigger>
-      <SheetContent className="h-full w-full overflow-y-auto sm:max-w-full">
+      <SheetContent className="h-full w-full overflow-y-auto sm:max-w-md">
         <div className="mx-auto max-w-2xl py-12">
           <SheetHeader className="text-center">
             <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full overflow-hidden">

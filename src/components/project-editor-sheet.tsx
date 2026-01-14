@@ -162,7 +162,7 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project }: ProjectEditor
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetContent className="w-full overflow-y-auto sm:max-w-full">
+      <SheetContent className="w-full sm:max-w-3xl overflow-y-auto">
         <SheetHeader>
           <SheetTitle>{project ? 'Edit Project' : 'Create New Project'}</SheetTitle>
           <SheetDescription>

@@ -71,7 +71,7 @@ export default function ServicesPage() {
       <main className="flex-1">
         <section className="py-20 lg:py-24">
           <div className="container mx-auto px-4">
-            <div className="mx-auto mb-16 flex max-w-4xl flex-col items-center justify-center gap-6 text-center md:flex-row md:text-left">
+            <div className="mx-auto mb-16 flex max-w-4xl flex-col items-center justify-center gap-6 text-center md:flex-row md:items-start md:text-left">
               <div className="flex-1">
                 <h1 className="font-headline text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl">
                   Our Services & Philosophy

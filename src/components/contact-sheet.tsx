@@ -57,7 +57,7 @@ export function ContactSheet({ children }: { children: React.ReactNode }) {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>{children}</SheetTrigger>
-      <SheetContent>
+      <SheetContent className="w-full sm:max-w-md">
         <SheetHeader>
           <SheetTitle>Contact Us</SheetTitle>
           <SheetDescription>Fill out the form to start a conversation.</SheetDescription>

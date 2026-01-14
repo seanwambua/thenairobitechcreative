@@ -42,7 +42,7 @@ export function Hero({heroImage}: {heroImage: string}) {
   return (
     <section className="flex w-full h-auto items-center bg-background">
       <motion.div
-        className="container mx-auto flex flex-col items-center gap-12 px-4 py-24 md:grid md:grid-cols-2 lg:gap-20 lg:px-8"
+        className="container mx-auto flex flex-col items-center gap-12 px-4 py-24 md:grid md:grid-cols-2 lg:gap-20"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -97,4 +97,5 @@ export function Hero({heroImage}: {heroImage: string}) {
     </section>
   );
 }
+
 
