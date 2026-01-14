@@ -48,7 +48,7 @@ export function Testimonials({ testimonials }: TestimonialsProps) {
           transition={{ duration: 0.5 }}
           className="mx-auto mb-16 max-w-3xl text-center"
         >
-          <h2 className="font-headline text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl">
+          <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
             Trusted by Innovators
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
