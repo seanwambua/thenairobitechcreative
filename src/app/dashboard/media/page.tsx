@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { placeholderImages, type ImagePlaceholder } from '@/lib/placeholder-images';
-import { CheckCircle, Upload, X } from 'lucide-react';
+import { CheckCircle, Upload, X, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
@@ -36,6 +36,7 @@ export default function MediaPage() {
   } = useMediaStore();
   const { posts } = usePostStore();
   const [heroImageOptions, setHeroImageOptions] = useState<ImagePlaceholder[]>(defaultHeroImages);
+  const [isUploading, setIsUploading] = useState<string | null>(null);
 
   const logoFileInputRef = useRef<HTMLInputElement>(null);
   const heroImageFileInputRef = useRef<HTMLInputElement>(null);
@@ -56,6 +57,51 @@ export default function MediaPage() {
         }
     }
   }, [heroImage, heroImageOptions]);
+
+  const handleFileChange = async (
+    event: ChangeEvent<HTMLInputElement>,
+    setter: (url: string) => void,
+    uploadType: string,
+    successTitle: string,
+    successDescription: string
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setIsUploading(uploadType);
+      try {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = async () => {
+          const base64data = reader.result;
+          const res = await fetch('/api/upload', {
+            method: 'POST',
+            body: JSON.stringify({ file: base64data }),
+            headers: { 'Content-Type': 'application/json' },
+          });
+
+          if (!res.ok) {
+            throw new Error('Upload failed');
+          }
+
+          const { secure_url } = await res.json();
+          setter(secure_url);
+          toast({
+            title: successTitle,
+            description: successDescription,
+          });
+        };
+      } catch (error) {
+        console.error(error);
+        toast({
+          variant: 'destructive',
+          title: 'Upload Failed',
+          description: 'There was a problem uploading your image.',
+        });
+      } finally {
+        setIsUploading(null);
+      }
+    }
+  };
 
 
   const handleSelectImage = (imageUrl: string) => {
@@ -78,22 +124,6 @@ export default function MediaPage() {
     });
   };
 
-  const handleLogoFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const newLogoUrl = reader.result as string;
-        setLogo(newLogoUrl);
-        toast({
-          title: 'Logo Updated',
-          description: 'Your new logo has been applied across the site.',
-        });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-  
   const handleFounderImageUploadClick = () => {
     founderImageFileInputRef.current?.click();
   };
@@ -106,22 +136,6 @@ export default function MediaPage() {
     });
   };
   
-  const handleFounderImageFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const newFounderImageUrl = reader.result as string;
-        setFounderImage(newFounderImageUrl);
-        toast({
-          title: 'Founder Image Updated',
-          description: 'Your new founder image has been set.',
-        });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleHeroImageUploadClick = () => {
     heroImageFileInputRef.current?.click();
   };
@@ -134,22 +148,6 @@ export default function MediaPage() {
       title: 'Hero Image Reset',
       description: 'The hero image has been reset to the default.',
     });
-  };
-
-  const handleHeroImageFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const newHeroImageUrl = reader.result as string;
-        setHeroImage(newHeroImageUrl);
-        toast({
-          title: 'Hero Image Uploaded',
-          description: 'The homepage hero image has been updated with your uploaded image.',
-        });
-      };
-      reader.readAsDataURL(file);
-    }
   };
 
   return (
@@ -195,12 +193,12 @@ export default function MediaPage() {
                 type="file"
                 ref={heroImageFileInputRef}
                 className="hidden"
-                onChange={handleHeroImageFileChange}
+                onChange={(e) => handleFileChange(e, setHeroImage, 'hero', 'Hero Image Uploaded', 'The homepage hero image has been updated.')}
                 accept="image/png, image/jpeg, image/webp"
               />
               <div className="flex gap-2">
-                <Button onClick={handleHeroImageUploadClick} variant="outline" className="w-full">
-                    <Upload className="mr-2 h-4 w-4" />
+                <Button onClick={handleHeroImageUploadClick} variant="outline" className="w-full" disabled={isUploading === 'hero'}>
+                    {isUploading === 'hero' ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
                     Upload Image
                 </Button>
                 <Button onClick={handleResetHeroImage} variant="destructive" className="w-full">
@@ -225,12 +223,12 @@ export default function MediaPage() {
                 type="file"
                 ref={logoFileInputRef}
                 className="hidden"
-                onChange={handleLogoFileChange}
+                onChange={(e) => handleFileChange(e, setLogo as (url: string) => void, 'logo', 'Logo Updated', 'Your new logo has been applied.')}
                 accept="image/png, image/jpeg, image/svg+xml"
               />
               <div className="flex w-full gap-2">
-                <Button onClick={handleLogoUploadClick} className="w-full">
-                    <Upload className="mr-2 h-4 w-4" />
+                <Button onClick={handleLogoUploadClick} className="w-full" disabled={isUploading === 'logo'}>
+                    {isUploading === 'logo' ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
                     Upload Logo
                 </Button>
                 {logo && (
@@ -260,12 +258,12 @@ export default function MediaPage() {
                 type="file"
                 ref={founderImageFileInputRef}
                 className="hidden"
-                onChange={handleFounderImageFileChange}
+                onChange={(e) => handleFileChange(e, setFounderImage, 'founder', 'Founder Image Updated', 'Your new founder image has been set.')}
                 accept="image/png, image/jpeg"
               />
               <div className="flex w-full gap-2">
-                <Button onClick={handleFounderImageUploadClick} className="w-full">
-                    <Upload className="mr-2 h-4 w-4" />
+                <Button onClick={handleFounderImageUploadClick} className="w-full" disabled={isUploading === 'founder'}>
+                    {isUploading === 'founder' ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
                     Upload Photo
                 </Button>
                 <Button onClick={handleRemoveFounderImage} variant="destructive" className="w-full">

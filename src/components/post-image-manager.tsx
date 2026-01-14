@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useRef, ChangeEvent } from 'react';
+import React, { useRef, ChangeEvent, useState } from 'react';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Upload, X } from 'lucide-react';
+import { Upload, X, Loader2 } from 'lucide-react';
 import { usePostStore, type Post } from '@/store/posts';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
@@ -20,27 +20,53 @@ export function PostImageManager({ post }: PostImageManagerProps) {
   const { toast } = useToast();
   const coverImageInputRef = useRef<HTMLInputElement>(null);
   const avatarImageInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState<string | null>(null);
 
-  const handleImageUpload = (file: File, imageType: 'cover' | 'avatar') => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const newImageUrl = reader.result as string;
-      const updatedPost = { ...post };
+  const handleImageUpload = async (file: File, imageType: 'cover' | 'avatar') => {
+    const uploadId = `${post.id}-${imageType}`;
+    setIsUploading(uploadId);
+    try {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = async () => {
+        const base64data = reader.result;
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          body: JSON.stringify({ file: base64data }),
+          headers: { 'Content-Type': 'application/json' },
+        });
 
-      if (imageType === 'cover') {
-        updatedPost.imageUrl = newImageUrl;
-      } else {
-        updatedPost.authorAvatarUrl = newImageUrl;
-      }
+        if (!res.ok) {
+          throw new Error('Upload failed');
+        }
 
-      updatePost(updatedPost);
+        const { secure_url } = await res.json();
+        const updatedPost = { ...post };
+
+        if (imageType === 'cover') {
+          updatedPost.imageUrl = secure_url;
+        } else {
+          updatedPost.authorAvatarUrl = secure_url;
+        }
+
+        updatePost(updatedPost);
+        toast({
+          title: 'Image Updated!',
+          description: `The ${imageType} image for "${post.title}" has been updated.`,
+        });
+      };
+    } catch (error) {
+      console.error(error);
       toast({
-        title: 'Image Updated!',
-        description: `The ${imageType === 'cover' ? 'cover image' : 'author avatar'} for "${post.title}" has been updated.`,
+        variant: 'destructive',
+        title: 'Upload Failed',
+        description: 'There was a problem uploading your image.',
       });
-    };
-    reader.readAsDataURL(file);
+    } finally {
+      setIsUploading(null);
+    }
   };
+
 
   const onFileChange = (event: ChangeEvent<HTMLInputElement>, imageType: 'cover' | 'avatar') => {
     const file = event.target.files?.[0];
@@ -101,8 +127,9 @@ export function PostImageManager({ post }: PostImageManagerProps) {
                 variant="outline"
                 className="w-full"
                 onClick={() => coverImageInputRef.current?.click()}
+                disabled={isUploading === `${post.id}-cover`}
             >
-                <Upload className="mr-2 h-4 w-4" />
+                {isUploading === `${post.id}-cover` ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
                 Upload
             </Button>
             <Button
@@ -111,7 +138,7 @@ export function PostImageManager({ post }: PostImageManagerProps) {
                 onClick={() => handleImageReset('cover')}
             >
                 <X className="mr-2 h-4 w-4" />
-                Remove
+                Reset
             </Button>
           </div>
         </div>
@@ -137,8 +164,9 @@ export function PostImageManager({ post }: PostImageManagerProps) {
                 variant="outline"
                 className="w-full"
                 onClick={() => avatarImageInputRef.current?.click()}
+                disabled={isUploading === `${post.id}-avatar`}
             >
-                <Upload className="mr-2 h-4 w-4" />
+                {isUploading === `${post.id}-avatar` ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
                 Upload
             </Button>
              <Button
@@ -147,7 +175,7 @@ export function PostImageManager({ post }: PostImageManagerProps) {
                 onClick={() => handleImageReset('avatar')}
             >
                 <X className="mr-2 h-4 w-4" />
-                Remove
+                Reset
             </Button>
           </div>
         </div>

@@ -29,7 +29,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useTestimonialStore, type Testimonial } from '@/store/testimonials';
 import { placeholderImages } from '@/lib/placeholder-images';
-import { Upload } from 'lucide-react';
+import { Upload, Loader2 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
 const formSchema = z.object({
@@ -55,6 +55,7 @@ export function TestimonialEditorSheet({
   const { addTestimonial, updateTestimonial } = useTestimonialStore();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const form = useForm<TestimonialFormValues>({
     resolver: zodResolver(formSchema),
@@ -86,11 +87,30 @@ export function TestimonialEditorSheet({
   const handleImageFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      setIsUploading(true);
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
       reader.readAsDataURL(file);
+      reader.onloadend = async () => {
+        const base64data = reader.result;
+        try {
+          const res = await fetch('/api/upload', {
+            method: 'POST',
+            body: JSON.stringify({ file: base64data }),
+            headers: { 'Content-Type': 'application/json' },
+          });
+
+          if (!res.ok) throw new Error('Upload failed');
+
+          const { secure_url } = await res.json();
+          setImagePreview(secure_url);
+          toast({ title: 'Image Uploaded', description: 'The avatar has been updated.' });
+        } catch (error) {
+          console.error(error);
+          toast({ variant: 'destructive', title: 'Upload Failed' });
+        } finally {
+          setIsUploading(false);
+        }
+      };
     }
   };
 
@@ -142,12 +162,19 @@ export function TestimonialEditorSheet({
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormItem className="flex flex-col items-center text-center">
                   <FormLabel>Author Avatar</FormLabel>
-                  <Avatar className="h-32 w-32">
-                    {imagePreview && <AvatarImage src={imagePreview} alt="Avatar preview" />}
-                    <AvatarFallback>
-                      {form.getValues('author')?.charAt(0) || '?'}
-                    </AvatarFallback>
-                  </Avatar>
+                  <div className="relative">
+                    <Avatar className="h-32 w-32">
+                      {imagePreview && <AvatarImage src={imagePreview} alt="Avatar preview" />}
+                      <AvatarFallback>
+                        {form.getValues('author')?.charAt(0) || '?'}
+                      </AvatarFallback>
+                    </Avatar>
+                    {isUploading && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full">
+                        <Loader2 className="h-8 w-8 animate-spin text-white" />
+                      </div>
+                    )}
+                  </div>
                   <Input
                     type="file"
                     ref={imageInputRef}
@@ -160,9 +187,10 @@ export function TestimonialEditorSheet({
                     variant="outline"
                     className="mt-2"
                     onClick={() => imageInputRef.current?.click()}
+                    disabled={isUploading}
                   >
                     <Upload className="mr-2 h-4 w-4" />
-                    Upload Image
+                    {isUploading ? 'Uploading...' : 'Upload Image'}
                   </Button>
               </FormItem>
 
@@ -217,7 +245,10 @@ export function TestimonialEditorSheet({
                     Cancel
                   </Button>
                 </SheetClose>
-                <Button type="submit">Save Testimonial</Button>
+                <Button type="submit" disabled={isUploading}>
+                  {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  Save Testimonial
+                </Button>
               </SheetFooter>
             </form>
           </Form>
