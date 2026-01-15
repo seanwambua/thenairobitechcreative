@@ -43,6 +43,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { useMediaStore } from '@/store/media';
 import { placeholderImages } from '@/lib/placeholder-images';
 import { Logo } from '@/components/logo';
+import { useBroadcast } from '@/hooks/use-broadcast';
 
 export default function DashboardLayout({
   children,
@@ -56,6 +57,8 @@ export default function DashboardLayout({
     .split(' ')
     .map((n) => n[0])
     .join('');
+  
+  useBroadcast();
   
   return (
     <SidebarProvider>

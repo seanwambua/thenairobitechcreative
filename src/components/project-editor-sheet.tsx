@@ -63,6 +63,15 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project }: ProjectEditor
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [channel, setChannel] = useState<BroadcastChannel | null>(null);
+
+  useEffect(() => {
+    const bc = new BroadcastChannel('app-data-channel');
+    setChannel(bc);
+    return () => {
+      bc.close();
+    };
+  }, []);
 
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(formSchema),
@@ -137,25 +146,25 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project }: ProjectEditor
       imageHint: project?.imageHint || 'abstract network',
     };
 
-    if (project) {
-      await updateProject({ ...project, ...projectData });
-    } else {
-      // The store expects the Omit type, which matches our projectData
-      await addProject(projectData);
-    }
-    
-    if (useProjectStore.getState().error) {
+    try {
+      if (project) {
+        await updateProject({ ...project, ...projectData });
+      } else {
+        await addProject(projectData);
+      }
+      
+      toast({
+        title: `Project ${project ? 'Updated' : 'Created'}!`,
+        description: `"${values.title}" has been successfully saved.`,
+      });
+      channel?.postMessage({ type: 'refetch_projects' });
+      setIsOpen(false);
+    } catch (error) {
       toast({
         variant: 'destructive',
         title: 'Error',
         description: `Failed to ${project ? 'update' : 'create'} project.`,
       });
-    } else {
-      toast({
-        title: `Project ${project ? 'Updated' : 'Created'}!`,
-        description: `"${values.title}" has been successfully saved.`,
-      });
-      setIsOpen(false);
     }
   }
 

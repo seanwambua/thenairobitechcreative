@@ -56,6 +56,15 @@ export function TestimonialEditorSheet({
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [channel, setChannel] = useState<BroadcastChannel | null>(null);
+
+  useEffect(() => {
+    const bc = new BroadcastChannel('app-data-channel');
+    setChannel(bc);
+    return () => {
+      bc.close();
+    };
+  }, []);
 
   const form = useForm<TestimonialFormValues>({
     resolver: zodResolver(formSchema),
@@ -123,24 +132,25 @@ export function TestimonialEditorSheet({
         avatarHint: testimonial?.avatarHint || 'new user',
     };
 
-    if (testimonial) {
-      await updateTestimonial({ ...testimonial, ...testimonialData });
-    } else {
-      await addTestimonial(testimonialData);
-    }
-    
-    if (useTestimonialStore.getState().error) {
+    try {
+      if (testimonial) {
+        await updateTestimonial({ ...testimonial, ...testimonialData });
+      } else {
+        await addTestimonial(testimonialData);
+      }
+      
+      toast({
+        title: `Testimonial ${testimonial ? 'Updated' : 'Created'}!`,
+        description: `The testimonial from "${values.author}" has been successfully saved.`,
+      });
+      channel?.postMessage({ type: 'refetch_testimonials' });
+      setIsOpen(false);
+    } catch (error) {
       toast({
         variant: 'destructive',
         title: 'Error',
         description: `Failed to ${testimonial ? 'update' : 'create'} testimonial.`,
       });
-    } else {
-      toast({
-        title: `Testimonial ${testimonial ? 'Updated' : 'Created'}!`,
-        description: `The testimonial from "${values.author}" has been successfully saved.`,
-      });
-      setIsOpen(false);
     }
   }
 
