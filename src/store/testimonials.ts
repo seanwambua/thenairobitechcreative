@@ -44,8 +44,11 @@ export const useTestimonialStore = create<TestimonialState>((set, get) => ({
   addTestimonial: async (testimonial) => {
     set({ isLoading: true });
     try {
-      await createTestimonial(testimonial);
-      await get().fetchTestimonials();
+      const newTestimonial = await createTestimonial(testimonial);
+      set((state) => ({
+        testimonials: [newTestimonial, ...state.testimonials],
+        isLoading: false,
+      }));
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
@@ -54,8 +57,13 @@ export const useTestimonialStore = create<TestimonialState>((set, get) => ({
   updateTestimonial: async (updatedTestimonial) => {
     set({ isLoading: true });
     try {
-      await updateTestimonialAction(updatedTestimonial);
-      await get().fetchTestimonials();
+      const returnedTestimonial = await updateTestimonialAction(updatedTestimonial);
+      set((state) => ({
+        testimonials: state.testimonials.map((t) =>
+          t.id === returnedTestimonial.id ? returnedTestimonial : t
+        ),
+        isLoading: false,
+      }));
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
@@ -66,7 +74,6 @@ export const useTestimonialStore = create<TestimonialState>((set, get) => ({
     set(state => ({ testimonials: state.testimonials.filter(t => t.id !== testimonialId) }));
     try {
       await deleteTestimonialAction(testimonialId);
-      await get().fetchTestimonials();
     } catch (error) {
       set({ testimonials: originalTestimonials, error: (error as Error).message });
       throw error;

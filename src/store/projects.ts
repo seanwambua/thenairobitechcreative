@@ -14,7 +14,7 @@ interface ProjectState {
   error: string | null;
   setProjects: (projects: ProjectType[]) => void;
   fetchProjects: () => Promise<void>;
-  addProject: (project: Omit<ProjectType, 'id' >) => Promise<void>;
+  addProject: (project: Omit<ProjectType, 'id' | 'createdAt' | 'updatedAt' >) => Promise<void>;
   updateProject: (updatedProject: ProjectType) => Promise<void>;
   deleteProject: (projectId: number) => Promise<void>;
 }
@@ -42,8 +42,11 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   addProject: async (project) => {
     set({ isLoading: true });
     try {
-      await createProject(project);
-      await get().fetchProjects();
+      const newProject = await createProject(project);
+      set((state) => ({
+        projects: [newProject, ...state.projects],
+        isLoading: false,
+      }));
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
@@ -52,8 +55,13 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   updateProject: async (updatedProject) => {
     set({ isLoading: true });
     try {
-      await updateProjectAction(updatedProject);
-      await get().fetchProjects();
+      const returnedProject = await updateProjectAction(updatedProject);
+      set((state) => ({
+        projects: state.projects.map((p) =>
+          p.id === returnedProject.id ? returnedProject : p
+        ),
+        isLoading: false,
+      }));
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
@@ -64,7 +72,6 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     set(state => ({ projects: state.projects.filter(p => p.id !== projectId) }));
     try {
       await deleteProjectAction(projectId);
-      await get().fetchProjects();
     } catch (error) {
       set({ projects: originalProjects, error: (error as Error).message });
       throw error;

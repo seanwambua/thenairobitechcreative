@@ -18,7 +18,7 @@ interface PostState {
   error: string | null;
   setPosts: (posts: Post[]) => void;
   fetchPosts: () => Promise<void>;
-  addPost: (post: Omit<Post, 'id' | 'likes' | 'createdAt' | 'updatedAt'| 'comments' | 'date'>) => Promise<void>;
+  addPost: (post: Omit<Post, 'id' | 'createdAt' | 'updatedAt' | 'comments'>) => Promise<void>;
   updatePost: (updatedPost: Post) => Promise<void>;
   deletePost: (postId: number) => Promise<void>;
 }
@@ -35,16 +35,15 @@ export const usePostStore = create<PostState>((set, get) => ({
       if (!response.ok) throw new Error('Failed to fetch posts');
       let posts = await response.json();
 
-      // If db is empty, populate with initial data
       if (posts.length === 0) {
         posts = initialPosts.map(p => ({
             ...p,
-            comments: [], // Ensure comments is an empty array
+            comments: [],
         }));
       } else {
         posts = posts.map((p: Post) => ({
           ...p,
-          comments: [], // Ensure comments are handled correctly from DB string
+          comments: [],
         }));
       }
 
@@ -57,7 +56,10 @@ export const usePostStore = create<PostState>((set, get) => ({
     set({ isLoading: true });
     try {
       const newPost = await createPost(post);
-      const posts = await get().fetchPosts();
+      set((state) => ({
+        posts: [newPost as Post, ...state.posts],
+        isLoading: false,
+      }));
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
@@ -66,8 +68,13 @@ export const usePostStore = create<PostState>((set, get) => ({
   updatePost: async (updatedPost) => {
     set({ isLoading: true });
     try {
-      await updatePostAction(updatedPost);
-      await get().fetchPosts();
+      const returnedPost = await updatePostAction(updatedPost);
+      set((state) => ({
+        posts: state.posts.map((p) =>
+          p.id === returnedPost.id ? { ...p, ...(returnedPost as Post) } : p
+        ),
+        isLoading: false,
+      }));
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
@@ -78,7 +85,6 @@ export const usePostStore = create<PostState>((set, get) => ({
     set((state) => ({ posts: state.posts.filter((p) => p.id !== postId) }));
     try {
       await deletePostAction(postId);
-      await get().fetchPosts(); // Re-fetch to confirm deletion from server
     } catch (error) {
       set({ posts: originalPosts, error: (error as Error).message });
       throw error;
