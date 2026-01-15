@@ -26,7 +26,7 @@ async function main() {
 
   // Seed Posts
   for (const post of initialPosts) {
-    const { id, comments, createdAt, updatedAt, ...rest } = post; // exclude comments
+    const { id, comments, createdAt, updatedAt, ...rest } = post;
     await prisma.post.upsert({
       where: { id },
       update: {
@@ -69,3 +69,5 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
+
+    

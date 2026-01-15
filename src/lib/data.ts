@@ -288,7 +288,7 @@ export const initialTestimonials: Testimonial[] = [
   },
 ];
 
-export const initialPosts: (Post & { comments: {id: string; author: string; text: string; avatarUrl: string}[] })[] = [
+export const initialPosts: Post[] = [
   {
     id: 1,
     slug: 'the-rise-of-mobile-first-solutions-in-africa',
@@ -302,20 +302,7 @@ export const initialPosts: (Post & { comments: {id: string; author: string; text
     authorAvatarHint: placeholderImages.testimonial1.imageHint,
     date: 'Oct 10, 2024',
     likes: 128,
-    comments: [
-      {
-        id: 'comment-1',
-        author: 'Amina Okoro',
-        text: 'Great insights! The mobile-first approach is definitely the key to unlocking the African market.',
-        avatarUrl: placeholderImages.testimonial3.imageUrl,
-      },
-      {
-        id: 'comment-2',
-        author: 'John Smith',
-        text: 'Well-written article. We\'ve seen the impact of this firsthand with EduScale.',
-        avatarUrl: placeholderImages.testimonial2.imageUrl,
-      },
-    ],
+    comments: '',
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -332,7 +319,7 @@ export const initialPosts: (Post & { comments: {id: string; author: string; text
     authorAvatarHint: placeholderImages.testimonial3.imageHint,
     date: 'Oct 2, 2024',
     likes: 95,
-    comments: [],
+    comments: '',
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -349,15 +336,10 @@ export const initialPosts: (Post & { comments: {id: string; author: string; text
     authorAvatarHint: placeholderImages.testimonial2.imageHint,
     date: 'Sep 25, 2024',
     likes: 210,
-    comments: [
-        {
-            id: 'comment-3',
-            author: 'Kwame Annan',
-            text: 'This is a crucial topic that is often overlooked. Thanks for sharing your framework!',
-            avatarUrl: placeholderImages.testimonial4.imageUrl,
-        }
-    ],
+    comments: '',
     createdAt: new Date(),
     updatedAt: new Date(),
   },
 ];
+
+    

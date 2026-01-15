@@ -8,9 +8,7 @@ import {
   deletePost as deletePostAction,
 } from '@/app/actions/posts';
 
-export interface Post extends PostType {
-  comments: any[]; 
-}
+export interface Post extends PostType {}
 
 interface PostState {
   posts: Post[];
@@ -36,21 +34,12 @@ export const usePostStore = create<PostState>((set, get) => ({
       let posts = await response.json();
 
       if (posts.length === 0) {
-        posts = initialPosts.map(p => ({
-            ...p,
-            comments: [],
-        }));
-      } else {
-        posts = posts.map((p: Post) => ({
-          ...p,
-          comments: [], // Ensure comments is an array for client-side
-        }));
+        posts = initialPosts;
       }
-
+      
       set({ posts, isLoading: false });
     } catch (error) {
-      const fallbackPosts = initialPosts.map(p => ({...p, comments: []}));
-      set({ error: (error as Error).message, isLoading: false, posts: fallbackPosts as Post[] });
+      set({ error: (error as Error).message, isLoading: false, posts: initialPosts });
     }
   },
   addPost: async (post) => {
@@ -58,7 +47,7 @@ export const usePostStore = create<PostState>((set, get) => ({
     try {
       const newPost = await createPost(post);
       set((state) => ({
-        posts: [{...newPost, comments: []}, ...state.posts],
+        posts: [newPost, ...state.posts],
         isLoading: false,
       }));
     } catch (error) {
@@ -72,7 +61,7 @@ export const usePostStore = create<PostState>((set, get) => ({
       const returnedPost = await updatePostAction(updatedPost);
       set((state) => ({
         posts: state.posts.map((p) =>
-          p.id === returnedPost.id ? { ...p, ...(returnedPost as Post) } : p
+          p.id === returnedPost.id ? { ...p, ...returnedPost } : p
         ),
         isLoading: false,
       }));
@@ -92,3 +81,5 @@ export const usePostStore = create<PostState>((set, get) => ({
     }
   },
 }));
+
+    
