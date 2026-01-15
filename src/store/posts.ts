@@ -1,34 +1,34 @@
 'use client';
 import { create } from 'zustand';
-import { type Post as PostType, initialPosts } from '@/lib/data';
+import { type Post as PostType } from '@prisma/client';
 
-export interface Post extends Omit<PostType, 'comments'> {
-  comments?: any[]; // Allow comments to be optional or different type
-}
+export interface Post extends PostType {}
 
 interface PostState {
   posts: Post[];
   isLoading: boolean;
   error: string | null;
+  setPosts: (posts: Post[]) => void;
   fetchPosts: () => Promise<void>;
-  addPost: (post: Omit<Post, 'id' | 'likes' | 'comments' | 'createdAt' | 'updatedAt'>) => Promise<void>;
+  addPost: (post: Omit<Post, 'id' | 'likes' | 'createdAt' | 'updatedAt'>) => Promise<void>;
   updatePost: (updatedPost: Post) => Promise<void>;
   deletePost: (postId: number) => Promise<void>;
 }
 
-export const usePostStore = create<PostState>((set) => ({
+export const usePostStore = create<PostState>((set, get) => ({
   posts: [],
   isLoading: false,
   error: null,
+  setPosts: (posts) => set({ posts }),
   fetchPosts: async () => {
     set({ isLoading: true, error: null });
     try {
       const response = await fetch('/api/posts');
       if (!response.ok) throw new Error('Failed to fetch posts');
       const posts = await response.json();
-      set({ posts: posts.length > 0 ? posts : initialPosts, isLoading: false });
+      set({ posts, isLoading: false });
     } catch (error) {
-      set({ error: (error as Error).message, posts: initialPosts, isLoading: false });
+      set({ error: (error as Error).message, isLoading: false });
     }
   },
   addPost: async (post) => {
@@ -70,21 +70,18 @@ export const usePostStore = create<PostState>((set) => ({
     }
   },
   deletePost: async (postId) => {
-    set({ isLoading: true });
+    // Optimistic update
+    const originalPosts = get().posts;
+    set(state => ({ posts: state.posts.filter(p => p.id !== postId) }));
     try {
       const response = await fetch(`/api/posts/${postId}`, {
         method: 'DELETE',
       });
       if (!response.ok) throw new Error('Failed to delete post');
-      set((state) => ({
-        posts: state.posts.filter((p) => p.id !== postId),
-        isLoading: false,
-      }));
     } catch (error) {
-      set({ error: (error as Error).message, isLoading: false });
+      // Revert on error
+      set({ posts: originalPosts, error: (error as Error).message });
       throw error;
     }
   },
 }));
-
-    

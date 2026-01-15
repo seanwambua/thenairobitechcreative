@@ -1,11 +1,12 @@
 'use client';
 import { create } from 'zustand';
-import { type Project as ProjectType, initialProjects } from '@/lib/data';
+import { type Project as ProjectType } from '@/lib/data';
 
 interface ProjectState {
   projects: ProjectType[];
   isLoading: boolean;
   error: string | null;
+  setProjects: (projects: ProjectType[]) => void;
   fetchProjects: () => Promise<void>;
   addProject: (project: Omit<ProjectType, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
   updateProject: (updatedProject: ProjectType) => Promise<void>;
@@ -16,19 +17,20 @@ export const useProjectStore = create<ProjectState>((set) => ({
   projects: [],
   isLoading: false,
   error: null,
+  setProjects: (projects) => set({ projects }),
   fetchProjects: async () => {
     set({ isLoading: true, error: null });
     try {
       const response = await fetch('/api/projects');
       if (!response.ok) throw new Error('Failed to fetch projects');
       const projects = await response.json();
-      set({ projects: projects.length > 0 ? projects : initialProjects, isLoading: false });
+      set({ projects, isLoading: false });
     } catch (error) {
-      set({ error: (error as Error).message, projects: initialProjects, isLoading: false });
+      set({ error: (error as Error).message, isLoading: false });
     }
   },
   addProject: async (project) => {
-     set({ isLoading: true });
+    set({ isLoading: true });
     try {
       const response = await fetch('/api/projects', {
         method: 'POST',
@@ -57,9 +59,7 @@ export const useProjectStore = create<ProjectState>((set) => ({
       if (!response.ok) throw new Error('Failed to update project');
       const result = await response.json();
       set((state) => ({
-        projects: state.projects.map((p) =>
-          p.id === updatedProject.id ? result : p
-        ),
+        projects: state.projects.map((p) => (p.id === updatedProject.id ? result : p)),
         isLoading: false,
       }));
     } catch (error) {
@@ -79,10 +79,8 @@ export const useProjectStore = create<ProjectState>((set) => ({
         isLoading: false,
       }));
     } catch (error) {
-       set({ error: (error as Error).message, isLoading: false });
-       throw error;
+      set({ error: (error as Error).message, isLoading: false });
+      throw error;
     }
   },
 }));
-
-    

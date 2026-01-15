@@ -1,7 +1,6 @@
-
 'use client';
 import { create } from 'zustand';
-import { type Testimonial as TestimonialType, initialTestimonials } from '@/lib/data';
+import { type Testimonial as TestimonialType } from '@prisma/client';
 
 export type Testimonial = TestimonialType;
 
@@ -9,6 +8,7 @@ interface TestimonialState {
   testimonials: Testimonial[];
   isLoading: boolean;
   error: string | null;
+  setTestimonials: (testimonials: Testimonial[]) => void;
   fetchTestimonials: () => Promise<void>;
   addTestimonial: (testimonial: Omit<Testimonial, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
   updateTestimonial: (updatedTestimonial: Testimonial) => Promise<void>;
@@ -19,15 +19,16 @@ export const useTestimonialStore = create<TestimonialState>((set) => ({
   testimonials: [],
   isLoading: false,
   error: null,
+  setTestimonials: (testimonials) => set({ testimonials }),
   fetchTestimonials: async () => {
     set({ isLoading: true, error: null });
     try {
       const response = await fetch('/api/testimonials');
       if (!response.ok) throw new Error('Failed to fetch testimonials');
       const testimonials = await response.json();
-      set({ testimonials: testimonials.length > 0 ? testimonials : initialTestimonials, isLoading: false });
+      set({ testimonials, isLoading: false });
     } catch (error) {
-      set({ error: (error as Error).message, testimonials: initialTestimonials, isLoading: false });
+      set({ error: (error as Error).message, isLoading: false });
     }
   },
   addTestimonial: async (testimonial) => {
@@ -87,5 +88,3 @@ export const useTestimonialStore = create<TestimonialState>((set) => ({
     }
   },
 }));
-
-    
