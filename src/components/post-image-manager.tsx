@@ -9,7 +9,7 @@ import { Upload, X, Loader2 } from 'lucide-react';
 import { usePostStore, type Post } from '@/store/posts';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
-import { initialPosts } from '@/lib/data';
+import { placeholderImages } from '@/lib/placeholder-images';
 
 interface PostImageManagerProps {
   post: Post;
@@ -76,17 +76,16 @@ export function PostImageManager({ post }: PostImageManagerProps) {
   };
   
   const handleImageReset = (imageType: 'cover' | 'avatar') => {
-    const originalPost = initialPosts.find(p => p.id === post.id);
-    if (!originalPost) return;
-
     const updatedPost = { ...post };
     let message = '';
 
     if (imageType === 'cover') {
-        updatedPost.imageUrl = originalPost.imageUrl;
+        updatedPost.imageUrl = placeholderImages.blog1.imageUrl;
+        updatedPost.imageHint = placeholderImages.blog1.imageHint;
         message = 'Cover image';
     } else {
-        updatedPost.authorAvatarUrl = originalPost.authorAvatarUrl;
+        updatedPost.authorAvatarUrl = placeholderImages.testimonial1.imageUrl;
+        updatedPost.authorAvatarHint = placeholderImages.testimonial1.imageHint;
         message = 'Author avatar';
     }
 
@@ -183,5 +182,3 @@ export function PostImageManager({ post }: PostImageManagerProps) {
     </Card>
   );
 }
-
-    
