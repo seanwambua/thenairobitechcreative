@@ -9,7 +9,7 @@ import { Upload, X, Loader2 } from 'lucide-react';
 import { usePostStore, type Post } from '@/store/posts';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
-import { posts as initialPostsData } from '@/lib/data';
+import { initialPosts } from '@/lib/data';
 
 interface PostImageManagerProps {
   post: Post;
@@ -76,7 +76,7 @@ export function PostImageManager({ post }: PostImageManagerProps) {
   };
   
   const handleImageReset = (imageType: 'cover' | 'avatar') => {
-    const originalPost = initialPostsData.find(p => p.id === post.id);
+    const originalPost = initialPosts.find(p => p.id === post.id);
     if (!originalPost) return;
 
     const updatedPost = { ...post };
@@ -183,3 +183,5 @@ export function PostImageManager({ post }: PostImageManagerProps) {
     </Card>
   );
 }
+
+    

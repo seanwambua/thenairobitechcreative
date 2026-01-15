@@ -221,7 +221,7 @@ export const initialProjects: Project[] = [
     keyFeatures: ['Collaborative Canvas', 'Vector Tools', 'Asset Library'],
     imageUrl: placeholderImages.design.imageUrl,
     imageHint: placeholderImages.design.imageHint,
-    gridSpan: 'col-span-1 md:col-span-2',
+    gridSpan: 'col-span-1 md:col-span-2 lg:col-span-2',
     icon: 'PenTool',
   },
   {
@@ -231,7 +231,7 @@ export const initialProjects: Project[] = [
     keyFeatures: ['KES/USD Support', 'Cash Flow Forecasting', 'Investor Reports'],
     imageUrl: placeholderImages.finance.imageUrl,
     imageHint: placeholderImages.finance.imageHint,
-    gridSpan: 'col-span-1 md:col-span-2',
+    gridSpan: 'col-span-1 md:col-span-2 lg:col-span-2',
     icon: 'LineChart',
   },
   {
@@ -261,7 +261,7 @@ export const initialProjects: Project[] = [
     keyFeatures: ['Advanced CRM', 'API Gateway'],
     imageUrl: placeholderImages.enterpriseB.imageUrl,
     imageHint: placeholderImages.enterpriseB.imageHint,
-    gridSpan: 'col-span-1 md:col-span-2',
+    gridSpan: 'col-span-1 md:col-span-2 lg:col-span-2',
     icon: 'Globe',
   },
 ];
@@ -301,7 +301,7 @@ export const initialTestimonials: Testimonial[] = [
   },
 ];
 
-export const posts: Post[] = [
+export const initialPosts: Post[] = [
   {
     id: 1,
     slug: 'the-rise-of-mobile-first-solutions-in-africa',
@@ -368,3 +368,5 @@ export const posts: Post[] = [
     ],
   },
 ];
+
+    

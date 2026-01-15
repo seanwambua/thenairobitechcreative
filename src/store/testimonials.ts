@@ -1,7 +1,7 @@
 
 'use client';
 import { create } from 'zustand';
-import { type Testimonial as TestimonialType } from '@/lib/data';
+import { type Testimonial as TestimonialType, initialTestimonials } from '@/lib/data';
 
 export type Testimonial = TestimonialType;
 
@@ -25,9 +25,9 @@ export const useTestimonialStore = create<TestimonialState>((set) => ({
       const response = await fetch('/api/testimonials');
       if (!response.ok) throw new Error('Failed to fetch testimonials');
       const testimonials = await response.json();
-      set({ testimonials, isLoading: false });
+      set({ testimonials: testimonials.length > 0 ? testimonials : initialTestimonials, isLoading: false });
     } catch (error) {
-      set({ error: (error as Error).message, isLoading: false });
+      set({ error: (error as Error).message, testimonials: initialTestimonials, isLoading: false });
     }
   },
   addTestimonial: async (testimonial) => {
@@ -87,3 +87,5 @@ export const useTestimonialStore = create<TestimonialState>((set) => ({
     }
   },
 }));
+
+    

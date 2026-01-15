@@ -1,6 +1,6 @@
 'use client';
 import { create } from 'zustand';
-import { type Post as PostType } from '@/lib/data';
+import { type Post as PostType, initialPosts } from '@/lib/data';
 
 export interface Post extends Omit<PostType, 'comments'> {
   comments?: any[]; // Allow comments to be optional or different type
@@ -26,9 +26,9 @@ export const usePostStore = create<PostState>((set) => ({
       const response = await fetch('/api/posts');
       if (!response.ok) throw new Error('Failed to fetch posts');
       const posts = await response.json();
-      set({ posts, isLoading: false });
+      set({ posts: posts.length > 0 ? posts : initialPosts, isLoading: false });
     } catch (error) {
-      set({ error: (error as Error).message, isLoading: false });
+      set({ error: (error as Error).message, posts: initialPosts, isLoading: false });
     }
   },
   addPost: async (post) => {
@@ -86,3 +86,5 @@ export const usePostStore = create<PostState>((set) => ({
     }
   },
 }));
+
+    
