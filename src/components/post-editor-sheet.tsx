@@ -80,29 +80,29 @@ export function PostEditorSheet({ isOpen, setIsOpen, post }: PostEditorSheetProp
 
 
   async function onSubmit(values: PostFormValues) {
-    if (post) {
-      const updatedPostData = {
-        ...post,
-        ...values,
-        slug: values.title.toLowerCase().replace(/\s+/g, '-'),
-      };
-      await updatePost(updatedPostData);
-    } else {
-      await addPost(values);
-    }
+    try {
+      if (post) {
+        const updatedPostData = {
+          ...post,
+          ...values,
+          slug: values.title.toLowerCase().replace(/\s+/g, '-'),
+        };
+        await updatePost(updatedPostData);
+      } else {
+        await addPost(values);
+      }
 
-    if (usePostStore.getState().error) {
+      toast({
+          title: `Post ${post ? 'Updated' : 'Created'}!`,
+          description: `"${values.title}" has been successfully saved.`,
+      });
+      setIsOpen(false);
+    } catch (error) {
        toast({
         variant: 'destructive',
         title: 'Error',
         description: `Failed to ${post ? 'update' : 'create'} post.`,
       });
-    } else {
-        toast({
-            title: `Post ${post ? 'Updated' : 'Created'}!`,
-            description: `"${values.title}" has been successfully saved.`,
-        });
-        setIsOpen(false);
     }
   }
 

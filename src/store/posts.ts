@@ -1,17 +1,15 @@
 'use client';
 import { create } from 'zustand';
 import { type Post as PostType } from '@prisma/client';
-import { initialPosts } from '@/lib/data';
 import {
   createPost,
   updatePost as updatePostAction,
   deletePost as deletePostAction,
 } from '@/app/actions/posts';
-import { PostSchemaType } from '@/lib/schemas';
 
 export interface Post extends PostType {}
 
-type CreatePost = Omit<PostSchemaType, 'id' | 'slug' | 'imageUrl' | 'imageHint' | 'authorAvatarUrl' | 'authorAvatarHint' | 'date' | 'likes' | 'comments' | 'createdAt' | 'updatedAt'>;
+type CreatePost = Pick<Post, 'title' | 'description' | 'content' | 'author'>;
 
 interface PostState {
   posts: Post[];
@@ -34,15 +32,10 @@ export const usePostStore = create<PostState>((set, get) => ({
     try {
       const response = await fetch('/api/posts');
       if (!response.ok) throw new Error('Failed to fetch posts');
-      let posts = await response.json();
-
-      if (posts.length === 0) {
-        posts = initialPosts;
-      }
-      
+      const posts = await response.json();
       set({ posts, isLoading: false });
     } catch (error) {
-      set({ error: (error as Error).message, isLoading: false, posts: initialPosts });
+      set({ error: (error as Error).message, isLoading: false, posts: [] });
     }
   },
   addPost: async (post) => {

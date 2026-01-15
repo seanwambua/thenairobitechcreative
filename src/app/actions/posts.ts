@@ -2,29 +2,37 @@
 
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
-import type { Post } from '@prisma/client';
 import { PostSchema } from '@/lib/schemas';
 import { placeholderImages } from '@/lib/placeholder-images';
+import type { Post } from '@prisma/client';
 
 export async function createPost(data: Omit<Post, 'id' | 'createdAt' | 'updatedAt' | 'slug' | 'imageUrl' | 'imageHint' | 'authorAvatarUrl' | 'authorAvatarHint' | 'date' | 'likes' | 'comments'>) {
     const validatedData = PostSchema.omit({
       id: true,
       createdAt: true,
       updatedAt: true,
-    }).parse({
-      ...data,
-      slug: data.title.toLowerCase().replace(/\s+/g, '-'),
-      imageUrl: placeholderImages.blog1.imageUrl,
-      imageHint: placeholderImages.blog1.imageHint,
-      authorAvatarUrl: placeholderImages.testimonial1.imageUrl,
-      authorAvatarHint: placeholderImages.testimonial1.imageHint,
-      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-      likes: 0,
-      comments: '',
-    });
+      slug: true,
+      imageUrl: true,
+      imageHint: true,
+      authorAvatarUrl: true,
+      authorAvatarHint: true,
+      date: true,
+      likes: true,
+      comments: true,
+    }).parse(data);
 
     const newPost = await prisma.post.create({
-        data: validatedData,
+        data: {
+          ...validatedData,
+          slug: validatedData.title.toLowerCase().replace(/\s+/g, '-'),
+          imageUrl: placeholderImages.blog1.imageUrl,
+          imageHint: placeholderImages.blog1.imageHint,
+          authorAvatarUrl: placeholderImages.testimonial1.imageUrl,
+          authorAvatarHint: placeholderImages.testimonial1.imageHint,
+          date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+          likes: 0,
+          comments: '',
+        },
     });
 
     revalidatePath('/dashboard/content');

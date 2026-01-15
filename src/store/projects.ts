@@ -1,6 +1,6 @@
 'use client';
 import { create } from 'zustand';
-import { type Project as ProjectType, initialProjects } from '@/lib/data';
+import { type Project as ProjectType } from '@/lib/data';
 import { 
     createProject, 
     updateProject as updateProjectAction,
@@ -31,13 +31,9 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       const response = await fetch('/api/projects');
       if (!response.ok) throw new Error('Failed to fetch projects');
       const projects = await response.json();
-      if (projects.length === 0) {
-        set({ projects: initialProjects, isLoading: false });
-      } else {
-        set({ projects, isLoading: false });
-      }
+      set({ projects, isLoading: false });
     } catch (error) {
-      set({ error: (error as Error).message, isLoading: false, projects: initialProjects });
+      set({ error: (error as Error).message, isLoading: false, projects: [] });
     }
   },
   addProject: async (project) => {
