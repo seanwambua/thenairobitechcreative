@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useEffect } from 'react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Hero } from '@/components/hero';
@@ -22,8 +23,14 @@ import { useTestimonialStore } from '@/store/testimonials';
 
 export default function Home() {
   const { heroImage } = useMediaStore();
-  const { projects } = useProjectStore();
-  const { testimonials } = useTestimonialStore();
+  const { projects, fetchProjects } = useProjectStore();
+  const { testimonials, fetchTestimonials } = useTestimonialStore();
+
+  useEffect(() => {
+    fetchProjects();
+    fetchTestimonials();
+  }, [fetchProjects, fetchTestimonials]);
+
 
   const sectionVariants = {
     hidden: { opacity: 0, y: 50 },

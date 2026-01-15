@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -34,18 +34,23 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { useProjectStore, type Project } from '@/store/projects';
-import { MoreHorizontal, PlusCircle } from 'lucide-react';
+import { useProjectStore } from '@/store/projects';
+import { MoreHorizontal, PlusCircle, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ProjectEditorSheet } from '@/components/project-editor-sheet';
+import type { Project } from '@/lib/data';
 
 export default function ProjectsPage() {
-  const { projects, deleteProject } = useProjectStore();
+  const { projects, deleteProject, fetchProjects, isLoading, error } = useProjectStore();
   const [isEditorOpen, setEditorOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
 
   const handleCreateNew = () => {
     setEditingProject(null);
@@ -62,13 +67,21 @@ export default function ProjectsPage() {
     setDeleteDialogOpen(true);
   };
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (projectToDelete) {
-      deleteProject(projectToDelete.id);
-      toast({
-        title: 'Project Deleted',
-        description: `"${projectToDelete.title}" has been successfully deleted.`,
-      });
+      await deleteProject(projectToDelete.id);
+      if (useProjectStore.getState().error) {
+         toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Failed to delete project.',
+        });
+      } else {
+        toast({
+          title: 'Project Deleted',
+          description: `"${projectToDelete.title}" has been successfully deleted.`,
+        });
+      }
       setDeleteDialogOpen(false);
       setProjectToDelete(null);
     }
@@ -88,6 +101,13 @@ export default function ProjectsPage() {
           </Button>
         </CardHeader>
         <CardContent>
+          {isLoading && !projects.length ? (
+            <div className="flex justify-center p-8">
+              <Loader2 className="h-8 w-8 animate-spin" />
+            </div>
+          ) : error ? (
+            <div className="text-center text-destructive">{error}</div>
+          ) : (
           <Table>
             <TableHeader>
               <TableRow>
@@ -131,6 +151,7 @@ export default function ProjectsPage() {
               ))}
             </TableBody>
           </Table>
+          )}
         </CardContent>
       </Card>
       <ProjectEditorSheet

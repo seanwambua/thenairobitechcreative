@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -36,18 +36,22 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { useTestimonialStore, type Testimonial } from '@/store/testimonials';
-import { MoreHorizontal, PlusCircle } from 'lucide-react';
+import { MoreHorizontal, PlusCircle, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { TestimonialEditorSheet } from '@/components/testimonial-editor-sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export default function TestimonialsPage() {
-  const { testimonials, deleteTestimonial } = useTestimonialStore();
+  const { testimonials, deleteTestimonial, fetchTestimonials, isLoading, error } = useTestimonialStore();
   const [isEditorOpen, setEditorOpen] = useState(false);
   const [editingTestimonial, setEditingTestimonial] = useState<Testimonial | null>(null);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [testimonialToDelete, setTestimonialToDelete] = useState<Testimonial | null>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    fetchTestimonials();
+  }, [fetchTestimonials]);
 
   const handleCreateNew = () => {
     setEditingTestimonial(null);
@@ -64,13 +68,21 @@ export default function TestimonialsPage() {
     setDeleteDialogOpen(true);
   };
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (testimonialToDelete) {
-      deleteTestimonial(testimonialToDelete.id);
-      toast({
-        title: 'Testimonial Deleted',
-        description: `The testimonial from "${testimonialToDelete.author}" has been successfully deleted.`,
-      });
+      await deleteTestimonial(testimonialToDelete.id);
+      if (useTestimonialStore.getState().error) {
+         toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Failed to delete testimonial.',
+        });
+      } else {
+        toast({
+          title: 'Testimonial Deleted',
+          description: `The testimonial from "${testimonialToDelete.author}" has been successfully deleted.`,
+        });
+      }
       setDeleteDialogOpen(false);
       setTestimonialToDelete(null);
     }
@@ -90,6 +102,13 @@ export default function TestimonialsPage() {
           </Button>
         </CardHeader>
         <CardContent>
+          {isLoading && !testimonials.length ? (
+             <div className="flex justify-center p-8">
+              <Loader2 className="h-8 w-8 animate-spin" />
+            </div>
+          ) : error ? (
+            <div className="text-center text-destructive">{error}</div>
+          ) : (
           <Table>
             <TableHeader>
               <TableRow>
@@ -143,6 +162,7 @@ export default function TestimonialsPage() {
               ))}
             </TableBody>
           </Table>
+          )}
         </CardContent>
       </Card>
       <TestimonialEditorSheet

@@ -33,9 +33,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { useProjectStore, type Project } from '@/store/projects';
+import { useProjectStore } from '@/store/projects';
 import { placeholderImages } from '@/lib/placeholder-images';
-import { iconNames } from '@/lib/data';
+import { iconNames, type Project } from '@/lib/data';
 import { Upload, Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
@@ -56,7 +56,7 @@ interface ProjectEditorSheetProps {
 
 export function ProjectEditorSheet({ isOpen, setIsOpen, project }: ProjectEditorSheetProps) {
   const { toast } = useToast();
-  const { addProject, updateProject } = useProjectStore();
+  const { addProject, updateProject, isLoading } = useProjectStore();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -73,24 +73,26 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project }: ProjectEditor
   });
 
   useEffect(() => {
-    if (project) {
-      form.reset({
-        title: project.title,
-        description: project.description,
-        keyFeatures: project.keyFeatures.join(', '),
-        icon: project.icon,
-        gridSpan: project.gridSpan,
-      });
-      setImagePreview(project.imageUrl);
-    } else {
-      form.reset({
-        title: '',
-        description: '',
-        keyFeatures: '',
-        icon: 'Boxes',
-        gridSpan: 'col-span-1 md:col-span-1',
-      });
-      setImagePreview(placeholderImages.enterpriseB.imageUrl);
+    if (isOpen) {
+      if (project) {
+        form.reset({
+          title: project.title,
+          description: project.description,
+          keyFeatures: project.keyFeatures.join(', '),
+          icon: project.icon,
+          gridSpan: project.gridSpan,
+        });
+        setImagePreview(project.imageUrl);
+      } else {
+        form.reset({
+          title: '',
+          description: '',
+          keyFeatures: '',
+          icon: 'Boxes',
+          gridSpan: 'col-span-1 md:col-span-1',
+        });
+        setImagePreview(placeholderImages.enterpriseB.imageUrl);
+      }
     }
   }, [project, form, isOpen]);
 
@@ -124,40 +126,35 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project }: ProjectEditor
     }
   };
 
-  function onSubmit(values: ProjectFormValues) {
+  async function onSubmit(values: ProjectFormValues) {
     const keyFeatures = values.keyFeatures.split(',').map((s) => s.trim());
+    
+    const projectData = {
+      ...values,
+      keyFeatures,
+      imageUrl: imagePreview || (project ? project.imageUrl : placeholderImages.enterpriseB.imageUrl),
+      imageHint: project?.imageHint || 'abstract network',
+    };
 
     if (project) {
-      // Update existing project
-      const updatedProject: Project = {
-        ...project,
-        ...values,
-        keyFeatures,
-        imageUrl: imagePreview || project.imageUrl,
-      };
-      updateProject(updatedProject);
+      await updateProject({ ...project, ...projectData });
+    } else {
+      await addProject(projectData);
+    }
+    
+    if (useProjectStore.getState().error) {
       toast({
-        title: 'Project Updated!',
-        description: `"${values.title}" has been successfully updated.`,
+        variant: 'destructive',
+        title: 'Error',
+        description: `Failed to ${project ? 'update' : 'create'} project.`,
       });
     } else {
-      // Create new project
-      const newProject: Project = {
-        id: Date.now(),
-        ...values,
-        keyFeatures,
-        imageUrl: imagePreview || placeholderImages.enterpriseB.imageUrl,
-        imageHint: 'abstract network',
-      };
-      addProject(newProject);
       toast({
-        title: 'Project Created!',
-        description: `"${values.title}" has been successfully created.`,
+        title: `Project ${project ? 'Updated' : 'Created'}!`,
+        description: `"${values.title}" has been successfully saved.`,
       });
+      setIsOpen(false);
     }
-
-    form.reset();
-    setIsOpen(false);
   }
 
   return (
@@ -313,8 +310,8 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project }: ProjectEditor
                         Cancel
                     </Button>
                     </SheetClose>
-                    <Button type="submit" disabled={isUploading}>
-                      {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                    <Button type="submit" disabled={isUploading || isLoading}>
+                      {isUploading || isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                       Save Project
                     </Button>
                 </SheetFooter>

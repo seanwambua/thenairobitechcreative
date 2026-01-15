@@ -1,15 +1,21 @@
 'use client';
+import { useEffect } from 'react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { BlogPostCard } from '@/components/blog-post-card';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { usePostStore } from '@/store/posts';
 
 export default function BlogPage() {
-  const { posts } = usePostStore();
+  const { posts, fetchPosts, isLoading, error } = usePostStore();
+
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
+  
   const featuredPosts = posts.slice(0, 3);
   const otherArticles = posts.slice(3);
 
@@ -27,11 +33,19 @@ export default function BlogPage() {
                 Insights, stories, and updates from the heart of African tech innovation.
               </p>
             </div>
+            {isLoading && !posts.length ? (
+              <div className="flex justify-center p-8">
+                <Loader2 className="h-8 w-8 animate-spin" />
+              </div>
+            ) : error ? (
+              <div className="text-center text-destructive">{error}</div>
+            ) : (
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
               {featuredPosts.map((post) => (
                 <BlogPostCard key={post.id} post={post} />
               ))}
             </div>
+            )}
           </div>
         </section>
 

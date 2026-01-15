@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -34,19 +34,24 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { usePostStore, type Post } from '@/store/posts';
-import { MoreHorizontal, PlusCircle } from 'lucide-react';
+import { usePostStore } from '@/store/posts';
+import { MoreHorizontal, PlusCircle, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { PostEditorSheet } from '@/components/post-editor-sheet';
 import { useToast } from '@/hooks/use-toast';
+import type { Post } from '@/store/posts';
 
 export default function ContentPage() {
-  const { posts, deletePost } = usePostStore();
+  const { posts, deletePost, fetchPosts, isLoading, error } = usePostStore();
   const [isEditorOpen, setEditorOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<Post | null>(null);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState<Post | null>(null);
   const { toast } = useToast();
+  
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
 
   const handleCreateNew = () => {
     setEditingPost(null);
@@ -63,13 +68,21 @@ export default function ContentPage() {
     setDeleteDialogOpen(true);
   };
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (postToDelete) {
-      deletePost(postToDelete.id);
-      toast({
-        title: 'Post Deleted',
-        description: `"${postToDelete.title}" has been successfully deleted.`,
-      });
+      await deletePost(postToDelete.id);
+       if (usePostStore.getState().error) {
+         toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Failed to delete post.',
+        });
+      } else {
+        toast({
+          title: 'Post Deleted',
+          description: `"${postToDelete.title}" has been successfully deleted.`,
+        });
+      }
       setDeleteDialogOpen(false);
       setPostToDelete(null);
     }
@@ -91,6 +104,13 @@ export default function ContentPage() {
           </Button>
         </CardHeader>
         <CardContent>
+          {isLoading && !posts.length ? (
+             <div className="flex justify-center p-8">
+              <Loader2 className="h-8 w-8 animate-spin" />
+            </div>
+          ) : error ? (
+            <div className="text-center text-destructive">{error}</div>
+          ) : (
           <Table>
             <TableHeader>
               <TableRow>
@@ -137,6 +157,7 @@ export default function ContentPage() {
               ))}
             </TableBody>
           </Table>
+          )}
         </CardContent>
       </Card>
       <PostEditorSheet 

@@ -1,4 +1,5 @@
 'use client';
+import { useEffect } from 'react';
 import { notFound, useParams } from 'next/navigation';
 import Image from 'next/image';
 import { Header } from '@/components/layout/header';
@@ -8,17 +9,34 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { PostInteractions } from '@/components/post-interactions';
 import { usePostStore } from '@/store/posts';
+import { Loader2 } from 'lucide-react';
 
 export default function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
-  const { posts } = usePostStore();
+  const { posts, fetchPosts, isLoading } = usePostStore();
+  
+  useEffect(() => {
+    if (posts.length === 0) {
+      fetchPosts();
+    }
+  }, [posts.length, fetchPosts]);
+
   const post = posts.find((p) => p.slug === slug);
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Loader2 className="h-12 w-12 animate-spin" />
+      </div>
+    );
+  }
 
   if (!post) {
     notFound();
   }
 
-  const commentsCount = post?.comments.length || 0;
+  // Handle posts without comments property
+  const commentsCount = post.comments?.length || 0;
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -45,13 +63,13 @@ export default function BlogPostPage() {
             </div>
           </header>
 
-          <div className="relative mb-12 h-[600px] w-full overflow-hidden rounded-2xl shadow-lg md:h-full">
+          <div className="relative mb-12 h-[600px] w-full overflow-hidden rounded-2xl shadow-lg">
             <Image
               src={post.imageUrl}
               alt={post.title}
               fill
               className="object-cover"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 75vw, 50vw"
+              sizes="(max-width: 768px) 100vw, 50vw"
               data-ai-hint={post.imageHint}
               priority
             />

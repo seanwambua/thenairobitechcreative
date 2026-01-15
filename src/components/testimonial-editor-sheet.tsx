@@ -52,7 +52,7 @@ export function TestimonialEditorSheet({
   testimonial,
 }: TestimonialEditorSheetProps) {
   const { toast } = useToast();
-  const { addTestimonial, updateTestimonial } = useTestimonialStore();
+  const { addTestimonial, updateTestimonial, isLoading } = useTestimonialStore();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -67,20 +67,22 @@ export function TestimonialEditorSheet({
   });
 
   useEffect(() => {
-    if (testimonial) {
-      form.reset({
-        quote: testimonial.quote,
-        author: testimonial.author,
-        title: testimonial.title,
-      });
-      setImagePreview(testimonial.avatarUrl);
-    } else {
-      form.reset({
-        quote: '',
-        author: '',
-        title: '',
-      });
-      setImagePreview(placeholderImages.testimonial1.imageUrl);
+    if (isOpen) {
+      if (testimonial) {
+        form.reset({
+          quote: testimonial.quote,
+          author: testimonial.author,
+          title: testimonial.title,
+        });
+        setImagePreview(testimonial.avatarUrl);
+      } else {
+        form.reset({
+          quote: '',
+          author: '',
+          title: '',
+        });
+        setImagePreview(placeholderImages.testimonial1.imageUrl);
+      }
     }
   }, [testimonial, form, isOpen]);
 
@@ -114,36 +116,32 @@ export function TestimonialEditorSheet({
     }
   };
 
-  function onSubmit(values: TestimonialFormValues) {
-    if (testimonial) {
-      // Update existing testimonial
-      const updatedTestimonial: Testimonial = {
-        ...testimonial,
+  async function onSubmit(values: TestimonialFormValues) {
+    const testimonialData = {
         ...values,
-        avatarUrl: imagePreview || testimonial.avatarUrl,
-      };
-      updateTestimonial(updatedTestimonial);
+        avatarUrl: imagePreview || (testimonial ? testimonial.avatarUrl : placeholderImages.testimonial1.imageUrl),
+        avatarHint: testimonial?.avatarHint || 'new user',
+    };
+
+    if (testimonial) {
+      await updateTestimonial({ ...testimonial, ...testimonialData });
+    } else {
+      await addTestimonial(testimonialData);
+    }
+    
+    if (useTestimonialStore.getState().error) {
       toast({
-        title: 'Testimonial Updated!',
-        description: `The testimonial from "${values.author}" has been successfully updated.`,
+        variant: 'destructive',
+        title: 'Error',
+        description: `Failed to ${testimonial ? 'update' : 'create'} testimonial.`,
       });
     } else {
-      // Create new testimonial
-      const newTestimonial: Testimonial = {
-        id: Date.now(),
-        ...values,
-        avatarUrl: imagePreview || placeholderImages.testimonial1.imageUrl,
-        avatarHint: 'new user',
-      };
-      addTestimonial(newTestimonial);
       toast({
-        title: 'Testimonial Created!',
-        description: `The testimonial from "${values.author}" has been successfully created.`,
+        title: `Testimonial ${testimonial ? 'Updated' : 'Created'}!`,
+        description: `The testimonial from "${values.author}" has been successfully saved.`,
       });
+      setIsOpen(false);
     }
-
-    form.reset();
-    setIsOpen(false);
   }
 
   return (
@@ -245,8 +243,8 @@ export function TestimonialEditorSheet({
                     Cancel
                   </Button>
                 </SheetClose>
-                <Button type="submit" disabled={isUploading}>
-                  {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                <Button type="submit" disabled={isUploading || isLoading}>
+                  {isUploading || isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                   Save Testimonial
                 </Button>
               </SheetFooter>

@@ -1,3 +1,6 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,4 +10,43 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Add your models here
+model Project {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  keyFeatures String // Stored as a comma-separated string
+  imageUrl    String
+  imageHint   String
+  gridSpan    String
+  icon        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Testimonial {
+  id         Int      @id @default(autoincrement())
+  quote      String
+  author     String
+  title      String
+  avatarUrl  String
+  avatarHint String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Post {
+  id              Int      @id @default(autoincrement())
+  slug            String   @unique
+  title           String
+  description     String
+  content         String
+  imageUrl        String
+  imageHint       String
+  author          String
+  authorAvatarUrl String
+  authorAvatarHint String
+  date            String
+  likes           Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}

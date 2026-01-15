@@ -27,6 +27,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { usePostStore, type Post } from '@/store/posts';
 import { placeholderImages } from '@/lib/placeholder-images';
+import { Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
   title: z.string().min(5, 'Title must be at least 5 characters.'),
@@ -54,7 +55,7 @@ const generateSlug = (title: string) => {
 
 export function PostEditorSheet({ isOpen, setIsOpen, post }: PostEditorSheetProps) {
   const { toast } = useToast();
-  const { addPost, updatePost } = usePostStore();
+  const { addPost, updatePost, isLoading } = usePostStore();
   
   const form = useForm<PostFormValues>({
     resolver: zodResolver(formSchema),
@@ -67,63 +68,65 @@ export function PostEditorSheet({ isOpen, setIsOpen, post }: PostEditorSheetProp
   });
   
   useEffect(() => {
-    if (post) {
-      form.reset({
-        title: post.title,
-        description: post.description,
-        content: post.content,
-        author: post.author,
-      });
-    } else {
-      form.reset({
-        title: '',
-        description: '',
-        content: '',
-        author: 'Jalen Doe',
-      });
+    if (isOpen) {
+        if (post) {
+          form.reset({
+            title: post.title,
+            description: post.description,
+            content: post.content,
+            author: post.author,
+          });
+        } else {
+          form.reset({
+            title: '',
+            description: '',
+            content: '',
+            author: 'Jalen Doe',
+          });
+        }
     }
   }, [post, form, isOpen]);
 
 
-  function onSubmit(values: PostFormValues) {
+  async function onSubmit(values: PostFormValues) {
     const slug = generateSlug(values.title);
     
+    const postData = {
+      ...values,
+      slug,
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+    };
+
     if (post) {
-      // Update existing post
-      const updatedPost: Post = {
+      const updatedPostData = {
         ...post,
-        ...values,
-        slug,
-        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        ...postData,
       };
-      updatePost(updatedPost);
-      toast({
-        title: 'Post Updated!',
-        description: `"${values.title}" has been successfully updated.`,
-      });
+      await updatePost(updatedPostData);
     } else {
-      // Create new post
-      const newPost: Post = {
-        id: Date.now(),
-        ...values,
-        slug,
+      const newPostData = {
+        ...postData,
         imageUrl: placeholderImages.blog1.imageUrl,
         imageHint: placeholderImages.blog1.imageHint,
         authorAvatarUrl: placeholderImages.testimonial1.imageUrl,
         authorAvatarHint: placeholderImages.testimonial1.imageHint,
-        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-        likes: 0,
-        comments: [],
       };
-      addPost(newPost);
-      toast({
-        title: 'Post Created!',
-        description: `"${values.title}" has been successfully created.`,
-      });
+      await addPost(newPostData);
     }
 
-    form.reset();
-    setIsOpen(false);
+    if (usePostStore.getState().error) {
+       toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: `Failed to ${post ? 'update' : 'create'} post.`,
+      });
+    } else {
+        toast({
+            title: `Post ${post ? 'Updated' : 'Created'}!`,
+            description: `"${values.title}" has been successfully saved.`,
+        });
+        setIsOpen(false);
+    }
   }
 
   return (
@@ -203,7 +206,10 @@ export function PostEditorSheet({ isOpen, setIsOpen, post }: PostEditorSheetProp
                 <SheetClose asChild>
                     <Button type="button" variant="outline">Cancel</Button>
                 </SheetClose>
-                <Button type="submit">Save Post</Button>
+                <Button type="submit" disabled={isLoading}>
+                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Save Post
+                </Button>
             </SheetFooter>
           </form>
         </Form>
