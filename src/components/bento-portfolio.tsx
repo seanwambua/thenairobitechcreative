@@ -24,7 +24,7 @@ interface BentoPortfolioProps {
 
 export function BentoPortfolio({ projects }: BentoPortfolioProps) {
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {projects.map((project, index) => {
         const Icon = icons[project.icon];
         return (
