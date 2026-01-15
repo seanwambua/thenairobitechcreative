@@ -11,7 +11,7 @@ interface PostState {
   isLoading: boolean;
   error: string | null;
   fetchPosts: () => Promise<void>;
-  addPost: (post: Omit<Post, 'id' | 'likes' | 'comments'>) => Promise<void>;
+  addPost: (post: Omit<Post, 'id' | 'likes' | 'comments' | 'createdAt' | 'updatedAt'>) => Promise<void>;
   updatePost: (updatedPost: Post) => Promise<void>;
   deletePost: (postId: number) => Promise<void>;
 }
@@ -47,6 +47,7 @@ export const usePostStore = create<PostState>((set) => ({
       }));
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
+      throw error;
     }
   },
   updatePost: async (updatedPost) => {
@@ -65,6 +66,7 @@ export const usePostStore = create<PostState>((set) => ({
       }));
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
+      throw error;
     }
   },
   deletePost: async (postId) => {
@@ -80,6 +82,7 @@ export const usePostStore = create<PostState>((set) => ({
       }));
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
+      throw error;
     }
   },
 }));

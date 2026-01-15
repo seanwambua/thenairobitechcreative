@@ -40,6 +40,7 @@ import { Badge } from '@/components/ui/badge';
 import { PostEditorSheet } from '@/components/post-editor-sheet';
 import { useToast } from '@/hooks/use-toast';
 import type { Post } from '@/store/posts';
+import { format } from 'date-fns';
 
 export default function ContentPage() {
   const { posts, deletePost, fetchPosts, isLoading, error } = usePostStore();
@@ -70,21 +71,22 @@ export default function ContentPage() {
 
   const handleDeleteConfirm = async () => {
     if (postToDelete) {
-      await deletePost(postToDelete.id);
-       if (usePostStore.getState().error) {
-         toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: 'Failed to delete post.',
-        });
-      } else {
+      try {
+        await deletePost(postToDelete.id);
         toast({
           title: 'Post Deleted',
           description: `"${postToDelete.title}" has been successfully deleted.`,
         });
+      } catch (e) {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Failed to delete post.',
+        });
+      } finally {
+        setDeleteDialogOpen(false);
+        setPostToDelete(null);
       }
-      setDeleteDialogOpen(false);
-      setPostToDelete(null);
     }
   };
 
@@ -108,8 +110,8 @@ export default function ContentPage() {
              <div className="flex justify-center p-8">
               <Loader2 className="h-8 w-8 animate-spin" />
             </div>
-          ) : error ? (
-            <div className="text-center text-destructive">{error}</div>
+          ) : error && !posts.length ? (
+            <div className="text-center text-destructive py-8">{error}</div>
           ) : (
           <Table>
             <TableHeader>
@@ -131,7 +133,7 @@ export default function ContentPage() {
                     {post.author}
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
-                    {post.date}
+                    {format(new Date(post.createdAt), 'MMM d, yyyy')}
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
                     <Badge variant="outline">Published</Badge>

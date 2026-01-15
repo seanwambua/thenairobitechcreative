@@ -70,21 +70,22 @@ export default function TestimonialsPage() {
 
   const handleDeleteConfirm = async () => {
     if (testimonialToDelete) {
-      await deleteTestimonial(testimonialToDelete.id);
-      if (useTestimonialStore.getState().error) {
-         toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: 'Failed to delete testimonial.',
-        });
-      } else {
+      try {
+        await deleteTestimonial(testimonialToDelete.id);
         toast({
           title: 'Testimonial Deleted',
           description: `The testimonial from "${testimonialToDelete.author}" has been successfully deleted.`,
         });
+      } catch (e) {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Failed to delete testimonial.',
+        });
+      } finally {
+        setDeleteDialogOpen(false);
+        setTestimonialToDelete(null);
       }
-      setDeleteDialogOpen(false);
-      setTestimonialToDelete(null);
     }
   };
 
@@ -106,8 +107,8 @@ export default function TestimonialsPage() {
              <div className="flex justify-center p-8">
               <Loader2 className="h-8 w-8 animate-spin" />
             </div>
-          ) : error ? (
-            <div className="text-center text-destructive">{error}</div>
+          ) : error && !testimonials.length ? (
+            <div className="text-center text-destructive py-8">{error}</div>
           ) : (
           <Table>
             <TableHeader>
@@ -167,7 +168,7 @@ export default function TestimonialsPage() {
       </Card>
       <TestimonialEditorSheet
         isOpen={isEditorOpen}
-        setIsOpen={setEditorOpen}
+        setIsOpen={setIsOpen}
         testimonial={editingTestimonial}
       />
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>

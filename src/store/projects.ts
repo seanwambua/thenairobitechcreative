@@ -1,18 +1,13 @@
 'use client';
 import { create } from 'zustand';
-import { initialProjects, type Project as ProjectType } from '@/lib/data';
-
-export interface Project extends Omit<ProjectType, 'keyFeatures'> {
-  keyFeatures: string; // Stored as comma-separated string
-}
-
+import { type Project as ProjectType } from '@/lib/data';
 
 interface ProjectState {
   projects: ProjectType[];
   isLoading: boolean;
   error: string | null;
   fetchProjects: () => Promise<void>;
-  addProject: (project: Omit<ProjectType, 'id'>) => Promise<void>;
+  addProject: (project: Omit<ProjectType, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
   updateProject: (updatedProject: ProjectType) => Promise<void>;
   deleteProject: (projectId: number) => Promise<void>;
 }
@@ -48,6 +43,7 @@ export const useProjectStore = create<ProjectState>((set) => ({
       }));
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
+      throw error;
     }
   },
   updateProject: async (updatedProject) => {
@@ -68,6 +64,7 @@ export const useProjectStore = create<ProjectState>((set) => ({
       }));
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
+      throw error;
     }
   },
   deleteProject: async (projectId) => {
@@ -83,6 +80,7 @@ export const useProjectStore = create<ProjectState>((set) => ({
       }));
     } catch (error) {
        set({ error: (error as Error).message, isLoading: false });
+       throw error;
     }
   },
 }));

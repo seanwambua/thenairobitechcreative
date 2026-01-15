@@ -10,7 +10,7 @@ interface TestimonialState {
   isLoading: boolean;
   error: string | null;
   fetchTestimonials: () => Promise<void>;
-  addTestimonial: (testimonial: Omit<Testimonial, 'id'>) => Promise<void>;
+  addTestimonial: (testimonial: Omit<Testimonial, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
   updateTestimonial: (updatedTestimonial: Testimonial) => Promise<void>;
   deleteTestimonial: (testimonialId: number) => Promise<void>;
 }
@@ -46,6 +46,7 @@ export const useTestimonialStore = create<TestimonialState>((set) => ({
       }));
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
+      throw error;
     }
   },
   updateTestimonial: async (updatedTestimonial) => {
@@ -66,6 +67,7 @@ export const useTestimonialStore = create<TestimonialState>((set) => ({
       }));
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
+      throw error;
     }
   },
   deleteTestimonial: async (testimonialId) => {
@@ -81,6 +83,7 @@ export const useTestimonialStore = create<TestimonialState>((set) => ({
       }));
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
+      throw error;
     }
   },
 }));

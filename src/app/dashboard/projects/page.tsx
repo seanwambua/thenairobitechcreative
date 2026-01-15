@@ -69,21 +69,22 @@ export default function ProjectsPage() {
 
   const handleDeleteConfirm = async () => {
     if (projectToDelete) {
-      await deleteProject(projectToDelete.id);
-      if (useProjectStore.getState().error) {
-         toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: 'Failed to delete project.',
-        });
-      } else {
+      try {
+        await deleteProject(projectToDelete.id);
         toast({
           title: 'Project Deleted',
           description: `"${projectToDelete.title}" has been successfully deleted.`,
         });
+      } catch (e) {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Failed to delete project.',
+        });
+      } finally {
+        setDeleteDialogOpen(false);
+        setProjectToDelete(null);
       }
-      setDeleteDialogOpen(false);
-      setProjectToDelete(null);
     }
   };
 
@@ -105,8 +106,8 @@ export default function ProjectsPage() {
             <div className="flex justify-center p-8">
               <Loader2 className="h-8 w-8 animate-spin" />
             </div>
-          ) : error ? (
-            <div className="text-center text-destructive">{error}</div>
+          ) : error && !projects.length ? (
+            <div className="text-center text-destructive py-8">{error}</div>
           ) : (
           <Table>
             <TableHeader>
