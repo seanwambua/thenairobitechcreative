@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect } from 'react';
@@ -27,9 +26,9 @@ export default function Home() {
   const { testimonials, fetchTestimonials } = useTestimonialStore();
 
   useEffect(() => {
-    fetchProjects();
-    fetchTestimonials();
-  }, [fetchProjects, fetchTestimonials]);
+    if (projects.length === 0) fetchProjects();
+    if (testimonials.length === 0) fetchTestimonials();
+  }, [projects.length, testimonials.length, fetchProjects, fetchTestimonials]);
 
 
   const sectionVariants = {
