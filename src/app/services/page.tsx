@@ -1,4 +1,3 @@
-
 'use client';
 import * as React from 'react';
 import { Header } from '@/components/layout/header';
@@ -39,7 +38,6 @@ import {
 import { placeholderImages } from '@/lib/placeholder-images';
 import { Separator } from '@/components/ui/separator';
 import { useMediaStore } from '@/store/media';
-import { InquirySheet } from '@/components/inquiry-sheet';
 
 const iconMap: { [key: string]: LucideIcon } = {
   ScanSearch,

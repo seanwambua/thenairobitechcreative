@@ -32,7 +32,8 @@ export default function BlogPostPage() {
   }
 
   if (!post) {
-    notFound();
+    // Return a not-found page if the post isn't found after loading
+    return notFound();
   }
 
   // Comments are not implemented as an array
@@ -58,7 +59,7 @@ export default function BlogPostPage() {
               </Avatar>
               <div>
                 <p className="font-semibold">{post.author}</p>
-                <p className="text-sm text-muted-foreground">{post.date}</p>
+                <p className="text-sm text-muted-foreground">{new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
               </div>
             </div>
           </header>
