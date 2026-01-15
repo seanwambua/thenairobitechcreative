@@ -1,8 +1,16 @@
 'use client';
 import { create } from 'zustand';
 import { type Post as PostType } from '@prisma/client';
+import { initialPosts } from '@/lib/data';
+import {
+  createPost,
+  updatePost as updatePostAction,
+  deletePost as deletePostAction,
+} from '@/app/actions/posts';
 
-export interface Post extends PostType {}
+export interface Post extends PostType {
+  comments: any[]; // Adjust based on actual comment structure
+}
 
 interface PostState {
   posts: Post[];
@@ -10,7 +18,7 @@ interface PostState {
   error: string | null;
   setPosts: (posts: Post[]) => void;
   fetchPosts: () => Promise<void>;
-  addPost: (post: Omit<Post, 'id' | 'likes' | 'createdAt' | 'updatedAt'>) => Promise<void>;
+  addPost: (post: Omit<Post, 'id' | 'likes' | 'createdAt' | 'updatedAt'| 'comments' | 'date'>) => Promise<void>;
   updatePost: (updatedPost: Post) => Promise<void>;
   deletePost: (postId: number) => Promise<void>;
 }
@@ -25,26 +33,31 @@ export const usePostStore = create<PostState>((set, get) => ({
     try {
       const response = await fetch('/api/posts');
       if (!response.ok) throw new Error('Failed to fetch posts');
-      const posts = await response.json();
+      let posts = await response.json();
+
+      // If db is empty, populate with initial data
+      if (posts.length === 0) {
+        posts = initialPosts.map(p => ({
+            ...p,
+            comments: [], // Ensure comments is an empty array
+        }));
+      } else {
+        posts = posts.map((p: Post) => ({
+          ...p,
+          comments: [], // Ensure comments are handled correctly from DB string
+        }));
+      }
+
       set({ posts, isLoading: false });
     } catch (error) {
-      set({ error: (error as Error).message, isLoading: false });
+      set({ error: (error as Error).message, isLoading: false, posts: initialPosts as Post[] });
     }
   },
   addPost: async (post) => {
     set({ isLoading: true });
     try {
-      const response = await fetch('/api/posts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(post),
-      });
-      if (!response.ok) throw new Error('Failed to create post');
-      const newPost = await response.json();
-      set((state) => ({
-        posts: [newPost, ...state.posts],
-        isLoading: false,
-      }));
+      const newPost = await createPost(post);
+      const posts = await get().fetchPosts();
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
@@ -53,33 +66,20 @@ export const usePostStore = create<PostState>((set, get) => ({
   updatePost: async (updatedPost) => {
     set({ isLoading: true });
     try {
-      const response = await fetch(`/api/posts/${updatedPost.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedPost),
-      });
-      if (!response.ok) throw new Error('Failed to update post');
-      const result = await response.json();
-      set((state) => ({
-        posts: state.posts.map((p) => (p.id === updatedPost.id ? result : p)),
-        isLoading: false,
-      }));
+      await updatePostAction(updatedPost);
+      await get().fetchPosts();
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
     }
   },
   deletePost: async (postId) => {
-    // Optimistic update
     const originalPosts = get().posts;
-    set(state => ({ posts: state.posts.filter(p => p.id !== postId) }));
+    set((state) => ({ posts: state.posts.filter((p) => p.id !== postId) }));
     try {
-      const response = await fetch(`/api/posts/${postId}`, {
-        method: 'DELETE',
-      });
-      if (!response.ok) throw new Error('Failed to delete post');
+      await deletePostAction(postId);
+      await get().fetchPosts(); // Re-fetch to confirm deletion from server
     } catch (error) {
-      // Revert on error
       set({ posts: originalPosts, error: (error as Error).message });
       throw error;
     }

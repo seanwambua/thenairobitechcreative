@@ -12,16 +12,3 @@ export async function GET() {
     return NextResponse.json({ error: 'Failed to fetch testimonials' }, { status: 500 });
   }
 }
-
-export async function POST(request: Request) {
-  try {
-    const data = await request.json();
-    const newTestimonial = await prisma.testimonial.create({
-      data,
-    });
-    return NextResponse.json(newTestimonial, { status: 201 });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: 'Failed to create testimonial' }, { status: 500 });
-  }
-}

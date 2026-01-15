@@ -1,6 +1,8 @@
 import type { ComponentType } from 'react';
 import { Boxes, BookOpen, PenTool, LineChart, Globe, Server, type LucideProps, ScanSearch, LayoutTemplate, Rocket, Scaling, Briefcase, Computer, Wrench, ServerCog, Star } from 'lucide-react';
 import { placeholderImages } from './placeholder-images';
+import { type Post as PrismaPost, type Project as PrismaProject, type Testimonial as PrismaTestimonial } from '@prisma/client';
+
 
 export const iconNames = ['Boxes', 'BookOpen', 'PenTool', 'LineChart', 'Globe', 'Server', 'ScanSearch', 'LayoutTemplate', 'Rocket', 'Scaling', 'Briefcase', 'Computer', 'Wrench', 'ServerCog', 'Star'] as const;
 export type IconName = (typeof iconNames)[number];
@@ -12,25 +14,11 @@ export interface NavItem {
     hidden?: boolean;
 }
 
-export interface Project {
-  id: number;
-  title: string;
-  description: string;
+export interface Project extends Omit<PrismaProject, 'keyFeatures'> {
   keyFeatures: string[];
-  imageUrl: string;
-  imageHint: string;
-  gridSpan: string;
-  icon: IconName;
 }
 
-export interface Testimonial {
-  id: number;
-  quote: string;
-  author: string;
-  title: string;
-  avatarUrl: string;
-  avatarHint: string;
-}
+export type Testimonial = PrismaTestimonial;
 
 export interface PostComment {
     id: string;
@@ -39,19 +27,7 @@ export interface PostComment {
     avatarUrl: string;
 }
 
-export interface Post {
-  id: number;
-  slug: string;
-  title: string;
-  description: string;
-  content: string;
-  imageUrl: string;
-  imageHint: string;
-  author: string;
-  authorAvatarUrl: string;
-  authorAvatarHint: string;
-  date: string;
-  likes: number;
+export interface Post extends Omit<PrismaPost, 'comments'> {
   comments: PostComment[];
 }
 
@@ -213,6 +189,8 @@ export const initialProjects: Project[] = [
     imageHint: placeholderImages.inventory.imageHint,
     gridSpan: 'col-span-1 md:col-span-1',
     icon: 'Boxes',
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
     id: 2,
@@ -221,8 +199,10 @@ export const initialProjects: Project[] = [
     keyFeatures: ['Collaborative Canvas', 'Vector Tools', 'Asset Library'],
     imageUrl: placeholderImages.design.imageUrl,
     imageHint: placeholderImages.design.imageHint,
-    gridSpan: 'col-span-1 md:col-span-2 lg:col-span-2',
+    gridSpan: 'col-span-1 sm:col-span-2 lg:col-span-2',
     icon: 'PenTool',
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
     id: 3,
@@ -231,8 +211,10 @@ export const initialProjects: Project[] = [
     keyFeatures: ['KES/USD Support', 'Cash Flow Forecasting', 'Investor Reports'],
     imageUrl: placeholderImages.finance.imageUrl,
     imageHint: placeholderImages.finance.imageHint,
-    gridSpan: 'col-span-1 md:col-span-2 lg:col-span-2',
+    gridSpan: 'col-span-1 sm:col-span-2 lg:col-span-2',
     icon: 'LineChart',
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
     id: 4,
@@ -243,6 +225,8 @@ export const initialProjects: Project[] = [
     imageHint: placeholderImages.lms.imageHint,
     gridSpan: 'col-span-1 md:col-span-1',
     icon: 'BookOpen',
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
     id: 5,
@@ -253,6 +237,8 @@ export const initialProjects: Project[] = [
     imageHint: placeholderImages.enterpriseA.imageHint,
     gridSpan: 'col-span-1 md:col-span-1',
     icon: 'Server',
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
     id: 6,
@@ -261,8 +247,10 @@ export const initialProjects: Project[] = [
     keyFeatures: ['Advanced CRM', 'API Gateway'],
     imageUrl: placeholderImages.enterpriseB.imageUrl,
     imageHint: placeholderImages.enterpriseB.imageHint,
-    gridSpan: 'col-span-1 md:col-span-2 lg:col-span-2',
+    gridSpan: 'col-span-1 sm:col-span-2 lg:col-span-2',
     icon: 'Globe',
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
 ];
 
@@ -274,6 +262,8 @@ export const initialTestimonials: Testimonial[] = [
     title: "CEO, AgriConnect",
     avatarUrl: placeholderImages.testimonial1.imageUrl,
     avatarHint: placeholderImages.testimonial1.imageHint,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
     id: 2,
@@ -282,6 +272,8 @@ export const initialTestimonials: Testimonial[] = [
     title: "Founder, EduScale",
     avatarUrl: placeholderImages.testimonial2.imageUrl,
     avatarHint: placeholderImages.testimonial2.imageHint,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
     id: 3,
@@ -290,6 +282,8 @@ export const initialTestimonials: Testimonial[] = [
     title: "CFO, FinTech Innovators",
     avatarUrl: placeholderImages.testimonial3.imageUrl,
     avatarHint: placeholderImages.testimonial3.imageHint,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
     id: 4,
@@ -298,6 +292,8 @@ export const initialTestimonials: Testimonial[] = [
     title: "Director, Creative Guild Africa",
     avatarUrl: placeholderImages.testimonial4.imageUrl,
     avatarHint: placeholderImages.testimonial4.imageHint,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
 ];
 
@@ -329,6 +325,8 @@ export const initialPosts: Post[] = [
         avatarUrl: placeholderImages.testimonial2.imageUrl,
       },
     ],
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
     id: 2,
@@ -344,6 +342,8 @@ export const initialPosts: Post[] = [
     date: 'Oct 2, 2024',
     likes: 95,
     comments: [],
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
     id: 3,
@@ -366,7 +366,7 @@ export const initialPosts: Post[] = [
             avatarUrl: placeholderImages.testimonial4.imageUrl,
         }
     ],
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
 ];
-
-    

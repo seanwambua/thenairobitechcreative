@@ -1,6 +1,12 @@
 'use client';
 import { create } from 'zustand';
-import { type Project as ProjectType } from '@/lib/data';
+import { type Project as ProjectType, initialProjects } from '@/lib/data';
+import { 
+    createProject, 
+    updateProject as updateProjectAction,
+    deleteProject as deleteProjectAction 
+} from '@/app/actions/projects';
+
 
 interface ProjectState {
   projects: ProjectType[];
@@ -8,12 +14,12 @@ interface ProjectState {
   error: string | null;
   setProjects: (projects: ProjectType[]) => void;
   fetchProjects: () => Promise<void>;
-  addProject: (project: Omit<ProjectType, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
+  addProject: (project: Omit<ProjectType, 'id' >) => Promise<void>;
   updateProject: (updatedProject: ProjectType) => Promise<void>;
   deleteProject: (projectId: number) => Promise<void>;
 }
 
-export const useProjectStore = create<ProjectState>((set) => ({
+export const useProjectStore = create<ProjectState>((set, get) => ({
   projects: [],
   isLoading: false,
   error: null,
@@ -24,25 +30,20 @@ export const useProjectStore = create<ProjectState>((set) => ({
       const response = await fetch('/api/projects');
       if (!response.ok) throw new Error('Failed to fetch projects');
       const projects = await response.json();
-      set({ projects, isLoading: false });
+      if (projects.length === 0) {
+        set({ projects: initialProjects, isLoading: false });
+      } else {
+        set({ projects, isLoading: false });
+      }
     } catch (error) {
-      set({ error: (error as Error).message, isLoading: false });
+      set({ error: (error as Error).message, isLoading: false, projects: initialProjects });
     }
   },
   addProject: async (project) => {
     set({ isLoading: true });
     try {
-      const response = await fetch('/api/projects', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(project),
-      });
-      if (!response.ok) throw new Error('Failed to create project');
-      const newProject = await response.json();
-      set((state) => ({
-        projects: [newProject, ...state.projects],
-        isLoading: false,
-      }));
+      await createProject(project);
+      await get().fetchProjects();
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
@@ -51,35 +52,21 @@ export const useProjectStore = create<ProjectState>((set) => ({
   updateProject: async (updatedProject) => {
     set({ isLoading: true });
     try {
-      const response = await fetch(`/api/projects/${updatedProject.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedProject),
-      });
-      if (!response.ok) throw new Error('Failed to update project');
-      const result = await response.json();
-      set((state) => ({
-        projects: state.projects.map((p) => (p.id === updatedProject.id ? result : p)),
-        isLoading: false,
-      }));
+      await updateProjectAction(updatedProject);
+      await get().fetchProjects();
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
     }
   },
   deleteProject: async (projectId) => {
-    set({ isLoading: true });
+     const originalProjects = get().projects;
+    set(state => ({ projects: state.projects.filter(p => p.id !== projectId) }));
     try {
-      const response = await fetch(`/api/projects/${projectId}`, {
-        method: 'DELETE',
-      });
-      if (!response.ok) throw new Error('Failed to delete project');
-      set((state) => ({
-        projects: state.projects.filter((p) => p.id !== projectId),
-        isLoading: false,
-      }));
+      await deleteProjectAction(projectId);
+      await get().fetchProjects();
     } catch (error) {
-      set({ error: (error as Error).message, isLoading: false });
+      set({ projects: originalProjects, error: (error as Error).message });
       throw error;
     }
   },

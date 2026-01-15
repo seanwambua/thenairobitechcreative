@@ -1,6 +1,12 @@
 'use client';
 import { create } from 'zustand';
 import { type Testimonial as TestimonialType } from '@prisma/client';
+import { initialTestimonials } from '@/lib/data';
+import { 
+    createTestimonial, 
+    updateTestimonial as updateTestimonialAction,
+    deleteTestimonial as deleteTestimonialAction 
+} from '@/app/actions/testimonials';
 
 export type Testimonial = TestimonialType;
 
@@ -15,7 +21,7 @@ interface TestimonialState {
   deleteTestimonial: (testimonialId: number) => Promise<void>;
 }
 
-export const useTestimonialStore = create<TestimonialState>((set) => ({
+export const useTestimonialStore = create<TestimonialState>((set, get) => ({
   testimonials: [],
   isLoading: false,
   error: null,
@@ -26,25 +32,20 @@ export const useTestimonialStore = create<TestimonialState>((set) => ({
       const response = await fetch('/api/testimonials');
       if (!response.ok) throw new Error('Failed to fetch testimonials');
       const testimonials = await response.json();
-      set({ testimonials, isLoading: false });
+      if (testimonials.length === 0) {
+        set({ testimonials: initialTestimonials, isLoading: false });
+      } else {
+        set({ testimonials, isLoading: false });
+      }
     } catch (error) {
-      set({ error: (error as Error).message, isLoading: false });
+      set({ error: (error as Error).message, isLoading: false, testimonials: initialTestimonials });
     }
   },
   addTestimonial: async (testimonial) => {
     set({ isLoading: true });
     try {
-      const response = await fetch('/api/testimonials', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(testimonial),
-      });
-      if (!response.ok) throw new Error('Failed to create testimonial');
-      const newTestimonial = await response.json();
-      set((state) => ({
-        testimonials: [newTestimonial, ...state.testimonials],
-        isLoading: false,
-      }));
+      await createTestimonial(testimonial);
+      await get().fetchTestimonials();
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
@@ -53,37 +54,21 @@ export const useTestimonialStore = create<TestimonialState>((set) => ({
   updateTestimonial: async (updatedTestimonial) => {
     set({ isLoading: true });
     try {
-      const response = await fetch(`/api/testimonials/${updatedTestimonial.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedTestimonial),
-      });
-      if (!response.ok) throw new Error('Failed to update testimonial');
-      const result = await response.json();
-      set((state) => ({
-        testimonials: state.testimonials.map((t) =>
-          t.id === updatedTestimonial.id ? result : t
-        ),
-        isLoading: false,
-      }));
+      await updateTestimonialAction(updatedTestimonial);
+      await get().fetchTestimonials();
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
     }
   },
   deleteTestimonial: async (testimonialId) => {
-    set({ isLoading: true });
+    const originalTestimonials = get().testimonials;
+    set(state => ({ testimonials: state.testimonials.filter(t => t.id !== testimonialId) }));
     try {
-      const response = await fetch(`/api/testimonials/${testimonialId}`, {
-        method: 'DELETE',
-      });
-      if (!response.ok) throw new Error('Failed to delete testimonial');
-      set((state) => ({
-        testimonials: state.testimonials.filter((t) => t.id !== testimonialId),
-        isLoading: false,
-      }));
+      await deleteTestimonialAction(testimonialId);
+      await get().fetchTestimonials();
     } catch (error) {
-      set({ error: (error as Error).message, isLoading: false });
+      set({ testimonials: originalTestimonials, error: (error as Error).message });
       throw error;
     }
   },

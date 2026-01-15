@@ -17,24 +17,3 @@ export async function GET() {
     return NextResponse.json({ error: 'Failed to fetch projects' }, { status: 500 });
   }
 }
-
-export async function POST(request: Request) {
-  try {
-    const data = await request.json();
-    const { keyFeatures, ...rest } = data;
-    const newProject = await prisma.project.create({
-      data: {
-        ...rest,
-        keyFeatures: keyFeatures.join(','),
-      },
-    });
-     const formattedProject = {
-        ...newProject,
-        keyFeatures: newProject.keyFeatures.split(',').map(s => s.trim())
-    };
-    return NextResponse.json(formattedProject, { status: 201 });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: 'Failed to create project' }, { status: 500 });
-  }
-}
