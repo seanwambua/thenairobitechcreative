@@ -6,6 +6,13 @@ import { PostSchema } from '@/lib/schemas';
 import { placeholderImages } from '@/lib/placeholder-images';
 import type { Post } from '@prisma/client';
 
+// Action to get all posts
+export async function getPosts() {
+    return await prisma.post.findMany({
+        orderBy: { createdAt: 'desc' },
+    });
+}
+
 export async function createPost(data: Pick<Post, 'title' | 'description' | 'content' | 'author'>) {
     const validatedData = PostSchema.pick({
       title: true,
@@ -50,10 +57,14 @@ export async function updatePost(post: Post) {
 }
 
 export async function deletePost(postId: number) {
-    await prisma.post.delete({
-        where: { id: postId },
-    });
-    revalidatePath('/dashboard/content');
-    revalidatePath('/dashboard/analytics');
-    revalidatePath('/blog');
+    const post = await prisma.post.findUnique({ where: { id: postId } });
+    if (post) {
+        await prisma.post.delete({
+            where: { id: postId },
+        });
+        revalidatePath('/dashboard/content');
+        revalidatePath('/dashboard/analytics');
+        revalidatePath('/blog');
+        revalidatePath(`/blog/${post.slug}`);
+    }
 }

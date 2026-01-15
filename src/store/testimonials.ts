@@ -2,7 +2,8 @@
 import { create } from 'zustand';
 import { type Testimonial as TestimonialType } from '@prisma/client';
 import { 
-    createTestimonial, 
+    getTestimonials,
+    createTestimonial as createTestimonialAction, 
     updateTestimonial as updateTestimonialAction,
     deleteTestimonial as deleteTestimonialAction 
 } from '@/app/actions/testimonials';
@@ -16,7 +17,7 @@ interface TestimonialState {
   testimonials: Testimonial[];
   isLoading: boolean;
   error: string | null;
-  setTestimonials: (testimonials: Testimonial[]) => void;
+  fetchTestimonials: () => Promise<void>;
   addTestimonial: (testimonial: CreateTestimonial) => Promise<void>;
   updateTestimonial: (updatedTestimonial: Testimonial) => Promise<void>;
   deleteTestimonial: (testimonialId: number) => Promise<void>;
@@ -26,11 +27,20 @@ export const useTestimonialStore = create<TestimonialState>((set, get) => ({
   testimonials: [],
   isLoading: false,
   error: null,
-  setTestimonials: (testimonials) => set({ testimonials, isLoading: false, error: null }),
+  fetchTestimonials: async () => {
+    set({ isLoading: true });
+    try {
+        const testimonials = await getTestimonials();
+        set({ testimonials, isLoading: false, error: null });
+    } catch (error) {
+        set({ error: (error as Error).message, isLoading: false });
+    }
+  },
   addTestimonial: async (testimonial) => {
     set({ isLoading: true });
     try {
-      await createTestimonial(testimonial);
+      await createTestimonialAction(testimonial);
+      await get().fetchTestimonials();
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
@@ -40,6 +50,7 @@ export const useTestimonialStore = create<TestimonialState>((set, get) => ({
     set({ isLoading: true });
     try {
       await updateTestimonialAction(updatedTestimonial);
+      await get().fetchTestimonials();
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
@@ -50,6 +61,7 @@ export const useTestimonialStore = create<TestimonialState>((set, get) => ({
     set(state => ({ testimonials: state.testimonials.filter(t => t.id !== testimonialId) }));
     try {
       await deleteTestimonialAction(testimonialId);
+      await get().fetchTestimonials();
     } catch (error) {
       set({ testimonials: originalTestimonials, error: (error as Error).message });
       throw error;

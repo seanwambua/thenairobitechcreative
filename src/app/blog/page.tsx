@@ -10,15 +10,14 @@ import Link from 'next/link';
 import { usePostStore } from '@/store/posts';
 
 export default function BlogPage() {
-  const { posts, isLoading, error } = usePostStore();
+  const { posts, isLoading, error, fetchPosts } = usePostStore();
   
-  // Data for this page is now fetched in the parent layout or passed via props.
-  // This client component will just display the data from the store.
-
   useEffect(() => {
-    // If the store is empty, it's likely a direct navigation.
-    // The initial data is now passed from a server component.
-  }, [])
+    // Fetch posts if they are not already in the store.
+    if (posts.length === 0) {
+      fetchPosts();
+    }
+  }, [posts.length, fetchPosts]);
 
 
   const featuredPosts = posts.slice(0, 3);

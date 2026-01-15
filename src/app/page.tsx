@@ -22,11 +22,13 @@ import { useTestimonialStore } from '@/store/testimonials';
 
 export default function Home() {
   const { heroImage } = useMediaStore();
-  const { projects } = useProjectStore();
-  const { testimonials } = useTestimonialStore();
+  const { projects, fetchProjects } = useProjectStore();
+  const { testimonials, fetchTestimonials } = useTestimonialStore();
   
-  // Data for this page is now fetched in the parent layout or passed via props.
-  // This client component will just display the data from the store.
+  useEffect(() => {
+    fetchProjects();
+    fetchTestimonials();
+  }, [fetchProjects, fetchTestimonials]);
 
   const sectionVariants = {
     hidden: { opacity: 0, y: 50 },

@@ -5,6 +5,12 @@ import { revalidatePath } from 'next/cache';
 import { TestimonialSchema, type TestimonialSchemaType } from '@/lib/schemas';
 import type { Testimonial } from '@prisma/client';
 
+export async function getTestimonials() {
+    return await prisma.testimonial.findMany({
+        orderBy: { createdAt: 'desc' },
+    });
+}
+
 export async function createTestimonial(data: Omit<TestimonialSchemaType, 'id' | 'createdAt' | 'updatedAt'>) {
     const validatedData = TestimonialSchema.omit({ id: true, createdAt: true, updatedAt: true }).parse(data);
     const newTestimonial = await prisma.testimonial.create({

@@ -5,6 +5,17 @@ import { revalidatePath } from 'next/cache';
 import { ProjectSchema, type ProjectSchemaType } from '@/lib/schemas';
 import type { Project } from '@/lib/data';
 
+
+export async function getProjects() {
+    const projectsData = await prisma.project.findMany({
+        orderBy: { createdAt: 'desc' },
+    });
+    return projectsData.map(p => ({
+        ...p,
+        keyFeatures: p.keyFeatures.split(',').map(s => s.trim()),
+    }));
+}
+
 export async function createProject(data: Omit<ProjectSchemaType, 'id' | 'createdAt' | 'updatedAt'>) {
     const validatedData = ProjectSchema.omit({ id: true, createdAt: true, updatedAt: true }).parse(data);
     
