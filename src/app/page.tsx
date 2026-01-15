@@ -62,7 +62,7 @@ export default function Home() {
                 tackle global challenges.
               </p>
             </div>
-            <div className="md:ml-0">
+            <div>
               <BentoPortfolio projects={projects} />
             </div>
           </div>
