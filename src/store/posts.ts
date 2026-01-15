@@ -9,7 +9,7 @@ import {
 } from '@/app/actions/posts';
 
 export interface Post extends PostType {
-  comments: any[]; // Adjust based on actual comment structure
+  comments: any[]; 
 }
 
 interface PostState {
@@ -18,7 +18,7 @@ interface PostState {
   error: string | null;
   setPosts: (posts: Post[]) => void;
   fetchPosts: () => Promise<void>;
-  addPost: (post: Omit<Post, 'id' | 'createdAt' | 'updatedAt' | 'comments'>) => Promise<void>;
+  addPost: (post: Omit<Post, 'id' | 'createdAt' | 'updatedAt' | 'comments' | 'likes' | 'date'>) => Promise<void>;
   updatePost: (updatedPost: Post) => Promise<void>;
   deletePost: (postId: number) => Promise<void>;
 }
@@ -43,13 +43,14 @@ export const usePostStore = create<PostState>((set, get) => ({
       } else {
         posts = posts.map((p: Post) => ({
           ...p,
-          comments: [],
+          comments: [], // Ensure comments is an array for client-side
         }));
       }
 
       set({ posts, isLoading: false });
     } catch (error) {
-      set({ error: (error as Error).message, isLoading: false, posts: initialPosts as Post[] });
+      const fallbackPosts = initialPosts.map(p => ({...p, comments: []}));
+      set({ error: (error as Error).message, isLoading: false, posts: fallbackPosts as Post[] });
     }
   },
   addPost: async (post) => {
@@ -57,7 +58,7 @@ export const usePostStore = create<PostState>((set, get) => ({
     try {
       const newPost = await createPost(post);
       set((state) => ({
-        posts: [newPost as Post, ...state.posts],
+        posts: [{...newPost, comments: []}, ...state.posts],
         isLoading: false,
       }));
     } catch (error) {

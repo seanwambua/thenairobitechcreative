@@ -20,16 +20,7 @@ export interface Project extends Omit<PrismaProject, 'keyFeatures'> {
 
 export type Testimonial = PrismaTestimonial;
 
-export interface PostComment {
-    id: string;
-    author: string;
-    text: string;
-    avatarUrl: string;
-}
-
-export interface Post extends Omit<PrismaPost, 'comments'> {
-  comments: PostComment[];
-}
+export type Post = PrismaPost;
 
 export interface Service {
   id: number;
@@ -297,7 +288,7 @@ export const initialTestimonials: Testimonial[] = [
   },
 ];
 
-export const initialPosts: Post[] = [
+export const initialPosts: (Post & { comments: {id: string; author: string; text: string; avatarUrl: string}[] })[] = [
   {
     id: 1,
     slug: 'the-rise-of-mobile-first-solutions-in-africa',

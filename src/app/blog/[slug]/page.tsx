@@ -35,8 +35,8 @@ export default function BlogPostPage() {
     notFound();
   }
 
-  // Handle posts without comments property
-  const commentsCount = post.comments?.length || 0;
+  // Comments are not implemented as an array
+  const commentsCount = 0;
 
   return (
     <div className="flex min-h-screen flex-col bg-background">

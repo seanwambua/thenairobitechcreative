@@ -10,7 +10,7 @@ export async function createPost(data: Omit<Post, 'id' | 'likes' | 'createdAt' |
             ...data,
             likes: 0,
             date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-            comments: '', // Storing comments as a string for now
+            comments: '', // Storing comments as a string
         },
     });
     revalidatePath('/dashboard/content');
