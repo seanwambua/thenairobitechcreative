@@ -21,10 +21,10 @@ export function Header() {
           <div className="h-8 w-8 rounded-full overflow-hidden flex items-center justify-center">
             <Stamp />
           </div>
-          <span className="font-headline text-xl font-semibold sm:hidden">
+          <span className="font-headline text-xl font-semibold lg:hidden">
             NTC
           </span>
-          <span className="hidden font-headline text-xl font-semibold sm:inline-block">
+          <span className="hidden font-headline text-xl font-semibold lg:inline-block">
             The Nairobi Tech Creative
           </span>
         </Link>

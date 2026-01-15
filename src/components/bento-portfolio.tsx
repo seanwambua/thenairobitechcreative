@@ -24,7 +24,7 @@ interface BentoPortfolioProps {
 
 export function BentoPortfolio({ projects }: BentoPortfolioProps) {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       {projects.map((project, index) => {
         const Icon = icons[project.icon];
         return (
@@ -43,7 +43,7 @@ export function BentoPortfolio({ projects }: BentoPortfolioProps) {
                     alt={project.title}
                     fill
                     className="object-cover"
-                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     data-ai-hint={project.imageHint}
                   />
               </div>
