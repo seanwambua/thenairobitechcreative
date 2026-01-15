@@ -65,8 +65,11 @@ export default function DashboardLayout({
             <div className="h-8 w-8 rounded-full overflow-hidden flex items-center justify-center">
               <Logo />
             </div>
-            <span className="hidden font-headline text-xl font-semibold sm:inline-block group-data-[collapsible=icon]:hidden">
-              Dashboard
+            <span className="hidden font-headline text-xl font-semibold lg:inline-block group-data-[collapsible=icon]:hidden">
+              NTC
+            </span>
+            <span className="hidden font-headline text-xl font-semibold lg:inline-block">
+              The Nairobi Tech Creative
             </span>
           </div>
         </SidebarHeader>
@@ -150,7 +153,7 @@ export default function DashboardLayout({
           <div className="flex items-center justify-between group-data-[collapsible=icon]:justify-center">
             <div className="flex items-center gap-3 group-data-[collapsible=icon]:hidden">
               <Avatar className="h-10 w-10">
-                 <AvatarImage src={founderImage} alt={founderInfo.imageHint} />
+                 <AvatarImage src={founderImage ?? undefined} alt={founderInfo.imageHint} />
                  <AvatarFallback>
                   {founderInitials}
                  </AvatarFallback>

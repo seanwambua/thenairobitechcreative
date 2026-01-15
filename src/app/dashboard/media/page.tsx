@@ -60,7 +60,7 @@ export default function MediaPage() {
 
   const handleFileChange = async (
     event: ChangeEvent<HTMLInputElement>,
-    setter: (url: string) => void,
+    setter: (url: string | null) => void,
     uploadType: string,
     successTitle: string,
     successDescription: string
@@ -129,7 +129,7 @@ export default function MediaPage() {
   };
 
   const handleRemoveFounderImage = () => {
-    setFounderImage(placeholderImages.founder.imageUrl);
+    setFounderImage(null);
      toast({
         title: 'Founder Image Reset',
         description: 'The founder image has been reset to the default.',
@@ -223,7 +223,7 @@ export default function MediaPage() {
                 type="file"
                 ref={logoFileInputRef}
                 className="hidden"
-                onChange={(e) => handleFileChange(e, setLogo as (url: string) => void, 'logo', 'Logo Updated', 'Your new logo has been applied.')}
+                onChange={(e) => handleFileChange(e, setLogo, 'logo', 'Logo Updated', 'Your new logo has been applied.')}
                 accept="image/png, image/jpeg, image/svg+xml"
               />
               <div className="flex w-full gap-2">
@@ -249,7 +249,7 @@ export default function MediaPage() {
           </CardHeader>
           <CardContent className="flex flex-col items-center gap-6">
             <Avatar className="h-48 w-48 border-4 border-dashed bg-muted/50">
-              <AvatarImage src={founderImage} alt="Founder" />
+              <AvatarImage src={founderImage ?? undefined} alt="Founder" />
               <AvatarFallback>
                 {placeholderImages.founder.imageHint.split(' ').map(n => n[0]).join('')}
               </AvatarFallback>

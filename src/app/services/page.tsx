@@ -85,7 +85,7 @@ export default function ServicesPage() {
                 <HoverCardTrigger asChild>
                   <div className="group relative">
                     <Avatar className="h-24 w-24 cursor-pointer transition-all duration-300 md:h-32 md:w-32">
-                      <AvatarImage src={founderImage} alt={founderInfo.imageHint} />
+                      <AvatarImage src={founderImage ?? undefined} alt={founderInfo.imageHint} />
                       <AvatarFallback>{founderInitials}</AvatarFallback>
                     </Avatar>
                     <div className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-background bg-primary text-primary-foreground shadow-lg transition-transform duration-300 group-hover:scale-125">
@@ -97,7 +97,7 @@ export default function ServicesPage() {
                   <div className="flex flex-col gap-4">
                     <div className="flex justify-between space-x-4">
                       <Avatar>
-                        <AvatarImage src={founderImage} alt={founderInfo.imageHint} />
+                        <AvatarImage src={founderImage ?? undefined} alt={founderInfo.imageHint} />
                         <AvatarFallback>{founderInitials}</AvatarFallback>
                       </Avatar>
                       <div className="space-y-1">
@@ -126,7 +126,7 @@ export default function ServicesPage() {
               </HoverCard>
             </div>
 
-            <div className="mx-auto grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-3">
+            <div className="mx-auto grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
               {services.map((service, index) => {
                 const Icon = iconMap[service.icon as keyof typeof iconMap];
                 return (
