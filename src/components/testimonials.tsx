@@ -68,14 +68,14 @@ export function Testimonials({ testimonials }: TestimonialsProps) {
               <CarouselItem key={testimonial.id} className="md:basis-1/2">
                 <motion.div variants={itemVariants} className="p-2">
                   <Card className="flex h-full flex-col justify-between overflow-hidden rounded-xl bg-card shadow-lg transition-all hover:shadow-primary/20">
-                    <CardContent className="flex flex-1 flex-col p-8">
+                    <CardContent className="flex flex-1 flex-col p-6 md:p-8">
                       <Quote className="h-8 w-8 text-primary" />
                       <blockquote className="mt-4 flex-1 font-body text-base italic text-foreground">
                         "{testimonial.quote}"
                       </blockquote>
                       <footer className="mt-6">
                         <div className="flex items-center gap-4">
-                          <Avatar className="h-14 w-14 border-2 border-primary">
+                          <Avatar className="h-12 w-12 border-2 border-primary md:h-14 md:w-14">
                             <AvatarImage
                               src={testimonial.avatarUrl}
                               alt={testimonial.author}

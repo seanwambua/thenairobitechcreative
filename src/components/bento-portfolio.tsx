@@ -37,7 +37,7 @@ export function BentoPortfolio({ projects }: BentoPortfolioProps) {
             transition={{ duration: 0.5, delay: index * 0.1 }}
           >
             <Card className="flex h-full flex-col overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-primary/20">
-              <div className="relative h-60 w-full">
+              <div className="relative h-48 w-full">
                 <Image
                     src={project.imageUrl}
                     alt={project.title}
