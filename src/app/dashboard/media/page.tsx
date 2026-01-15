@@ -34,7 +34,7 @@ export default function MediaPage() {
     logo, setLogo,
     founderImage, setFounderImage
   } = useMediaStore();
-  const { posts } = usePostStore();
+  const { posts, fetchPosts } = usePostStore();
   const [heroImageOptions, setHeroImageOptions] = useState<ImagePlaceholder[]>(defaultHeroImages);
   const [isUploading, setIsUploading] = useState<string | null>(null);
 
@@ -42,6 +42,12 @@ export default function MediaPage() {
   const heroImageFileInputRef = useRef<HTMLInputElement>(null);
   const founderImageFileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  
+  useEffect(() => {
+    if (posts.length === 0) {
+      fetchPosts();
+    }
+  }, [posts.length, fetchPosts]);
   
   useEffect(() => {
     const isCustomImage = !defaultHeroImages.some(opt => opt.imageUrl === heroImage);
@@ -53,10 +59,10 @@ export default function MediaPage() {
             imageHint: 'custom upload'
         };
         if (!heroImageOptions.some(opt => opt.imageUrl === heroImage)) {
-            setHeroImageOptions([customImagePlaceholder, ...heroImageOptions]);
+            setHeroImageOptions(prev => [customImagePlaceholder, ...prev]);
         }
     }
-  }, [heroImage, heroImageOptions]);
+  }, [heroImage]);
 
   const handleFileChange = async (
     event: ChangeEvent<HTMLInputElement>,
@@ -266,10 +272,12 @@ export default function MediaPage() {
                     {isUploading === 'founder' ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
                     Upload Photo
                 </Button>
-                <Button onClick={handleRemoveFounderImage} variant="destructive" className="w-full">
-                    <X className="mr-2 h-4 w-4" />
-                    Reset
-                </Button>
+                {founderImage && (
+                    <Button onClick={handleRemoveFounderImage} variant="destructive" className="w-full">
+                        <X className="mr-2 h-4 w-4" />
+                        Reset
+                    </Button>
+                )}
               </div>
           </CardContent>
         </Card>
@@ -283,9 +291,16 @@ export default function MediaPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6 max-h-[calc(100vh-12rem)] overflow-y-auto">
-            {posts.map((post) => (
-              <PostImageManager key={post.id} post={post} />
-            ))}
+            {posts.length > 0 ? (
+                posts.map((post) => (
+                    <PostImageManager key={post.id} post={post} />
+                ))
+            ) : (
+                <div className="flex flex-col items-center justify-center text-center p-8 border-2 border-dashed rounded-lg">
+                    <Loader2 className="h-8 w-8 animate-spin text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">Loading posts...</p>
+                </div>
+            )}
           </CardContent>
         </Card>
       </div>
