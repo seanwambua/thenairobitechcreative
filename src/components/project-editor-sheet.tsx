@@ -63,15 +63,6 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project }: ProjectEditor
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [channel, setChannel] = useState<BroadcastChannel | null>(null);
-
-  useEffect(() => {
-    const bc = new BroadcastChannel('app-data-channel');
-    setChannel(bc);
-    return () => {
-      bc.close();
-    };
-  }, []);
 
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(formSchema),
@@ -157,7 +148,6 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project }: ProjectEditor
         title: `Project ${project ? 'Updated' : 'Created'}!`,
         description: `"${values.title}" has been successfully saved.`,
       });
-      channel?.postMessage({ type: 'refetch_projects' });
       setIsOpen(false);
     } catch (error) {
       toast({

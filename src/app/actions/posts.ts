@@ -6,19 +6,12 @@ import { PostSchema } from '@/lib/schemas';
 import { placeholderImages } from '@/lib/placeholder-images';
 import type { Post } from '@prisma/client';
 
-export async function createPost(data: Omit<Post, 'id' | 'createdAt' | 'updatedAt' | 'slug' | 'imageUrl' | 'imageHint' | 'authorAvatarUrl' | 'authorAvatarHint' | 'date' | 'likes' | 'comments'>) {
-    const validatedData = PostSchema.omit({
-      id: true,
-      createdAt: true,
-      updatedAt: true,
-      slug: true,
-      imageUrl: true,
-      imageHint: true,
-      authorAvatarUrl: true,
-      authorAvatarHint: true,
-      date: true,
-      likes: true,
-      comments: true,
+export async function createPost(data: Pick<Post, 'title' | 'description' | 'content' | 'author'>) {
+    const validatedData = PostSchema.pick({
+      title: true,
+      description: true,
+      content: true,
+      author: true,
     }).parse(data);
 
     const newPost = await prisma.post.create({
@@ -36,6 +29,7 @@ export async function createPost(data: Omit<Post, 'id' | 'createdAt' | 'updatedA
     });
 
     revalidatePath('/dashboard/content');
+    revalidatePath('/dashboard/analytics');
     revalidatePath('/blog');
     revalidatePath(`/blog/${newPost.slug}`);
     return newPost;
@@ -49,6 +43,7 @@ export async function updatePost(post: Post) {
         data: validatedData,
     });
     revalidatePath('/dashboard/content');
+    revalidatePath('/dashboard/analytics');
     revalidatePath('/blog');
     revalidatePath(`/blog/${updatedPost.slug}`);
     return updatedPost;
@@ -59,5 +54,6 @@ export async function deletePost(postId: number) {
         where: { id: postId },
     });
     revalidatePath('/dashboard/content');
+    revalidatePath('/dashboard/analytics');
     revalidatePath('/blog');
 }

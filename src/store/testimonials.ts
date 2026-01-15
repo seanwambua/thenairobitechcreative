@@ -17,7 +17,6 @@ interface TestimonialState {
   isLoading: boolean;
   error: string | null;
   setTestimonials: (testimonials: Testimonial[]) => void;
-  fetchTestimonials: () => Promise<void>;
   addTestimonial: (testimonial: CreateTestimonial) => Promise<void>;
   updateTestimonial: (updatedTestimonial: Testimonial) => Promise<void>;
   deleteTestimonial: (testimonialId: number) => Promise<void>;
@@ -27,26 +26,11 @@ export const useTestimonialStore = create<TestimonialState>((set, get) => ({
   testimonials: [],
   isLoading: false,
   error: null,
-  setTestimonials: (testimonials) => set({ testimonials }),
-  fetchTestimonials: async () => {
-    set({ isLoading: true, error: null });
-    try {
-      const response = await fetch('/api/testimonials');
-      if (!response.ok) throw new Error('Failed to fetch testimonials');
-      const testimonials = await response.json();
-      set({ testimonials, isLoading: false });
-    } catch (error) {
-      set({ error: (error as Error).message, isLoading: false, testimonials: [] });
-    }
-  },
+  setTestimonials: (testimonials) => set({ testimonials, isLoading: false, error: null }),
   addTestimonial: async (testimonial) => {
     set({ isLoading: true });
     try {
-      const newTestimonial = await createTestimonial(testimonial);
-      set((state) => ({
-        testimonials: [newTestimonial, ...state.testimonials],
-        isLoading: false,
-      }));
+      await createTestimonial(testimonial);
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
@@ -55,13 +39,7 @@ export const useTestimonialStore = create<TestimonialState>((set, get) => ({
   updateTestimonial: async (updatedTestimonial) => {
     set({ isLoading: true });
     try {
-      const returnedTestimonial = await updateTestimonialAction(updatedTestimonial);
-      set((state) => ({
-        testimonials: state.testimonials.map((t) =>
-          t.id === returnedTestimonial.id ? returnedTestimonial : t
-        ),
-        isLoading: false,
-      }));
+      await updateTestimonialAction(updatedTestimonial);
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;

@@ -11,6 +11,7 @@ export async function createTestimonial(data: Omit<TestimonialSchemaType, 'id' |
         data: validatedData,
     });
     revalidatePath('/dashboard/testimonials');
+    revalidatePath('/dashboard/analytics');
     revalidatePath('/');
     return newTestimonial;
 }
@@ -22,6 +23,7 @@ export async function updateTestimonial(testimonial: Testimonial) {
         data: validatedData,
     });
     revalidatePath('/dashboard/testimonials');
+    revalidatePath('/dashboard/analytics');
     revalidatePath('/');
     return updatedTestimonial;
 }
@@ -31,5 +33,6 @@ export async function deleteTestimonial(testimonialId: number) {
         where: { id: testimonialId },
     });
     revalidatePath('/dashboard/testimonials');
+    revalidatePath('/dashboard/analytics');
     revalidatePath('/');
 }

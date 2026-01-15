@@ -47,15 +47,6 @@ interface PostEditorSheetProps {
 export function PostEditorSheet({ isOpen, setIsOpen, post }: PostEditorSheetProps) {
   const { toast } = useToast();
   const { addPost, updatePost, isLoading } = usePostStore();
-  const [channel, setChannel] = useState<BroadcastChannel | null>(null);
-
-  useEffect(() => {
-    const bc = new BroadcastChannel('app-data-channel');
-    setChannel(bc);
-    return () => {
-      bc.close();
-    };
-  }, []);
   
   const form = useForm<PostFormValues>({
     resolver: zodResolver(formSchema),
@@ -105,7 +96,6 @@ export function PostEditorSheet({ isOpen, setIsOpen, post }: PostEditorSheetProp
           title: `Post ${post ? 'Updated' : 'Created'}!`,
           description: `"${values.title}" has been successfully saved.`,
       });
-      channel?.postMessage({ type: 'refetch_posts' });
       setIsOpen(false);
     } catch (error) {
        toast({

@@ -41,19 +41,10 @@ export function TestimonialsClient({ initialTestimonials }: { initialTestimonial
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [testimonialToDelete, setTestimonialToDelete] = useState<Testimonial | null>(null);
   const { toast } = useToast();
-  const [channel, setChannel] = useState<BroadcastChannel | null>(null);
 
   useEffect(() => {
     setTestimonials(initialTestimonials);
   }, [initialTestimonials, setTestimonials]);
-  
-  useEffect(() => {
-    const bc = new BroadcastChannel('app-data-channel');
-    setChannel(bc);
-    return () => {
-      bc.close();
-    };
-  }, []);
 
   const handleCreateNew = () => {
     setEditingTestimonial(null);
@@ -78,7 +69,6 @@ export function TestimonialsClient({ initialTestimonials }: { initialTestimonial
           title: 'Testimonial Deleted',
           description: `The testimonial from "${testimonialToDelete.author}" has been successfully deleted.`,
         });
-        channel?.postMessage({ type: 'refetch_testimonials' });
       } catch (e) {
         toast({
           variant: 'destructive',

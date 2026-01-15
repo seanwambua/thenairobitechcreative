@@ -16,6 +16,7 @@ export async function createProject(data: Omit<ProjectSchemaType, 'id' | 'create
       },
     });
     revalidatePath('/dashboard/projects');
+    revalidatePath('/dashboard/analytics');
     revalidatePath('/');
     const formattedProject = {
         ...newProject,
@@ -34,6 +35,7 @@ export async function updateProject(project: Project) {
         },
     });
     revalidatePath('/dashboard/projects');
+    revalidatePath('/dashboard/analytics');
     revalidatePath('/');
      const formattedProject = {
         ...updatedProject,
@@ -47,5 +49,6 @@ export async function deleteProject(projectId: number) {
         where: { id: projectId },
     });
     revalidatePath('/dashboard/projects');
+    revalidatePath('/dashboard/analytics');
     revalidatePath('/');
 }

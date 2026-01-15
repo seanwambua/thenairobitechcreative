@@ -34,7 +34,7 @@ import { PostEditorSheet } from '@/components/post-editor-sheet';
 import { useToast } from '@/hooks/use-toast';
 import type { Post } from '@/store/posts';
 import { format } from 'date-fns';
-import { CardContent, CardHeader } from '@/components/ui/card';
+import { CardContent } from '@/components/ui/card';
 
 export function ContentClient({ initialPosts }: { initialPosts: Post[] }) {
   const { posts, setPosts, deletePost, isLoading, error } = usePostStore();
@@ -43,19 +43,10 @@ export function ContentClient({ initialPosts }: { initialPosts: Post[] }) {
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState<Post | null>(null);
   const { toast } = useToast();
-  const [channel, setChannel] = useState<BroadcastChannel | null>(null);
 
   useEffect(() => {
     setPosts(initialPosts);
   }, [initialPosts, setPosts]);
-
-  useEffect(() => {
-    const bc = new BroadcastChannel('app-data-channel');
-    setChannel(bc);
-    return () => {
-      bc.close();
-    };
-  }, []);
 
   const handleCreateNew = () => {
     setEditingPost(null);
@@ -80,7 +71,6 @@ export function ContentClient({ initialPosts }: { initialPosts: Post[] }) {
           title: 'Post Deleted',
           description: `"${postToDelete.title}" has been successfully deleted.`,
         });
-        channel?.postMessage({ type: 'refetch_posts' });
       } catch (e) {
         toast({
           variant: 'destructive',

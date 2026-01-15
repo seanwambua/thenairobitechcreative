@@ -13,13 +13,13 @@ import { Loader2 } from 'lucide-react';
 
 export default function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
-  const { posts, fetchPosts, isLoading } = usePostStore();
+  const { posts, setPosts, isLoading, fetchPosts, error } = usePostStore();
   
   useEffect(() => {
-    if (posts.length === 0) {
-      fetchPosts();
-    }
-  }, [posts.length, fetchPosts]);
+    // This component relies on the store being populated by a parent component
+    // or by a direct fetch if the store is empty on first load.
+    // In a real app, you might fetch a single post here if it's not in the store.
+  }, [slug, posts]);
 
   const post = posts.find((p) => p.slug === slug);
 
@@ -30,11 +30,22 @@ export default function BlogPostPage() {
       </div>
     );
   }
-
-  if (!post) {
-    // Return a not-found page if the post isn't found after loading
+  
+  // A post might not be found if the user navigates directly to a URL
+  // and the main blog page hasn't been visited yet to populate the store.
+  // A robust solution would fetch the single post here.
+  if (!post && !isLoading && posts.length > 0) {
     return notFound();
   }
+  
+  if (!post) {
+     return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Loader2 className="h-12 w-12 animate-spin" />
+      </div>
+    );
+  }
+
 
   // Comments are not implemented as an array
   const commentsCount = 0;

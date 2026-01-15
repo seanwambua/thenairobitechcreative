@@ -56,15 +56,6 @@ export function TestimonialEditorSheet({
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [channel, setChannel] = useState<BroadcastChannel | null>(null);
-
-  useEffect(() => {
-    const bc = new BroadcastChannel('app-data-channel');
-    setChannel(bc);
-    return () => {
-      bc.close();
-    };
-  }, []);
 
   const form = useForm<TestimonialFormValues>({
     resolver: zodResolver(formSchema),
@@ -143,7 +134,6 @@ export function TestimonialEditorSheet({
         title: `Testimonial ${testimonial ? 'Updated' : 'Created'}!`,
         description: `The testimonial from "${values.author}" has been successfully saved.`,
       });
-      channel?.postMessage({ type: 'refetch_testimonials' });
       setIsOpen(false);
     } catch (error) {
       toast({

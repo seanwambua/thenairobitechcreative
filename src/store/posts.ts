@@ -6,6 +6,7 @@ import {
   updatePost as updatePostAction,
   deletePost as deletePostAction,
 } from '@/app/actions/posts';
+import { PostSchema } from '@/lib/schemas';
 
 export interface Post extends PostType {}
 
@@ -16,7 +17,6 @@ interface PostState {
   isLoading: boolean;
   error: string | null;
   setPosts: (posts: Post[]) => void;
-  fetchPosts: () => Promise<void>;
   addPost: (post: CreatePost) => Promise<void>;
   updatePost: (updatedPost: Post) => Promise<void>;
   deletePost: (postId: number) => Promise<void>;
@@ -26,26 +26,12 @@ export const usePostStore = create<PostState>((set, get) => ({
   posts: [],
   isLoading: false,
   error: null,
-  setPosts: (posts) => set({ posts }),
-  fetchPosts: async () => {
-    set({ isLoading: true, error: null });
-    try {
-      const response = await fetch('/api/posts');
-      if (!response.ok) throw new Error('Failed to fetch posts');
-      const posts = await response.json();
-      set({ posts, isLoading: false });
-    } catch (error) {
-      set({ error: (error as Error).message, isLoading: false, posts: [] });
-    }
-  },
+  setPosts: (posts) => set({ posts, isLoading: false, error: null }),
   addPost: async (post) => {
     set({ isLoading: true });
     try {
-      const newPost = await createPost(post);
-      set((state) => ({
-        posts: [newPost, ...state.posts],
-        isLoading: false,
-      }));
+      // The server action will revalidate the path, causing the page to get new props
+      await createPost(post);
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
@@ -54,13 +40,7 @@ export const usePostStore = create<PostState>((set, get) => ({
   updatePost: async (updatedPost) => {
     set({ isLoading: true });
     try {
-      const returnedPost = await updatePostAction(updatedPost);
-      set((state) => ({
-        posts: state.posts.map((p) =>
-          p.id === returnedPost.id ? { ...p, ...returnedPost } : p
-        ),
-        isLoading: false,
-      }));
+      await updatePostAction(updatedPost);
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
@@ -68,10 +48,12 @@ export const usePostStore = create<PostState>((set, get) => ({
   },
   deletePost: async (postId) => {
     const originalPosts = get().posts;
+    // Optimistically update the UI
     set((state) => ({ posts: state.posts.filter((p) => p.id !== postId) }));
     try {
       await deletePostAction(postId);
     } catch (error) {
+      // Revert if the deletion fails
       set({ posts: originalPosts, error: (error as Error).message });
       throw error;
     }

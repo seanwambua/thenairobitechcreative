@@ -9,7 +9,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "postinstall": "prisma generate",
-    "db:reset": "prisma db push --force && prisma db seed",
+    "db:reset": "prisma db push --force-reset && prisma db seed",
     "reinitialize": "npm run db:reset"
   },
   "prisma": {

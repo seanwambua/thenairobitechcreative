@@ -43,19 +43,10 @@ export function ProjectsClient({ initialProjects }: { initialProjects: Project[]
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
   const { toast } = useToast();
-  const [channel, setChannel] = useState<BroadcastChannel | null>(null);
 
   useEffect(() => {
     setProjects(initialProjects);
   }, [initialProjects, setProjects]);
-
-  useEffect(() => {
-    const bc = new BroadcastChannel('app-data-channel');
-    setChannel(bc);
-    return () => {
-      bc.close();
-    };
-  }, []);
 
   const handleCreateNew = () => {
     setEditingProject(null);
@@ -80,7 +71,6 @@ export function ProjectsClient({ initialProjects }: { initialProjects: Project[]
           title: 'Project Deleted',
           description: `"${projectToDelete.title}" has been successfully deleted.`,
         });
-        channel?.postMessage({ type: 'refetch_projects' });
       } catch (e) {
         toast({
           variant: 'destructive',
