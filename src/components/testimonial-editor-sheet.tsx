@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useRef, useState, ChangeEvent } from 'react';
@@ -31,11 +30,12 @@ import { useTestimonialStore, type Testimonial } from '@/store/testimonials';
 import { placeholderImages } from '@/lib/placeholder-images';
 import { Upload, Loader2 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { TestimonialSchema } from '@/lib/schemas';
 
-const formSchema = z.object({
-  quote: z.string().min(10, 'Quote must be at least 10 characters.'),
-  author: z.string().min(2, 'Author name must be at least 2 characters.'),
-  title: z.string().min(3, 'Author title must be at least 3 characters.'),
+const formSchema = TestimonialSchema.pick({
+  quote: true,
+  author: true,
+  title: true,
 });
 
 type TestimonialFormValues = z.infer<typeof formSchema>;

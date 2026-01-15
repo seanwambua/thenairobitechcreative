@@ -2,12 +2,13 @@
 
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
+import { ProjectSchema, type ProjectSchemaType } from '@/lib/schemas';
 import type { Project } from '@/lib/data';
 
-type CreateableProject = Omit<Project, 'id' | 'createdAt' | 'updatedAt'>;
-
-export async function createProject(data: CreateableProject) {
-    const { keyFeatures, ...rest } = data;
+export async function createProject(data: Omit<ProjectSchemaType, 'id' | 'createdAt' | 'updatedAt'>) {
+    const validatedData = ProjectSchema.omit({ id: true, createdAt: true, updatedAt: true }).parse(data);
+    
+    const { keyFeatures, ...rest } = validatedData;
     const newProject = await prisma.project.create({
       data: {
         ...rest,
@@ -24,9 +25,9 @@ export async function createProject(data: CreateableProject) {
 }
 
 export async function updateProject(project: Project) {
-    const { id, keyFeatures, ...rest } = project;
+    const { keyFeatures, ...rest } = ProjectSchema.parse(project);
     const updatedProject = await prisma.project.update({
-        where: { id },
+        where: { id: rest.id },
         data: {
             ...rest,
             keyFeatures: keyFeatures.join(','),

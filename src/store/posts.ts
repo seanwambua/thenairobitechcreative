@@ -7,8 +7,11 @@ import {
   updatePost as updatePostAction,
   deletePost as deletePostAction,
 } from '@/app/actions/posts';
+import { PostSchemaType } from '@/lib/schemas';
 
 export interface Post extends PostType {}
+
+type CreatePost = Omit<PostSchemaType, 'id' | 'slug' | 'imageUrl' | 'imageHint' | 'authorAvatarUrl' | 'authorAvatarHint' | 'date' | 'likes' | 'comments' | 'createdAt' | 'updatedAt'>;
 
 interface PostState {
   posts: Post[];
@@ -16,7 +19,7 @@ interface PostState {
   error: string | null;
   setPosts: (posts: Post[]) => void;
   fetchPosts: () => Promise<void>;
-  addPost: (post: Omit<Post, 'id' | 'createdAt' | 'updatedAt' | 'comments' | 'likes' | 'date'>) => Promise<void>;
+  addPost: (post: CreatePost) => Promise<void>;
   updatePost: (updatedPost: Post) => Promise<void>;
   deletePost: (postId: number) => Promise<void>;
 }
@@ -81,5 +84,3 @@ export const usePostStore = create<PostState>((set, get) => ({
     }
   },
 }));
-
-    

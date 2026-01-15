@@ -2,13 +2,13 @@
 
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
+import { TestimonialSchema, type TestimonialSchemaType } from '@/lib/schemas';
 import type { Testimonial } from '@prisma/client';
 
-type CreateableTestimonial = Omit<Testimonial, 'id' | 'createdAt' | 'updatedAt'>
-
-export async function createTestimonial(data: CreateableTestimonial) {
+export async function createTestimonial(data: Omit<TestimonialSchemaType, 'id' | 'createdAt' | 'updatedAt'>) {
+    const validatedData = TestimonialSchema.omit({ id: true, createdAt: true, updatedAt: true }).parse(data);
     const newTestimonial = await prisma.testimonial.create({
-        data,
+        data: validatedData,
     });
     revalidatePath('/dashboard/testimonials');
     revalidatePath('/');
@@ -16,9 +16,10 @@ export async function createTestimonial(data: CreateableTestimonial) {
 }
 
 export async function updateTestimonial(testimonial: Testimonial) {
+    const validatedData = TestimonialSchema.parse(testimonial);
     const updatedTestimonial = await prisma.testimonial.update({
-        where: { id: testimonial.id },
-        data: testimonial,
+        where: { id: validatedData.id },
+        data: validatedData,
     });
     revalidatePath('/dashboard/testimonials');
     revalidatePath('/');

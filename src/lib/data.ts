@@ -1,11 +1,6 @@
-import type { ComponentType } from 'react';
-import { Boxes, BookOpen, PenTool, LineChart, Globe, Server, type LucideProps, ScanSearch, LayoutTemplate, Rocket, Scaling, Briefcase, Computer, Wrench, ServerCog, Star } from 'lucide-react';
 import { placeholderImages } from './placeholder-images';
 import { type Post as PrismaPost, type Project as PrismaProject, type Testimonial as PrismaTestimonial } from '@prisma/client';
-
-
-export const iconNames = ['Boxes', 'BookOpen', 'PenTool', 'LineChart', 'Globe', 'Server', 'ScanSearch', 'LayoutTemplate', 'Rocket', 'Scaling', 'Briefcase', 'Computer', 'Wrench', 'ServerCog', 'Star'] as const;
-export type IconName = (typeof iconNames)[number];
+import type { IconName } from './schemas';
 
 
 export interface NavItem {
@@ -14,8 +9,9 @@ export interface NavItem {
     hidden?: boolean;
 }
 
-export interface Project extends Omit<PrismaProject, 'keyFeatures'> {
+export interface Project extends Omit<PrismaProject, 'keyFeatures' | 'icon'> {
   keyFeatures: string[];
+  icon: IconName;
 }
 
 export type Testimonial = PrismaTestimonial;
@@ -341,5 +337,3 @@ export const initialPosts: Post[] = [
     updatedAt: new Date(),
   },
 ];
-
-    

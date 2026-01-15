@@ -7,8 +7,11 @@ import {
     updateTestimonial as updateTestimonialAction,
     deleteTestimonial as deleteTestimonialAction 
 } from '@/app/actions/testimonials';
+import { TestimonialSchemaType } from '@/lib/schemas';
 
 export type Testimonial = TestimonialType;
+
+type CreateTestimonial = Omit<TestimonialSchemaType, 'id' | 'createdAt' | 'updatedAt'>;
 
 interface TestimonialState {
   testimonials: Testimonial[];
@@ -16,7 +19,7 @@ interface TestimonialState {
   error: string | null;
   setTestimonials: (testimonials: Testimonial[]) => void;
   fetchTestimonials: () => Promise<void>;
-  addTestimonial: (testimonial: Omit<Testimonial, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
+  addTestimonial: (testimonial: CreateTestimonial) => Promise<void>;
   updateTestimonial: (updatedTestimonial: Testimonial) => Promise<void>;
   deleteTestimonial: (testimonialId: number) => Promise<void>;
 }

@@ -35,15 +35,18 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useProjectStore } from '@/store/projects';
 import { placeholderImages } from '@/lib/placeholder-images';
-import { iconNames, type Project } from '@/lib/data';
+import { type Project } from '@/lib/data';
 import { Upload, Loader2 } from 'lucide-react';
+import { ProjectSchema, iconNames } from '@/lib/schemas';
 
-const formSchema = z.object({
-  title: z.string().min(5, 'Title must be at least 5 characters.'),
-  description: z.string().min(10, 'Description must be at least 10 characters.'),
-  keyFeatures: z.string().min(3, 'Please add at least one key feature.'),
-  icon: z.enum(iconNames),
-  gridSpan: z.string().min(1),
+const formSchema = ProjectSchema.pick({
+  title: true,
+  description: true,
+  keyFeatures: true,
+  icon: true,
+  gridSpan: true,
+}).extend({
+    keyFeatures: z.string().min(3, 'Please add at least one key feature.'),
 });
 
 type ProjectFormValues = z.infer<typeof formSchema>;
@@ -127,11 +130,9 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project }: ProjectEditor
   };
 
   async function onSubmit(values: ProjectFormValues) {
-    const keyFeatures = values.keyFeatures.split(',').map((s) => s.trim());
-    
     const projectData = {
       ...values,
-      keyFeatures,
+      keyFeatures: values.keyFeatures.split(',').map((s) => s.trim()),
       imageUrl: imagePreview || (project ? project.imageUrl : placeholderImages.enterpriseB.imageUrl),
       imageHint: project?.imageHint || 'abstract network',
     };
@@ -139,6 +140,7 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project }: ProjectEditor
     if (project) {
       await updateProject({ ...project, ...projectData });
     } else {
+      // The store expects the Omit type, which matches our projectData
       await addProject(projectData);
     }
     

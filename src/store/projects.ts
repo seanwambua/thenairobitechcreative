@@ -6,6 +6,7 @@ import {
     updateProject as updateProjectAction,
     deleteProject as deleteProjectAction 
 } from '@/app/actions/projects';
+import { ProjectSchemaType } from '@/lib/schemas';
 
 
 interface ProjectState {
@@ -14,7 +15,7 @@ interface ProjectState {
   error: string | null;
   setProjects: (projects: ProjectType[]) => void;
   fetchProjects: () => Promise<void>;
-  addProject: (project: Omit<ProjectType, 'id' | 'createdAt' | 'updatedAt' >) => Promise<void>;
+  addProject: (project: Omit<ProjectSchemaType, 'id' | 'createdAt' | 'updatedAt' >) => Promise<void>;
   updateProject: (updatedProject: ProjectType) => Promise<void>;
   deleteProject: (projectId: number) => Promise<void>;
 }

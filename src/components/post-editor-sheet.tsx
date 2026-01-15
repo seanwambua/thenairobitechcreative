@@ -26,14 +26,14 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { usePostStore, type Post } from '@/store/posts';
-import { placeholderImages } from '@/lib/placeholder-images';
 import { Loader2 } from 'lucide-react';
+import { PostSchema } from '@/lib/schemas';
 
-const formSchema = z.object({
-  title: z.string().min(5, 'Title must be at least 5 characters.'),
-  description: z.string().min(10, 'Description must be at least 10 characters.'),
-  content: z.string().min(50, 'Content must be at least 50 characters.'),
-  author: z.string().min(2, 'Author name must be at least 2 characters.'),
+const formSchema = PostSchema.pick({
+  title: true,
+  description: true,
+  content: true,
+  author: true,
 });
 
 type PostFormValues = z.infer<typeof formSchema>;
@@ -43,15 +43,6 @@ interface PostEditorSheetProps {
   setIsOpen: (isOpen: boolean) => void;
   post: Post | null;
 }
-
-const generateSlug = (title: string) => {
-    return title
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .trim()
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-');
-};
 
 export function PostEditorSheet({ isOpen, setIsOpen, post }: PostEditorSheetProps) {
   const { toast } = useToast();
@@ -89,29 +80,15 @@ export function PostEditorSheet({ isOpen, setIsOpen, post }: PostEditorSheetProp
 
 
   async function onSubmit(values: PostFormValues) {
-    const slug = generateSlug(values.title);
-    
-    const postData = {
-      ...values,
-      slug,
-      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-    };
-
     if (post) {
       const updatedPostData = {
         ...post,
-        ...postData,
+        ...values,
+        slug: values.title.toLowerCase().replace(/\s+/g, '-'),
       };
       await updatePost(updatedPostData);
     } else {
-      const newPostData = {
-        ...postData,
-        imageUrl: placeholderImages.blog1.imageUrl,
-        imageHint: placeholderImages.blog1.imageHint,
-        authorAvatarUrl: placeholderImages.testimonial1.imageUrl,
-        authorAvatarHint: placeholderImages.testimonial1.imageHint,
-      };
-      await addPost(newPostData);
+      await addPost(values);
     }
 
     if (usePostStore.getState().error) {
