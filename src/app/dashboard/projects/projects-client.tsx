@@ -147,7 +147,7 @@ export function ProjectsClient({ initialProjects }: { initialProjects: Project[]
       </CardContent>
       <ProjectEditorSheet
         isOpen={isEditorOpen}
-        setIsOpen={setEditorOpen}
+        setIsOpen={setIsOpen}
         project={editingProject}
       />
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>

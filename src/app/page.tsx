@@ -22,8 +22,8 @@ import { useTestimonialStore } from '@/store/testimonials';
 
 export default function Home() {
   const { heroImage } = useMediaStore();
-  const { projects, setProjects } = useProjectStore();
-  const { testimonials, setTestimonials } = useTestimonialStore();
+  const { projects } = useProjectStore();
+  const { testimonials } = useTestimonialStore();
   
   // Data for this page is now fetched in the parent layout or passed via props.
   // This client component will just display the data from the store.

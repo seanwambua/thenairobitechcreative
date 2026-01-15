@@ -13,7 +13,7 @@ import { Loader2 } from 'lucide-react';
 
 export default function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
-  const { posts, setPosts, isLoading, fetchPosts, error } = usePostStore();
+  const { posts, isLoading } = usePostStore();
   
   useEffect(() => {
     // This component relies on the store being populated by a parent component

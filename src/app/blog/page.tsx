@@ -8,11 +8,9 @@ import { ArrowRight, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { usePostStore } from '@/store/posts';
-import prisma from '@/lib/prisma';
-
 
 export default function BlogPage() {
-  const { posts, isLoading, error, setPosts } = usePostStore();
+  const { posts, isLoading, error } = usePostStore();
   
   // Data for this page is now fetched in the parent layout or passed via props.
   // This client component will just display the data from the store.
@@ -20,8 +18,6 @@ export default function BlogPage() {
   useEffect(() => {
     // If the store is empty, it's likely a direct navigation.
     // The initial data is now passed from a server component.
-    // In a fully client-side app, you might fetch here.
-    // usePostStore.getState().fetchPosts();
   }, [])
 
 

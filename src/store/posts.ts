@@ -6,7 +6,6 @@ import {
   updatePost as updatePostAction,
   deletePost as deletePostAction,
 } from '@/app/actions/posts';
-import { PostSchema } from '@/lib/schemas';
 
 export interface Post extends PostType {}
 

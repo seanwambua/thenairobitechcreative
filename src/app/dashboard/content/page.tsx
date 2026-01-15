@@ -5,8 +5,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { PlusCircle } from 'lucide-react';
 import { ContentClient } from './content-client';
 
 export default async function ContentPage() {
