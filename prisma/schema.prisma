@@ -6,14 +6,15 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Project {
-  id          Int      @id
+  id          Int      @id @default(autoincrement())
   title       String
   description String
-  keyFeatures String
+  keyFeatures String // Storing as a comma-separated string
   imageUrl    String
   imageHint   String
   gridSpan    String
@@ -22,8 +23,19 @@ model Project {
   updatedAt   DateTime @updatedAt
 }
 
+model Testimonial {
+  id         Int      @id @default(autoincrement())
+  quote      String
+  author     String
+  title      String
+  avatarUrl  String
+  avatarHint String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
 model Post {
-  id               Int      @id
+  id               Int      @id @default(autoincrement())
   slug             String   @unique
   title            String
   description      String
@@ -33,19 +45,8 @@ model Post {
   author           String
   authorAvatarUrl  String
   authorAvatarHint String
-  likes            Int
+  likes            Int      @default(0)
   comments         String
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
-}
-
-model Testimonial {
-  id         Int      @id
-  quote      String
-  author     String
-  title      String
-  avatarUrl  String
-  avatarHint String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
 }
