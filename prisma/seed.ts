@@ -1,3 +1,4 @@
+
 import { PrismaClient } from '@prisma/client';
 import { initialProjects, initialPosts, initialTestimonials } from '../src/lib/data';
 
@@ -8,7 +9,7 @@ async function main() {
 
   // Seed Projects
   for (const project of initialProjects) {
-    const { id, keyFeatures, ...rest } = project;
+    const { id, keyFeatures, createdAt, updatedAt, ...rest } = project;
     await prisma.project.upsert({
       where: { id },
       update: {
@@ -26,7 +27,7 @@ async function main() {
 
   // Seed Posts
   for (const post of initialPosts) {
-    const { id, comments, ...rest } = post; // exclude comments
+    const { id, createdAt, updatedAt, ...rest } = post;
     await prisma.post.upsert({
       where: { id },
       update: {
@@ -44,7 +45,7 @@ async function main() {
 
   // Seed Testimonials
   for (const testimonial of initialTestimonials) {
-    const { id, ...rest } = testimonial;
+    const { id, createdAt, updatedAt, ...rest } = testimonial;
     await prisma.testimonial.upsert({
       where: { id },
       update: rest,
