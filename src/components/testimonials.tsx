@@ -97,8 +97,8 @@ export function Testimonials({ testimonials }: TestimonialsProps) {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="block" />
-          <CarouselNext className="block" />
+          <CarouselPrevious className="left-4 md:-left-12" />
+          <CarouselNext className="right-4 md:-right-12" />
         </Carousel>
       </div>
     </section>

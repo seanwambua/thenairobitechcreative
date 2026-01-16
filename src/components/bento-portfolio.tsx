@@ -1,4 +1,3 @@
-
 'use client';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
@@ -6,7 +5,24 @@ import type { Project, IconName } from '@/lib/data';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
-import { Boxes, BookOpen, PenTool, LineChart, Globe, Server, type LucideProps } from 'lucide-react';
+import {
+  Boxes,
+  BookOpen,
+  PenTool,
+  LineChart,
+  Globe,
+  Server,
+  ScanSearch,
+  LayoutTemplate,
+  Rocket,
+  Scaling,
+  Briefcase,
+  Computer,
+  Wrench,
+  ServerCog,
+  Star,
+  type LucideProps,
+} from 'lucide-react';
 import type { ComponentType } from 'react';
 
 const icons: Record<IconName, ComponentType<LucideProps>> = {
@@ -16,6 +32,15 @@ const icons: Record<IconName, ComponentType<LucideProps>> = {
   LineChart,
   Globe,
   Server,
+  ScanSearch,
+  LayoutTemplate,
+  Rocket,
+  Scaling,
+  Briefcase,
+  Computer,
+  Wrench,
+  ServerCog,
+  Star,
 };
 
 interface BentoPortfolioProps {
