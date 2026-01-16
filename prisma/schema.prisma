@@ -7,31 +7,19 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
 }
 
 model Project {
   id          Int      @id @default(autoincrement())
   title       String
   description String
-  keyFeatures String // Stored as a comma-separated string
+  keyFeatures String
   imageUrl    String
   imageHint   String
   gridSpan    String
   icon        String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-}
-
-model Testimonial {
-  id         Int      @id @default(autoincrement())
-  quote      String
-  author     String
-  title      String
-  avatarUrl  String
-  avatarHint String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
 }
 
 model Post {
@@ -45,8 +33,19 @@ model Post {
   author          String
   authorAvatarUrl String
   authorAvatarHint String
-  date            String
   likes           Int      @default(0)
+  comments        String
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+}
+
+model Testimonial {
+  id         Int      @id @default(autoincrement())
+  quote      String
+  author     String
+  title      String
+  avatarUrl  String
+  avatarHint String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
