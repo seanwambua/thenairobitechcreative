@@ -59,7 +59,7 @@ This application provides a solid foundation. Here are recommended next steps to
 ## 🚀 Tech Stack
 
 -   **Framework:** [Next.js](https://nextjs.org/) (App Router)
--   **Database:** [PostgreSQL](https://www.postgresql.org/)
+-   **Database:** [SQLite](https://www.sqlite.org/) (via Prisma)
 -   **Styling:** [Tailwind CSS](https://tailwindcss.com/)
 -   **UI Components:** [ShadCN UI](https://ui.shadcn.com/)
 -   **Database ORM:** [Prisma](https://www.prisma.io/)
@@ -98,7 +98,6 @@ Follow these steps to get the project up and running on your local machine.
 
 -   Node.js (v18 or later)
 -   npm or yarn
--   A running PostgreSQL database instance.
 
 ### 1. Install Dependencies
 
@@ -110,13 +109,11 @@ npm install
 
 ### 2. Set Up Environment Variables
 
-Create a `.env` file in the root of the project. You will need to provide your PostgreSQL database connection string and your Cloudinary credentials for image uploads.
+Create a `.env` file in the root of the project. The project is configured to use a local SQLite database by default. You will also need to provide your Cloudinary credentials for image uploads.
 
 ```env
-# PostgreSQL Connection String
-# Replace with your actual database connection details.
-# Format: postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public
-DATABASE_URL="postgresql://postgres:password@localhost:5432/mydb?schema=public"
+# SQLite Database Connection
+DATABASE_URL="file:./dev.db"
 
 # Cloudinary Credentials for Image Uploads
 CLOUDINARY_CLOUD_NAME="your_cloud_name"
@@ -133,7 +130,7 @@ npm run reinitialize
 ```
 
 This command will:
-1.  Push the Prisma schema to your PostgreSQL database.
+1.  Push the Prisma schema to your SQLite database.
 2.  Run the seed script (`prisma/seed.ts`) to populate the database with initial projects, posts, and testimonials.
 
 ### 4. Run the Development Server
@@ -154,7 +151,7 @@ The `package.json` file includes a convenient script for resetting the database 
 
 ### Resetting and Re-seeding
 
-To wipe all data from your PostgreSQL database and re-populate it with the initial content from `src/lib/data.ts`, run:
+To reset the local SQLite database file and re-populate it with the initial content from `src/lib/data.ts`, run:
 
 ```bash
 npm run db:reset
