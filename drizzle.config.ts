@@ -9,8 +9,8 @@ if (!process.env.DATABASE_URL) {
 export default {
   schema: "./src/lib/db/schema.ts",
   out: "./drizzle",
-  driver: "better-sqlite",
+  driver: "pg",
   dbCredentials: {
-    url: process.env.DATABASE_URL,
+    connectionString: process.env.DATABASE_URL,
   },
 } satisfies Config;

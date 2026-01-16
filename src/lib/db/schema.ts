@@ -1,7 +1,7 @@
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+import { pgTable, serial, text, integer, timestamp } from 'drizzle-orm/pg-core';
 
-export const projects = sqliteTable('projects', {
-  id: integer('id').primaryKey(),
+export const projects = pgTable('projects', {
+  id: serial('id').primaryKey(),
   title: text('title').notNull(),
   description: text('description').notNull(),
   keyFeatures: text('keyFeatures').notNull(),
@@ -9,12 +9,12 @@ export const projects = sqliteTable('projects', {
   imageHint: text('imageHint').notNull(),
   gridSpan: text('gridSpan').notNull(),
   icon: text('icon').notNull(),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
-export const posts = sqliteTable('posts', {
-    id: integer('id').primaryKey(),
+export const posts = pgTable('posts', {
+    id: serial('id').primaryKey(),
     slug: text('slug').notNull(),
     title: text('title').notNull(),
     description: text('description').notNull(),
@@ -26,17 +26,17 @@ export const posts = sqliteTable('posts', {
     authorAvatarHint: text('authorAvatarHint').notNull(),
     likes: integer('likes').notNull().default(0),
     comments: text('comments').notNull().default(''),
-    createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-    updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
-export const testimonials = sqliteTable('testimonials', {
-    id: integer('id').primaryKey(),
+export const testimonials = pgTable('testimonials', {
+    id: serial('id').primaryKey(),
     quote: text('quote').notNull(),
     author: text('author').notNull(),
     title: text('title').notNull(),
     avatarUrl: text('avatarUrl').notNull(),
     avatarHint: text('avatarHint').notNull(),
-    createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-    updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });

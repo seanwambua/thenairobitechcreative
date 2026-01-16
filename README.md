@@ -59,7 +59,7 @@ This application provides a solid foundation. Here are recommended next steps to
 ## 🚀 Tech Stack
 
 -   **Framework:** [Next.js](https://nextjs.org/) (App Router)
--   **Database:** [SQLite](https://www.sqlite.org/) (via Drizzle)
+-   **Database:** [Neon](https://neon.tech/) Serverless PostgreSQL (via Drizzle)
 -   **Styling:** [Tailwind CSS](https://tailwindcss.com/)
 -   **UI Components:** [ShadCN UI](https://ui.shadcn.com/)
 -   **Database ORM:** [Drizzle ORM](https://orm.drizzle.team/)
@@ -99,6 +99,7 @@ Follow these steps to get the project up and running on your local machine.
 
 -   Node.js (v18 or later)
 -   npm or yarn
+-   A Neon account and a new project created.
 
 ### 1. Install Dependencies
 
@@ -110,11 +111,12 @@ npm install
 
 ### 2. Set Up Environment Variables
 
-Create a `.env` file in the root of the project. The project is configured to use a local SQLite database by default. You will also need to provide your Cloudinary credentials for image uploads.
+Create a `.env` file in the root of the project. You will need to provide your Neon database connection string and your Cloudinary credentials for image uploads.
 
 ```env
-# SQLite Database Connection
-DATABASE_URL="file:./dev.db"
+# Neon Database Connection String
+# Get this from your Neon project dashboard
+DATABASE_URL="postgresql://user:password@host:port/db?sslmode=require"
 
 # Cloudinary Credentials for Image Uploads
 CLOUDINARY_CLOUD_NAME="your_cloud_name"
@@ -131,7 +133,7 @@ npm run reinitialize
 ```
 
 This command will:
-1.  Push the Drizzle schema to your SQLite database file using `drizzle-kit`.
+1.  Push the Drizzle schema to your Neon database using `drizzle-kit`.
 2.  Run the seed script (`src/lib/db/seed.ts`) to populate the database with initial projects, posts, and testimonials.
 
 ### 4. Run the Development Server
@@ -152,7 +154,7 @@ The `package.json` file includes a convenient script for resetting the database 
 
 ### Resetting and Re-seeding
 
-To reset the local SQLite database file and re-populate it with the initial content, run:
+To reset the database tables and re-populate it with the initial content, run:
 
 ```bash
 npm run reinitialize

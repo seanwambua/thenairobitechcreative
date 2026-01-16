@@ -13,7 +13,7 @@ export async function seedDatabase() {
 
   // Seed Projects
   for (const project of initialProjects) {
-      const { keyFeatures, ...rest } = project;
+      const { id, createdAt, updatedAt, keyFeatures, ...rest } = project;
       await db.insert(schema.projects).values({
           ...rest,
           keyFeatures: keyFeatures.join(','),
@@ -23,8 +23,9 @@ export async function seedDatabase() {
 
   // Seed Posts
   for (const post of initialPosts) {
+      const { id, createdAt, updatedAt, ...rest } = post;
       await db.insert(schema.posts).values({
-          ...post,
+          ...rest,
           comments: '',
       });
   }
@@ -32,7 +33,8 @@ export async function seedDatabase() {
 
   // Seed Testimonials
   for (const testimonial of initialTestimonials) {
-      await db.insert(schema.testimonials).values(testimonial);
+      const { id, createdAt, updatedAt, ...rest } = testimonial;
+      await db.insert(schema.testimonials).values(rest);
   }
   console.log(`Seeded ${initialTestimonials.length} testimonials.`);
 }
