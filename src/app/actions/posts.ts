@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { PostSchema } from '@/lib/schemas';
 import { placeholderImages } from '@/lib/placeholder-images';
 import type { Post } from '@prisma/client';
+import { z } from 'zod';
 
 // Action to get all posts
 export async function getPosts() {
@@ -43,13 +44,10 @@ export async function createPost(data: Pick<Post, 'title' | 'description' | 'con
 
 
 export async function updatePost(post: Post) {
-    const validatedData = PostSchema.extend({
-        date: z.string().optional() // Make date optional or remove if not needed
-    }).parse(post);
-    const { date, ...restOfData } = validatedData;
+    const validatedData = PostSchema.parse(post);
     const updatedPost = await prisma.post.update({
-        where: { id: restOfData.id },
-        data: restOfData,
+        where: { id: validatedData.id },
+        data: validatedData,
     });
     revalidatePath('/dashboard/content');
     revalidatePath('/dashboard/analytics');
