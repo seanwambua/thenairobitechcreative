@@ -12,24 +12,18 @@ import {
   DatabaseZap,
   AlertTriangle,
 } from 'lucide-react';
-import prisma from '@/lib/prisma';
 import { Button } from '@/components/ui/button';
 import { revalidatePath } from 'next/cache';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-
-const execAsync = promisify(exec);
+import { db } from '@/lib/db';
+import * as schema from '@/lib/db/schema';
+import { count } from 'drizzle-orm';
+import { seedDatabase } from '@/lib/db/seed';
 
 async function reinitializeDatabase() {
   'use server';
   try {
-    // These commands run in the project's root directory
-    console.log('Pushing schema to database...');
-    await execAsync('npx prisma db push --force-reset');
-    
-    console.log('Seeding database...');
-    await execAsync('npx prisma db seed');
-
+    console.log('Re-initializing database from dashboard...');
+    await seedDatabase();
     console.log('Database re-initialized successfully.');
     revalidatePath('/dashboard/analytics');
   } catch (error) {
@@ -41,9 +35,13 @@ async function reinitializeDatabase() {
 }
 
 export default async function AnalyticsPage() {
-  const postCount = await prisma.post.count();
-  const projectCount = await prisma.project.count();
-  const testimonialCount = await prisma.testimonial.count();
+  const postCountResult = await db.select({ value: count() }).from(schema.posts);
+  const projectCountResult = await db.select({ value: count() }).from(schema.projects);
+  const testimonialCountResult = await db.select({ value: count() }).from(schema.testimonials);
+
+  const postCount = postCountResult[0].value;
+  const projectCount = projectCountResult[0].value;
+  const testimonialCount = testimonialCountResult[0].value;
 
   return (
     <div className="grid gap-6">

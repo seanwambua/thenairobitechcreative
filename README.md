@@ -59,10 +59,10 @@ This application provides a solid foundation. Here are recommended next steps to
 ## 🚀 Tech Stack
 
 -   **Framework:** [Next.js](https://nextjs.org/) (App Router)
--   **Database:** [SQLite](https://www.sqlite.org/) (via Prisma)
+-   **Database:** [SQLite](https://www.sqlite.org/) (via Drizzle)
 -   **Styling:** [Tailwind CSS](https://tailwindcss.com/)
 -   **UI Components:** [ShadCN UI](https://ui.shadcn.com/)
--   **Database ORM:** [Prisma](https://www.prisma.io/)
+-   **Database ORM:** [Drizzle ORM](https://orm.drizzle.team/)
 -   **State Management:** [Zustand](https://github.com/pmndrs/zustand)
 -   **Validation:** [Zod](https://zod.dev/) for end-to-end type-safe validation.
 -   **Server Logic:** Next.js Server Actions for database mutations.
@@ -71,8 +71,7 @@ This application provides a solid foundation. Here are recommended next steps to
 
 ```
 .
-├── prisma/
-│   └── seed.ts         # Database seed script
+├── drizzle/            # Drizzle migration files
 ├── public/             # Static assets
 ├── src/
 │   ├── app/
@@ -84,8 +83,10 @@ This application provides a solid foundation. Here are recommended next steps to
 │   │   ├── ui/         # ShadCN UI components
 │   │   └── (custom)    # Custom application components
 │   ├── hooks/          # Custom React hooks (e.g., useBroadcast)
-│   ├── lib/            # Core utilities, data, schemas, and Prisma client
+│   ├── lib/            # Core utilities, data, schemas, and database client
+│   │   └── db/         # Drizzle schema, client, and seed script
 │   └── store/          # Zustand stores for client-side state
+├── drizzle.config.ts   # Drizzle Kit configuration
 ├── package.json
 └── tailwind.config.ts
 ```
@@ -123,15 +124,15 @@ CLOUDINARY_API_SECRET="your_api_secret"
 
 ### 3. Initialize the Database
 
-The project uses Prisma to manage the database schema. To initialize your database with the correct schema and populate it with the starting content, run the `reinitialize` script:
+This project uses Drizzle ORM to manage the database schema. To initialize your database with the correct schema and populate it with the starting content, run the `reinitialize` script:
 
 ```bash
 npm run reinitialize
 ```
 
 This command will:
-1.  Push the Prisma schema to your SQLite database.
-2.  Run the seed script (`prisma/seed.ts`) to populate the database with initial projects, posts, and testimonials.
+1.  Push the Drizzle schema to your SQLite database file using `drizzle-kit`.
+2.  Run the seed script (`src/lib/db/seed.ts`) to populate the database with initial projects, posts, and testimonials.
 
 ### 4. Run the Development Server
 
@@ -151,13 +152,7 @@ The `package.json` file includes a convenient script for resetting the database 
 
 ### Resetting and Re-seeding
 
-To reset the local SQLite database file and re-populate it with the initial content from `src/lib/data.ts`, run:
-
-```bash
-npm run db:reset
-```
-
-or the alias:
+To reset the local SQLite database file and re-populate it with the initial content, run:
 
 ```bash
 npm run reinitialize

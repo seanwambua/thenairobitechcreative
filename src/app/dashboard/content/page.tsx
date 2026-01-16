@@ -1,4 +1,3 @@
-import prisma from '@/lib/prisma';
 import {
   Card,
   CardDescription,
@@ -6,11 +5,10 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { ContentClient } from './content-client';
+import { getPosts } from '@/app/actions/posts';
 
 export default async function ContentPage() {
-  const posts = await prisma.post.findMany({
-    orderBy: { createdAt: 'desc' },
-  });
+  const posts = await getPosts();
 
   return (
     <Card>

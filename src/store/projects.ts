@@ -18,12 +18,14 @@ interface ProjectState {
   addProject: (project: Omit<ProjectSchemaType, 'id' | 'createdAt' | 'updatedAt' >) => Promise<void>;
   updateProject: (updatedProject: ProjectType) => Promise<void>;
   deleteProject: (projectId: number) => Promise<void>;
+  setProjects: (projects: ProjectType[]) => void;
 }
 
 export const useProjectStore = create<ProjectState>((set, get) => ({
   projects: [],
   isLoading: false,
   error: null,
+  setProjects: (projects) => set({ projects, isLoading: false, error: null }),
   fetchProjects: async () => {
     set({ isLoading: true });
     try {
@@ -58,7 +60,6 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     set(state => ({ projects: state.projects.filter(p => p.id !== projectId) }));
     try {
       await deleteProjectAction(projectId);
-      await get().fetchProjects();
     } catch (error) {
       set({ projects: originalProjects, error: (error as Error).message });
       throw error;

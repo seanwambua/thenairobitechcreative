@@ -1,6 +1,6 @@
 'use client';
 import { create } from 'zustand';
-import { type Testimonial as TestimonialType } from '@prisma/client';
+import { type Testimonial as TestimonialType } from '@/lib/data';
 import { 
     getTestimonials,
     createTestimonial as createTestimonialAction, 
@@ -21,12 +21,14 @@ interface TestimonialState {
   addTestimonial: (testimonial: CreateTestimonial) => Promise<void>;
   updateTestimonial: (updatedTestimonial: Testimonial) => Promise<void>;
   deleteTestimonial: (testimonialId: number) => Promise<void>;
+  setTestimonials: (testimonials: Testimonial[]) => void;
 }
 
 export const useTestimonialStore = create<TestimonialState>((set, get) => ({
   testimonials: [],
   isLoading: false,
   error: null,
+  setTestimonials: (testimonials) => set({ testimonials, isLoading: false, error: null }),
   fetchTestimonials: async () => {
     set({ isLoading: true });
     try {
@@ -61,7 +63,6 @@ export const useTestimonialStore = create<TestimonialState>((set, get) => ({
     set(state => ({ testimonials: state.testimonials.filter(t => t.id !== testimonialId) }));
     try {
       await deleteTestimonialAction(testimonialId);
-      await get().fetchTestimonials();
     } catch (error) {
       set({ testimonials: originalTestimonials, error: (error as Error).message });
       throw error;

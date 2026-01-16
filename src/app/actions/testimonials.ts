@@ -1,21 +1,25 @@
 'use server';
 
-import prisma from '@/lib/prisma';
+import { db } from '@/lib/db';
+import * as schema from '@/lib/db/schema';
+import { eq, desc } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { TestimonialSchema, type TestimonialSchemaType } from '@/lib/schemas';
-import type { Testimonial } from '@prisma/client';
+import type { Testimonial } from '@/lib/data';
 
 export async function getTestimonials() {
-    return await prisma.testimonial.findMany({
-        orderBy: { createdAt: 'desc' },
+    return await db.query.testimonials.findMany({
+        orderBy: [desc(schema.testimonials.createdAt)],
     });
 }
 
 export async function createTestimonial(data: Omit<TestimonialSchemaType, 'id' | 'createdAt' | 'updatedAt'>) {
     const validatedData = TestimonialSchema.omit({ id: true, createdAt: true, updatedAt: true }).parse(data);
-    const newTestimonial = await prisma.testimonial.create({
-        data: validatedData,
-    });
+    const [newTestimonial] = await db.insert(schema.testimonials).values({
+        ...validatedData,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    }).returning();
     revalidatePath('/dashboard/testimonials');
     revalidatePath('/dashboard/analytics');
     revalidatePath('/');
@@ -24,10 +28,11 @@ export async function createTestimonial(data: Omit<TestimonialSchemaType, 'id' |
 
 export async function updateTestimonial(testimonial: Testimonial) {
     const validatedData = TestimonialSchema.parse(testimonial);
-    const updatedTestimonial = await prisma.testimonial.update({
-        where: { id: validatedData.id },
-        data: validatedData,
-    });
+    const [updatedTestimonial] = await db.update(schema.testimonials)
+        .set({ ...validatedData, updatedAt: new Date() })
+        .where(eq(schema.testimonials.id, validatedData.id))
+        .returning();
+
     revalidatePath('/dashboard/testimonials');
     revalidatePath('/dashboard/analytics');
     revalidatePath('/');
@@ -35,9 +40,7 @@ export async function updateTestimonial(testimonial: Testimonial) {
 }
 
 export async function deleteTestimonial(testimonialId: number) {
-    await prisma.testimonial.delete({
-        where: { id: testimonialId },
-    });
+    await db.delete(schema.testimonials).where(eq(schema.testimonials.id, testimonialId));
     revalidatePath('/dashboard/testimonials');
     revalidatePath('/dashboard/analytics');
     revalidatePath('/');

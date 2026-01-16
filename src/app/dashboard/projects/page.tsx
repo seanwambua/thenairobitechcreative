@@ -1,4 +1,3 @@
-import prisma from '@/lib/prisma';
 import {
   Card,
   CardDescription,
@@ -6,16 +5,10 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { ProjectsClient } from './projects-client';
+import { getProjects } from '@/app/actions/projects';
 
 export default async function ProjectsPage() {
-  const projectsData = await prisma.project.findMany({
-    orderBy: { createdAt: 'desc' },
-  });
-
-  const projects = projectsData.map((p) => ({
-    ...p,
-    keyFeatures: p.keyFeatures.split(',').map((s) => s.trim()),
-  }));
+  const projects = await getProjects();
 
   return (
     <Card>

@@ -1,6 +1,7 @@
 import { placeholderImages } from './placeholder-images';
-import { type Post as PrismaPost, type Project as PrismaProject, type Testimonial as PrismaTestimonial } from '@prisma/client';
 import type { IconName } from './schemas';
+import type { InferSelectModel } from 'drizzle-orm';
+import * as schema from './db/schema';
 
 
 export interface NavItem {
@@ -9,14 +10,15 @@ export interface NavItem {
     hidden?: boolean;
 }
 
-export interface Project extends Omit<PrismaProject, 'keyFeatures' | 'icon'> {
+type ProjectModel = InferSelectModel<typeof schema.projects>;
+export type Project = Omit<ProjectModel, 'keyFeatures' | 'icon'> & {
   keyFeatures: string[];
   icon: IconName;
-}
+};
 
-export type Testimonial = PrismaTestimonial;
+export type Testimonial = InferSelectModel<typeof schema.testimonials>;
+export type Post = InferSelectModel<typeof schema.posts>;
 
-export type Post = Omit<PrismaPost, 'date'>;
 
 export interface Service {
   id: number;
@@ -284,7 +286,7 @@ export const initialTestimonials: Testimonial[] = [
   },
 ];
 
-export const initialPosts: Omit<PrismaPost, 'date'>[] = [
+export const initialPosts: Post[] = [
   {
     id: 1,
     slug: 'the-rise-of-mobile-first-solutions-in-africa',

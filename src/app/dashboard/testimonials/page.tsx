@@ -1,4 +1,3 @@
-import prisma from '@/lib/prisma';
 import {
   Card,
   CardDescription,
@@ -6,11 +5,10 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { TestimonialsClient } from './testimonials-client';
+import { getTestimonials } from '@/app/actions/testimonials';
 
 export default async function TestimonialsPage() {
-  const testimonials = await prisma.testimonial.findMany({
-    orderBy: { createdAt: 'desc' },
-  });
+  const testimonials = await getTestimonials();
 
   return (
     <Card>

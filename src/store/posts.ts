@@ -1,6 +1,6 @@
 'use client';
 import { create } from 'zustand';
-import { type Post as PostType } from '@prisma/client';
+import { type Post as PostType } from '@/lib/data';
 import {
   getPosts,
   createPost as createPostAction,
@@ -20,12 +20,14 @@ interface PostState {
   addPost: (post: CreatePost) => Promise<void>;
   updatePost: (updatedPost: Post) => Promise<void>;
   deletePost: (postId: number) => Promise<void>;
+  setPosts: (posts: Post[]) => void;
 }
 
 export const usePostStore = create<PostState>((set, get) => ({
   posts: [],
   isLoading: false,
   error: null,
+  setPosts: (posts) => set({ posts, isLoading: false, error: null }),
   fetchPosts: async () => {
     set({ isLoading: true });
     try {
@@ -61,7 +63,7 @@ export const usePostStore = create<PostState>((set, get) => ({
     set((state) => ({ posts: state.posts.filter((p) => p.id !== postId) }));
     try {
       await deletePostAction(postId);
-      await get().fetchPosts(); // Re-fetch to confirm deletion and get latest list
+      // No need to re-fetch, optimistic update is enough for deletion
     } catch (error) {
       // Revert if the deletion fails
       set({ posts: originalPosts, error: (error as Error).message });
