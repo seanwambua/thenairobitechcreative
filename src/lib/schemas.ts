@@ -43,7 +43,6 @@ export const PostSchema = z.object({
     author: z.string().min(2, 'Author name must be at least 2 characters.'),
     authorAvatarUrl: z.string().url(),
     authorAvatarHint: z.string(),
-    date: z.string(),
     likes: z.number(),
     comments: z.string(),
     createdAt: z.date(),

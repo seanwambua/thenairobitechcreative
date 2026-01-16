@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { format } from 'date-fns';
 
 interface BlogPostCardProps {
   post: Post;
@@ -48,7 +49,9 @@ export function BlogPostCard({ post }: BlogPostCardProps) {
                   </Avatar>
                   <div>
                       <p className="text-sm font-semibold">{post.author}</p>
-                      <p className="text-xs text-muted-foreground">{post.date}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {format(new Date(post.createdAt), 'MMM d, yyyy')}
+                      </p>
                   </div>
               </div>
               <Button variant="ghost" size="icon" asChild>

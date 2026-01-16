@@ -29,7 +29,6 @@ export async function createPost(data: Pick<Post, 'title' | 'description' | 'con
           imageHint: placeholderImages.blog1.imageHint,
           authorAvatarUrl: placeholderImages.testimonial1.imageUrl,
           authorAvatarHint: placeholderImages.testimonial1.imageHint,
-          date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
           likes: 0,
           comments: '',
         },
@@ -44,10 +43,13 @@ export async function createPost(data: Pick<Post, 'title' | 'description' | 'con
 
 
 export async function updatePost(post: Post) {
-    const validatedData = PostSchema.parse(post);
+    const validatedData = PostSchema.extend({
+        date: z.string().optional() // Make date optional or remove if not needed
+    }).parse(post);
+    const { date, ...restOfData } = validatedData;
     const updatedPost = await prisma.post.update({
-        where: { id: validatedData.id },
-        data: validatedData,
+        where: { id: restOfData.id },
+        data: restOfData,
     });
     revalidatePath('/dashboard/content');
     revalidatePath('/dashboard/analytics');

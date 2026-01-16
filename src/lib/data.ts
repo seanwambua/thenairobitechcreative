@@ -16,7 +16,7 @@ export interface Project extends Omit<PrismaProject, 'keyFeatures' | 'icon'> {
 
 export type Testimonial = PrismaTestimonial;
 
-export type Post = PrismaPost;
+export type Post = Omit<PrismaPost, 'date'>;
 
 export interface Service {
   id: number;
@@ -284,7 +284,7 @@ export const initialTestimonials: Testimonial[] = [
   },
 ];
 
-export const initialPosts: Post[] = [
+export const initialPosts: Omit<PrismaPost, 'date'>[] = [
   {
     id: 1,
     slug: 'the-rise-of-mobile-first-solutions-in-africa',
@@ -296,7 +296,6 @@ export const initialPosts: Post[] = [
     author: 'Jalen Doe',
     authorAvatarUrl: placeholderImages.testimonial1.imageUrl,
     authorAvatarHint: placeholderImages.testimonial1.imageHint,
-    date: 'Oct 10, 2024',
     likes: 128,
     comments: '',
     createdAt: new Date(),
@@ -313,7 +312,6 @@ export const initialPosts: Post[] = [
     author: 'Maria Garcia',
     authorAvatarUrl: placeholderImages.testimonial3.imageUrl,
     authorAvatarHint: placeholderImages.testimonial3.imageHint,
-    date: 'Oct 2, 2024',
     likes: 95,
     comments: '',
     createdAt: new Date(),
@@ -330,7 +328,6 @@ export const initialPosts: Post[] = [
     author: 'David Kim',
     authorAvatarUrl: placeholderImages.testimonial2.imageUrl,
     authorAvatarHint: placeholderImages.testimonial2.imageHint,
-    date: 'Sep 25, 2024',
     likes: 210,
     comments: '',
     createdAt: new Date(),
