@@ -1,21 +1,18 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
 
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native"]
 }
 
-datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
-}
-
 model Project {
   id          Int      @id @default(autoincrement())
   title       String
   description String
-  keyFeatures String // Stored as comma-separated string
+  keyFeatures String
   imageUrl    String
   imageHint   String
   gridSpan    String
@@ -25,20 +22,20 @@ model Project {
 }
 
 model Post {
-  id              Int      @id @default(autoincrement())
-  slug            String   @unique
-  title           String
-  description     String
-  content         String
-  imageUrl        String
-  imageHint       String
-  author          String
-  authorAvatarUrl String
+  id               Int      @id @default(autoincrement())
+  title            String
+  slug             String   @unique
+  description      String
+  content          String
+  imageUrl         String
+  imageHint        String
+  author           String
+  authorAvatarUrl  String
   authorAvatarHint String
-  likes           Int
-  comments        String
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  likes            Int
+  comments         String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }
 
 model Testimonial {
