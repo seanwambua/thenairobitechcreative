@@ -1,6 +1,7 @@
 'use client';
 import { useRef, ChangeEvent, useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import {
   Card,
   CardContent,
@@ -18,9 +19,7 @@ import { PostImageManager } from '@/components/post-image-manager';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Stamp } from '@/components/stamp';
 import type { Post } from '@prisma/client';
-import { useMediaStore } from '@/store/media';
-import { updatePost } from '@/app/actions/posts';
-import { useRouter } from 'next/navigation';
+import { updateSetting } from '@/app/actions/settings';
 
 const defaultHeroImages = [
   placeholderImages.hero,
@@ -30,17 +29,24 @@ const defaultHeroImages = [
 ];
 
 type MediaClientProps = {
-    initialPosts: Post[];
-}
+  initialPosts: Post[];
+  initialHeroImage: string | null;
+  initialLogoUrl: string | null;
+  initialFounderImage: string | null;
+};
 
-export function MediaClient({ initialPosts }: MediaClientProps) {
+export function MediaClient({
+  initialPosts,
+  initialHeroImage,
+  initialLogoUrl,
+  initialFounderImage,
+}: MediaClientProps) {
   const router = useRouter();
   const [posts, setPosts] = useState(initialPosts);
-  const { 
-    heroImage, logoUrl, founderImage, 
-    fetchHeroImage, fetchLogoUrl, fetchFounderImage,
-    setHeroImage, setLogoUrl, setFounderImage 
-  } = useMediaStore();
+  
+  const [heroImage, setHeroImage] = useState(initialHeroImage);
+  const [logoUrl, setLogoUrl] = useState(initialLogoUrl);
+  const [founderImage, setFounderImage] = useState(initialFounderImage);
 
   const [heroImageOptions, setHeroImageOptions] = useState<ImagePlaceholder[]>(defaultHeroImages);
   const [isUploading, setIsUploading] = useState<string | null>(null);
@@ -51,31 +57,38 @@ export function MediaClient({ initialPosts }: MediaClientProps) {
   const { toast } = useToast();
 
   useEffect(() => {
-    fetchHeroImage();
-    fetchLogoUrl();
-    fetchFounderImage();
-  }, [fetchHeroImage, fetchLogoUrl, fetchFounderImage]);
-
-  useEffect(() => {
     if (heroImage) {
-        const isCustomImage = heroImage && !defaultHeroImages.some(opt => opt.imageUrl === heroImage);
-        if (isCustomImage) {
-            const customImagePlaceholder: ImagePlaceholder = {
-                id: 'custom',
-                description: 'Custom uploaded image',
-                imageUrl: heroImage,
-                imageHint: 'custom upload'
-            };
-            if (!heroImageOptions.some(opt => opt.imageUrl === heroImage)) {
-                setHeroImageOptions(prev => [customImagePlaceholder, ...prev]);
-            }
+      const isCustomImage = heroImage && !defaultHeroImages.some(opt => opt.imageUrl === heroImage);
+      if (isCustomImage) {
+        const customImagePlaceholder: ImagePlaceholder = {
+          id: 'custom',
+          description: 'Custom uploaded image',
+          imageUrl: heroImage,
+          imageHint: 'custom upload'
+        };
+        if (!heroImageOptions.some(opt => opt.imageUrl === heroImage)) {
+          setHeroImageOptions(prev => [customImagePlaceholder, ...prev]);
         }
+      }
     }
   }, [heroImage, heroImageOptions]);
 
   const handlePostUpdate = (updatedPost: Post) => {
     setPosts(currentPosts => currentPosts.map(p => p.id === updatedPost.id ? updatedPost : p));
     router.refresh();
+  };
+
+  const handleUpdateSetting = async (key: 'heroImage' | 'logo' | 'founderImage', value: string | null) => {
+    try {
+      await updateSetting(key, value);
+      router.refresh(); // This re-fetches server components and layout data
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: `Failed to update ${key}.`,
+      });
+    }
   };
   
   const handleFileChange = async (
@@ -103,9 +116,18 @@ export function MediaClient({ initialPosts }: MediaClientProps) {
           }
 
           const { secure_url } = await res.json();
-          if (settingKey === 'heroImage') await setHeroImage(secure_url);
-          if (settingKey === 'logo') await setLogoUrl(secure_url);
-          if (settingKey === 'founderImage') await setFounderImage(secure_url);
+          if (settingKey === 'heroImage') {
+            await handleUpdateSetting('heroImage', secure_url);
+            setHeroImage(secure_url);
+          }
+          if (settingKey === 'logo') {
+            await handleUpdateSetting('logo', secure_url);
+            setLogoUrl(secure_url);
+          }
+          if (settingKey === 'founderImage') {
+            await handleUpdateSetting('founderImage', secure_url);
+            setFounderImage(secure_url);
+          }
           
           toast({
             title: successTitle,
@@ -126,7 +148,8 @@ export function MediaClient({ initialPosts }: MediaClientProps) {
   };
 
   const handleSelectImage = async (imageUrl: string) => {
-    await setHeroImage(imageUrl);
+    await handleUpdateSetting('heroImage', imageUrl);
+    setHeroImage(imageUrl);
     toast({
       title: 'Hero Image Updated',
       description: 'The homepage hero image has been changed.',
@@ -134,7 +157,8 @@ export function MediaClient({ initialPosts }: MediaClientProps) {
   };
   
   const handleRemoveLogo = async () => {
-    await setLogoUrl(null);
+    await handleUpdateSetting('logo', null);
+    setLogoUrl(null);
     toast({
         title: 'Logo Removed',
         description: 'The custom logo has been removed.'
@@ -142,7 +166,9 @@ export function MediaClient({ initialPosts }: MediaClientProps) {
   };
 
   const handleRemoveFounderImage = async () => {
-    await setFounderImage(placeholderImages.founder.imageUrl);
+    const defaultFounderImage = placeholderImages.founder.imageUrl;
+    await handleUpdateSetting('founderImage', defaultFounderImage);
+    setFounderImage(defaultFounderImage);
      toast({
         title: 'Founder Image Reset',
         description: 'The founder image has been reset to the default.',
@@ -151,7 +177,8 @@ export function MediaClient({ initialPosts }: MediaClientProps) {
   
   const handleResetHeroImage = async () => {
     const defaultHero = placeholderImages.hero.imageUrl;
-    await setHeroImage(defaultHero);
+    await handleUpdateSetting('heroImage', defaultHero);
+    setHeroImage(defaultHero);
     setHeroImageOptions(defaultHeroImages);
     toast({
       title: 'Hero Image Reset',

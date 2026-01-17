@@ -33,7 +33,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { services } from '@/lib/data';
-import { Avatar } from './ui/avatar';
 import { Logo } from './logo';
 
 const formSchema = z.object({
@@ -46,9 +45,10 @@ const formSchema = z.object({
 
 interface InquirySheetProps {
   children: React.ReactNode;
+  logoUrl: string | null;
 }
 
-export function InquirySheet({ children }: InquirySheetProps) {
+export function InquirySheet({ children, logoUrl }: InquirySheetProps) {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
 
@@ -80,7 +80,7 @@ export function InquirySheet({ children }: InquirySheetProps) {
         <div className="mx-auto max-w-2xl py-12">
           <SheetHeader className="text-center">
             <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full overflow-hidden">
-              <Logo />
+              <Logo logoUrl={logoUrl} />
             </div>
             <SheetTitle className="text-3xl font-bold">Project Inquiry</SheetTitle>
             <SheetDescription>

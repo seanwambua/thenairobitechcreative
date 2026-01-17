@@ -20,7 +20,8 @@ export const ProjectSchema = z.object({
 });
 
 // Used for create/update actions where some fields are not required.
-export type ProjectInputSchemaType = z.infer<typeof ProjectSchema.omit({ id: true, createdAt: true, updatedAt: true })>;
+const ProjectInputSchema = ProjectSchema.omit({ id: true, createdAt: true, updatedAt: true });
+export type ProjectInputSchemaType = z.infer<typeof ProjectInputSchema>;
 
 
 export const TestimonialSchema = z.object({
@@ -34,7 +35,8 @@ export const TestimonialSchema = z.object({
     updatedAt: z.date(),
 });
 
-export type TestimonialInputSchemaType = z.infer<typeof TestimonialSchema.omit({id: true, createdAt: true, updatedAt: true})>;
+const TestimonialInputSchema = TestimonialSchema.omit({id: true, createdAt: true, updatedAt: true});
+export type TestimonialInputSchemaType = z.infer<typeof TestimonialInputSchema>;
 
 
 // Prisma's Post type already matches what we need for validation of the full object.
