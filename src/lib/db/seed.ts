@@ -5,11 +5,7 @@ import { initialProjects, initialPosts, initialTestimonials } from '../data';
 export async function seedDatabase() {
   console.log('Start seeding...');
 
-  console.log('Clearing existing data...');
-  await db.delete(schema.projects);
-  await db.delete(schema.posts);
-  await db.delete(schema.testimonials);
-  console.log('Cleared existing data.');
+  // Note: We don't need to clear data for SQLite since the file is deleted in the reinitialize script.
 
   // Seed Projects
   for (const project of initialProjects) {

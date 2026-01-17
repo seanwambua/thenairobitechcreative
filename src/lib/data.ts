@@ -11,13 +11,24 @@ export interface NavItem {
 }
 
 type ProjectModel = InferSelectModel<typeof schema.projects>;
-export type Project = Omit<ProjectModel, 'keyFeatures' | 'icon'> & {
+export type Project = Omit<ProjectModel, 'keyFeatures' | 'icon' | 'createdAt' | 'updatedAt'> & {
   keyFeatures: string[];
   icon: IconName;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
-export type Testimonial = InferSelectModel<typeof schema.testimonials>;
-export type Post = InferSelectModel<typeof schema.posts>;
+type TestimonialModel = InferSelectModel<typeof schema.testimonials>;
+export type Testimonial = Omit<TestimonialModel, 'createdAt' | 'updatedAt'> & {
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+type PostModel = InferSelectModel<typeof schema.posts>;
+export type Post = Omit<PostModel, 'createdAt' | 'updatedAt'> & {
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 
 export interface Service {

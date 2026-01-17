@@ -59,7 +59,7 @@ This application provides a solid foundation. Here are recommended next steps to
 ## 🚀 Tech Stack
 
 -   **Framework:** [Next.js](https://nextjs.org/) (App Router)
--   **Database:** [Neon](https://neon.tech/) Serverless PostgreSQL (via Drizzle)
+-   **Database:** SQLite (via Drizzle & `better-sqlite3`)
 -   **Styling:** [Tailwind CSS](https://tailwindcss.com/)
 -   **UI Components:** [ShadCN UI](https://ui.shadcn.com/)
 -   **Database ORM:** [Drizzle ORM](https://orm.drizzle.team/)
@@ -99,7 +99,6 @@ Follow these steps to get the project up and running on your local machine.
 
 -   Node.js (v18 or later)
 -   npm or yarn
--   A Neon account and a new project created.
 
 ### 1. Install Dependencies
 
@@ -111,12 +110,11 @@ npm install
 
 ### 2. Set Up Environment Variables
 
-Create a `.env` file in the root of the project. You will need to provide your Neon database connection string and your Cloudinary credentials for image uploads.
+Create a `.env` file in the root of the project. You will need to provide your Cloudinary credentials for image uploads. The database is now a local file, so no database URL is needed.
 
 ```env
-# Neon Database Connection String
-# Get this from your Neon project dashboard
-DATABASE_URL="postgresql://user:password@host:port/db?sslmode=require"
+# Database file path (handled by default)
+DATABASE_URL="sqlite.db"
 
 # Cloudinary Credentials for Image Uploads
 CLOUDINARY_CLOUD_NAME="your_cloud_name"
@@ -133,8 +131,9 @@ npm run reinitialize
 ```
 
 This command will:
-1.  Push the Drizzle schema to your Neon database using `drizzle-kit`.
-2.  Run the seed script (`src/lib/db/seed.ts`) to populate the database with initial projects, posts, and testimonials.
+1.  Delete any existing `sqlite.db` file.
+2.  Push the Drizzle schema to your new SQLite database using `drizzle-kit`.
+3.  Run the seed script (`src/lib/db/seed.ts`) to populate the database with initial projects, posts, and testimonials.
 
 ### 4. Run the Development Server
 

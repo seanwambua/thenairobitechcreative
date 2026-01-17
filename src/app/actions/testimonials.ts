@@ -7,19 +7,28 @@ import { revalidatePath } from 'next/cache';
 import { TestimonialSchema, type TestimonialSchemaType } from '@/lib/schemas';
 import type { Testimonial } from '@/lib/data';
 
+function toTestimonial(record: typeof schema.testimonials.$inferSelect): Testimonial {
+    return {
+        ...record,
+        createdAt: new Date(record.createdAt),
+        updatedAt: new Date(record.updatedAt),
+    };
+}
+
 export async function getTestimonials() {
-    return await db.query.testimonials.findMany({
+    const results = await db.query.testimonials.findMany({
         orderBy: [desc(schema.testimonials.createdAt)],
     });
+    return results.map(toTestimonial);
 }
 
 export async function createTestimonial(data: Omit<TestimonialSchemaType, 'id' | 'createdAt' | 'updatedAt'>) {
     const validatedData = TestimonialSchema.omit({ id: true, createdAt: true, updatedAt: true }).parse(data);
-    const [newTestimonial] = await db.insert(schema.testimonials).values({
+    const [newTestimonialRecord] = await db.insert(schema.testimonials).values({
         ...validatedData,
-        createdAt: new Date(),
-        updatedAt: new Date(),
     }).returning();
+    
+    const newTestimonial = toTestimonial(newTestimonialRecord);
     revalidatePath('/dashboard/testimonials');
     revalidatePath('/dashboard/analytics');
     revalidatePath('/');
@@ -28,10 +37,13 @@ export async function createTestimonial(data: Omit<TestimonialSchemaType, 'id' |
 
 export async function updateTestimonial(testimonial: Testimonial) {
     const validatedData = TestimonialSchema.parse(testimonial);
-    const [updatedTestimonial] = await db.update(schema.testimonials)
-        .set({ ...validatedData, updatedAt: new Date() })
+    const { createdAt, updatedAt, ...updateData } = validatedData;
+    const [updatedTestimonialRecord] = await db.update(schema.testimonials)
+        .set({ ...updateData, updatedAt: new Date().toISOString() })
         .where(eq(schema.testimonials.id, validatedData.id))
         .returning();
+
+    const updatedTestimonial = toTestimonial(updatedTestimonialRecord);
 
     revalidatePath('/dashboard/testimonials');
     revalidatePath('/dashboard/analytics');

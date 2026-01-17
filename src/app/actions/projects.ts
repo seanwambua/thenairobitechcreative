@@ -15,6 +15,8 @@ export async function getProjects() {
     return projectsData.map(p => ({
         ...p,
         keyFeatures: p.keyFeatures.split(',').map(s => s.trim()),
+        createdAt: new Date(p.createdAt),
+        updatedAt: new Date(p.updatedAt),
     }));
 }
 
@@ -25,8 +27,6 @@ export async function createProject(data: Omit<ProjectSchemaType, 'id' | 'create
     const [newProjectData] = await db.insert(schema.projects).values({
         ...rest,
         keyFeatures: keyFeatures.join(','),
-        createdAt: new Date(),
-        updatedAt: new Date(),
       }).returning();
 
     revalidatePath('/dashboard/projects');
@@ -35,17 +35,21 @@ export async function createProject(data: Omit<ProjectSchemaType, 'id' | 'create
 
     const formattedProject = {
         ...newProjectData,
-        keyFeatures: newProjectData.keyFeatures.split(',').map(s => s.trim())
+        keyFeatures: newProjectData.keyFeatures.split(',').map(s => s.trim()),
+        createdAt: new Date(newProjectData.createdAt),
+        updatedAt: new Date(newProjectData.updatedAt),
     };
     return formattedProject;
 }
 
 export async function updateProject(project: Project) {
     const { keyFeatures, ...rest } = ProjectSchema.parse(project);
+    const { createdAt, updatedAt, ...updateData } = rest;
+
     const [updatedProjectData] = await db.update(schema.projects).set({
-            ...rest,
+            ...updateData,
             keyFeatures: keyFeatures.join(','),
-            updatedAt: new Date(),
+            updatedAt: new Date().toISOString(),
         })
         .where(eq(schema.projects.id, rest.id))
         .returning();
@@ -56,7 +60,9 @@ export async function updateProject(project: Project) {
 
      const formattedProject = {
         ...updatedProjectData,
-        keyFeatures: updatedProjectData.keyFeatures.split(',').map(s => s.trim())
+        keyFeatures: updatedProjectData.keyFeatures.split(',').map(s => s.trim()),
+        createdAt: new Date(updatedProjectData.createdAt),
+        updatedAt: new Date(updatedProjectData.updatedAt),
     };
     return formattedProject;
 }

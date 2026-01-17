@@ -6,14 +6,23 @@ import { revalidatePath } from 'next/cache';
 import { PostSchema } from '@/lib/schemas';
 import { placeholderImages } from '@/lib/placeholder-images';
 import type { Post } from '@/lib/data';
-import { z } from 'zod';
 import { eq, desc } from 'drizzle-orm';
+
+// Helper to convert string dates to Date objects
+function toPost(record: typeof schema.posts.$inferSelect): Post {
+    return {
+        ...record,
+        createdAt: new Date(record.createdAt),
+        updatedAt: new Date(record.updatedAt),
+    };
+}
 
 // Action to get all posts
 export async function getPosts() {
-    return await db.query.posts.findMany({
+    const results = await db.query.posts.findMany({
         orderBy: [desc(schema.posts.createdAt)],
     });
+    return results.map(toPost);
 }
 
 export async function createPost(data: Pick<Post, 'title' | 'description' | 'content' | 'author'>) {
@@ -24,7 +33,7 @@ export async function createPost(data: Pick<Post, 'title' | 'description' | 'con
       author: true,
     }).parse(data);
 
-    const [newPost] = await db.insert(schema.posts).values({
+    const [newPostRecord] = await db.insert(schema.posts).values({
           ...validatedData,
           slug: validatedData.title.toLowerCase().replace(/\s+/g, '-'),
           imageUrl: placeholderImages.blog1.imageUrl,
@@ -33,9 +42,9 @@ export async function createPost(data: Pick<Post, 'title' | 'description' | 'con
           authorAvatarHint: placeholderImages.testimonial1.imageHint,
           likes: 0,
           comments: '',
-          createdAt: new Date(),
-          updatedAt: new Date(),
         }).returning();
+    
+    const newPost = toPost(newPostRecord);
 
     revalidatePath('/dashboard/content');
     revalidatePath('/dashboard/analytics');
@@ -47,10 +56,14 @@ export async function createPost(data: Pick<Post, 'title' | 'description' | 'con
 
 export async function updatePost(post: Post) {
     const validatedData = PostSchema.parse(post);
-    const [updatedPost] = await db.update(schema.posts)
-        .set({ ...validatedData, updatedAt: new Date() })
+    const { createdAt, updatedAt, ...updateData } = validatedData;
+    
+    const [updatedPostRecord] = await db.update(schema.posts)
+        .set({ ...updateData, updatedAt: new Date().toISOString() })
         .where(eq(schema.posts.id, validatedData.id))
         .returning();
+
+    const updatedPost = toPost(updatedPostRecord);
 
     revalidatePath('/dashboard/content');
     revalidatePath('/dashboard/analytics');
