@@ -1,3 +1,4 @@
+
 import { db } from '.';
 import * as schema from './schema';
 import { initialProjects, initialPosts, initialTestimonials } from '../data';
