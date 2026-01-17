@@ -4,8 +4,9 @@ import {motion} from 'framer-motion';
 import {ChevronRight} from 'lucide-react';
 import Image from 'next/image';
 import { InquirySheet } from './inquiry-sheet';
+import { placeholderImages } from '@/lib/placeholder-images';
 
-export function Hero({heroImage}: {heroImage: string}) {
+export function Hero({heroImage}: {heroImage: string | null}) {
   const containerVariants = {
     hidden: {opacity: 0},
     visible: {
@@ -83,7 +84,7 @@ export function Hero({heroImage}: {heroImage: string}) {
             variants={imageItemVariants}
         >
             <Image 
-                src={heroImage} 
+                src={heroImage ?? placeholderImages.hero.imageUrl} 
                 alt="Nairobi Tech Hub" 
                 fill
                 className="rounded-3xl object-cover shadow-2xl"

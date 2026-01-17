@@ -1,3 +1,5 @@
+'use client';
+import * as React from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Header } from '@/components/layout/header';
@@ -6,17 +8,55 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { PostInteractions } from '@/components/post-interactions';
-import { getPosts } from '@/app/actions/posts';
+import { usePostStore, type Post } from '@/store/posts';
+import { DbUninitializedError } from '@/components/db-uninitialized-error';
+import { useBroadcastListener } from '@/hooks/use-broadcast';
+import { Loader2 } from 'lucide-react';
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  const posts = await getPosts();
-  const post = posts.find((p) => p.slug === params.slug);
+export default function BlogPostPage({ params }: { params: { slug: string } }) {
+  const { posts, fetchPosts, error } = usePostStore();
+  const [post, setPost] = React.useState<Post | null>(null);
 
-  if (!post) {
-    notFound();
+  const findPost = React.useCallback(() => {
+    const foundPost = posts.find((p) => p.slug === params.slug);
+    if (foundPost) {
+      setPost(foundPost);
+    } else if (posts.length > 0) {
+      notFound();
+    }
+  }, [posts, params.slug]);
+
+  React.useEffect(() => {
+    if (posts.length === 0) {
+      fetchPosts();
+    } else {
+      findPost();
+    }
+  }, [posts.length, fetchPosts, findPost]);
+
+  React.useEffect(() => {
+    findPost();
+  }, [posts, findPost]);
+
+
+  useBroadcastListener((event) => {
+    if (event.data.type === 'refetch-posts') {
+      fetchPosts();
+    }
+  });
+
+  if (error && error.includes('no such table')) {
+    return <DbUninitializedError />;
   }
 
-  // Comments are not implemented as an array
+  if (!post) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+  
   const commentsCount = 0;
 
   return (

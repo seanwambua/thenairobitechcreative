@@ -41,3 +41,8 @@ export const testimonials = sqliteTable('testimonials', {
     createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`).notNull(),
     updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
+
+export const settings = sqliteTable('settings', {
+  key: text('key').primaryKey(),
+  value: text('value'),
+});

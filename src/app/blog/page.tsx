@@ -1,14 +1,31 @@
+'use client';
+import * as React from 'react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { BlogPostCard } from '@/components/blog-post-card';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowRight } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { ArrowRight, Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { getPosts } from '@/app/actions/posts';
+import { usePostStore } from '@/store/posts';
+import { useBroadcastListener } from '@/hooks/use-broadcast';
+import { DbUninitializedError } from '@/components/db-uninitialized-error';
 
-export default async function BlogPage() {
-  const posts = await getPosts();
+export default function BlogPage() {
+  const { posts, fetchPosts, isLoading, error } = usePostStore();
+
+  React.useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
+
+  useBroadcastListener((event) => {
+    if (event.data.type === 'refetch-posts') {
+      fetchPosts();
+    }
+  });
+
+  if (error && error.includes('no such table')) {
+    return <DbUninitializedError />;
+  }
 
   const featuredPosts = posts.slice(0, 3);
   const otherArticles = posts.slice(3);
@@ -27,11 +44,17 @@ export default async function BlogPage() {
                 Insights, stories, and updates from the heart of African tech innovation.
               </p>
             </div>
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {featuredPosts.map((post) => (
-                <BlogPostCard key={post.id} post={post} />
-              ))}
-            </div>
+            {isLoading && posts.length === 0 ? (
+              <div className="flex justify-center">
+                <Loader2 className="h-8 w-8 animate-spin" />
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                {featuredPosts.map((post) => (
+                  <BlogPostCard key={post.id} post={post} />
+                ))}
+              </div>
+            )}
           </div>
         </section>
 
@@ -47,23 +70,15 @@ export default async function BlogPage() {
             </div>
             <div className="mx-auto max-w-2xl">
               <div className="space-y-4">
-                {otherArticles.map((article, index) => (
-                  <motion.div
-                    key={article.id}
-                    initial={{ opacity: 0, x: -50 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, amount: 0.5 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                  >
-                    <Link href={`/blog/${article.slug}`} className="group block">
-                      <Card className="transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-primary/10">
-                        <CardContent className="flex items-center justify-between p-6">
-                          <h3 className="font-semibold text-foreground">{article.title}</h3>
-                          <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-primary" />
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  </motion.div>
+                {otherArticles.map((article) => (
+                  <Link href={`/blog/${article.slug}`} className="group block" key={article.id}>
+                    <Card className="transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-primary/10">
+                      <CardContent className="flex items-center justify-between p-6">
+                        <h3 className="font-semibold text-foreground">{article.title}</h3>
+                        <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-primary" />
+                      </CardContent>
+                    </Card>
+                  </Link>
                 ))}
               </div>
             </div>

@@ -1,27 +1,30 @@
 'use client';
+import * as React from 'react';
 import Link from 'next/link';
 import {Button} from '@/components/ui/button';
 import {Stamp} from '@/components/stamp';
 import {Menu, X} from 'lucide-react';
-import {useState, useCallback} from 'react';
+import {useState} from 'react';
 import {cn} from '@/lib/utils';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { InquirySheet } from '../inquiry-sheet';
 import { navItems } from '@/lib/data';
 import { useMediaStore } from '@/store/media';
-import { useBroadcastListener, type BroadcastMessage } from '@/hooks/use-broadcast';
+import { useBroadcastListener } from '@/hooks/use-broadcast';
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
-  const { setLogo } = useMediaStore();
+  const { logoUrl, fetchLogoUrl } = useMediaStore();
 
-  const handleBroadcastMessage = useCallback((message: BroadcastMessage<any>) => {
-    if (message.type === 'update-media' && message.payload?.logo) {
-      setLogo(message.payload.logo);
+  React.useEffect(() => {
+    fetchLogoUrl();
+  }, [fetchLogoUrl]);
+
+  useBroadcastListener((event) => {
+    if (event.data.type === 'refetch-media') {
+      fetchLogoUrl();
     }
-  }, [setLogo]);
-
-  useBroadcastListener(handleBroadcastMessage);
+  });
 
 
   const visibleNavItems = navItems.filter(item => !item.hidden);
@@ -31,7 +34,7 @@ export function Header() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-3">
           <div className="h-8 w-8 rounded-full overflow-hidden flex items-center justify-center">
-            <Stamp />
+            <Stamp logoUrl={logoUrl} />
           </div>
           <span className="font-headline text-xl font-semibold lg:hidden">
             NTC

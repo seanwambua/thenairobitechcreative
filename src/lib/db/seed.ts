@@ -2,6 +2,7 @@
 import { db } from '.';
 import * as schema from './schema';
 import { initialProjects, initialPosts, initialTestimonials } from '../data';
+import { placeholderImages } from '../placeholder-images';
 
 export async function seedDatabase() {
   console.log('Start seeding...');
@@ -12,6 +13,7 @@ export async function seedDatabase() {
     await db.delete(schema.posts);
     await db.delete(schema.projects);
     await db.delete(schema.testimonials);
+    await db.delete(schema.settings);
     console.log('Data cleared.');
 
     // Seed Projects
@@ -39,6 +41,16 @@ export async function seedDatabase() {
         await db.insert(schema.testimonials).values(rest);
     }
     console.log(`Seeded ${initialTestimonials.length} testimonials.`);
+
+    // Seed Settings
+    console.log('Seeding settings...');
+    await db.insert(schema.settings).values([
+        { key: 'heroImage', value: placeholderImages.hero.imageUrl },
+        { key: 'logo', value: null },
+        { key: 'founderImage', value: placeholderImages.founder.imageUrl },
+    ]);
+    console.log('Seeded initial settings.');
+
 
   } catch (error) {
       console.error('Error during seeding:', error);

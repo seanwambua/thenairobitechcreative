@@ -1,53 +1,40 @@
 'use client';
-
 import { useEffect, useCallback } from 'react';
 
-// A generic structure for broadcast messages
-export interface BroadcastMessage<T> {
-  type: string;
-  payload?: T;
-}
-
-const APP_CHANNEL_NAME = 'ntc-sync';
+const CHANNEL_NAME = 'ntc-broadcast-channel';
 let channel: BroadcastChannel | null = null;
 
-const getChannel = (): BroadcastChannel => {
-  if (typeof window === 'undefined') {
-    // Return a mock for SSR to prevent errors
-    return {
-      postMessage: () => {},
-      addEventListener: () => {},
-      removeEventListener: () => {},
-    } as any;
-  }
+// Ensure channel is a singleton
+const getChannel = () => {
   if (channel === null) {
-    channel = new BroadcastChannel(APP_CHANNEL_NAME);
+    channel = new BroadcastChannel(CHANNEL_NAME);
   }
   return channel;
 };
 
-// Standalone function for use in non-component files like Zustand stores
-export const postBroadcastMessage = <T,>(message: BroadcastMessage<T>) => {
+interface BroadcastMessage {
+  type: 'refetch-posts' | 'refetch-projects' | 'refetch-testimonials' | 'refetch-media';
+}
+
+export const postBroadcastMessage = (message: BroadcastMessage) => {
   getChannel().postMessage(message);
 };
 
-// React hook for components to listen for broadcast messages
-export const useBroadcastListener = <T,>(
-  onMessage: (message: BroadcastMessage<T>) => void
+export const useBroadcastListener = (
+  onMessage: (event: MessageEvent<BroadcastMessage>) => void
 ) => {
-  const stableOnMessage = useCallback(onMessage, [onMessage]);
+  const handleMessage = useCallback(
+    (event: MessageEvent<BroadcastMessage>) => {
+      onMessage(event);
+    },
+    [onMessage]
+  );
 
   useEffect(() => {
-    const channelInstance = getChannel();
-
-    const handleMessage = (event: MessageEvent<BroadcastMessage<T>>) => {
-      stableOnMessage(event.data);
-    };
-
-    channelInstance.addEventListener('message', handleMessage);
-
+    const bc = getChannel();
+    bc.addEventListener('message', handleMessage);
     return () => {
-      channelInstance.removeEventListener('message', handleMessage);
+      bc.removeEventListener('message', handleMessage);
     };
-  }, [stableOnMessage]);
+  }, [handleMessage]);
 };

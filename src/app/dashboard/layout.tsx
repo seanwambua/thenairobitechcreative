@@ -1,5 +1,4 @@
 'use client';
-
 import * as React from 'react';
 import {
   SidebarProvider,
@@ -14,7 +13,6 @@ import {
   SidebarInset,
 } from '@/components/ui/sidebar';
 import {
-  Home,
   Briefcase,
   LineChart,
   Settings,
@@ -24,6 +22,7 @@ import {
   NotebookText,
   Image as ImageIcon,
   Star,
+  Loader2,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -38,32 +37,56 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { useMediaStore } from '@/store/media';
 import { placeholderImages } from '@/lib/placeholder-images';
 import { Logo } from '@/components/logo';
-import { useBroadcastListener, type BroadcastMessage } from '@/hooks/use-broadcast';
+import { useMediaStore } from '@/store/media';
+import { useBroadcastListener } from '@/hooks/use-broadcast';
+import { DbUninitializedError } from '@/components/db-uninitialized-error';
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
-  const { founderImage, setFounderImage } = useMediaStore();
+  const { 
+    founderImage, 
+    logoUrl, 
+    fetchFounderImage, 
+    fetchLogoUrl,
+    error,
+  } = useMediaStore();
+  const [isReady, setIsReady] = React.useState(false);
 
-  const handleBroadcastMessage = React.useCallback((message: BroadcastMessage<any>) => {
-    if (message.type === 'update-media' && 'founderImage' in message.payload) {
-      setFounderImage(message.payload.founderImage);
+  React.useEffect(() => {
+    Promise.all([fetchFounderImage(), fetchLogoUrl()]).finally(() => setIsReady(true));
+  }, [fetchFounderImage, fetchLogoUrl]);
+  
+  useBroadcastListener((event) => {
+    if (event.data.type === 'refetch-media') {
+      fetchFounderImage();
+      fetchLogoUrl();
     }
-  }, [setFounderImage]);
+  });
 
-  useBroadcastListener(handleBroadcastMessage);
+  const pathname = usePathname();
   
   const founderInfo = placeholderImages.founder;
   const founderInitials = founderInfo.imageHint
     .split(' ')
     .map((n) => n[0])
     .join('');
+
+  if (error && error.includes('no such table')) {
+    return <DbUninitializedError />;
+  }
+
+  if (!isReady) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-background">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      </div>
+    );
+  }
   
   return (
     <SidebarProvider>
@@ -71,7 +94,7 @@ export default function DashboardLayout({
         <SidebarHeader>
           <div className="flex items-center gap-3">
             <div className="h-8 w-8 rounded-full overflow-hidden flex items-center justify-center">
-              <Logo />
+              <Logo logoUrl={logoUrl} />
             </div>
             <span className="hidden font-headline text-xl font-semibold lg:inline-block group-data-[collapsible=icon]:hidden">
               NTC
