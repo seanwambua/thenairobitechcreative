@@ -10,8 +10,7 @@
     "typecheck": "tsc --noEmit",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
-    "db:seed": "ts-node --esm src/lib/db/seed.ts",
-    "reinitialize": "rm -f prisma/dev.db && npx prisma db push && npm run db:seed"
+    "reinitialize": "rm -f prisma/dev.db && prisma db push && ts-node src/lib/db/seed.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
