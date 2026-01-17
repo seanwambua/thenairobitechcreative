@@ -11,34 +11,34 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-model Post {
-  id               Int      @id @default(autoincrement())
-  slug             String   @unique
-  title            String
-  description      String
-  content          String
-  imageUrl         String
-  imageHint        String
-  author           String
-  authorAvatarUrl  String
-  authorAvatarHint String
-  likes            Int
-  comments         String
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-}
-
 model Project {
   id          Int      @id @default(autoincrement())
   title       String
   description String
-  keyFeatures String
+  keyFeatures String // Stored as comma-separated string
   imageUrl    String
   imageHint   String
   gridSpan    String
   icon        String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Post {
+  id              Int      @id @default(autoincrement())
+  slug            String   @unique
+  title           String
+  description     String
+  content         String
+  imageUrl        String
+  imageHint       String
+  author          String
+  authorAvatarUrl String
+  authorAvatarHint String
+  likes           Int
+  comments        String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model Testimonial {
@@ -53,8 +53,7 @@ model Testimonial {
 }
 
 model Settings {
-  key       String   @id
-  value     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id    Int     @id @default(autoincrement())
+  key   String  @unique
+  value String?
 }
