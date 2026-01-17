@@ -1,14 +1,14 @@
 'use client';
 
-import { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Hero } from '@/components/hero';
 import { ProspectsBanner } from '@/components/prospects-banner';
 import { BentoPortfolio } from '@/components/bento-portfolio';
-import { faqs } from '@/lib/data';
+import { faqs, type Project, type Testimonial } from '@/lib/data';
 import { Cta } from '@/components/cta';
-import { Testimonials } from '@/components/testimonials';
+import { Testimonials as TestimonialsComponent } from '@/components/testimonials';
 import {
   Accordion,
   AccordionContent,
@@ -17,27 +17,33 @@ import {
 } from '@/components/ui/accordion';
 import { motion } from 'framer-motion';
 import { useMediaStore } from '@/store/media';
-import { useProjectStore } from '@/store/projects';
-import { useTestimonialStore } from '@/store/testimonials';
 import { useBroadcastListener, type BroadcastMessage } from '@/hooks/use-broadcast';
+import { getProjects } from '@/app/actions/projects';
+import { getTestimonials } from '@/app/actions/testimonials';
 
 export default function Home() {
   const { heroImage, setHeroImage } = useMediaStore();
-  const { projects, fetchProjects } = useProjectStore();
-  const { testimonials, fetchTestimonials } = useTestimonialStore();
+  const [projects, setProjects] = React.useState<Project[]>([]);
+  const [testimonials, setTestimonials] = React.useState<Testimonial[]>([]);
+
+  const fetchAllData = useCallback(async () => {
+    const [projectsData, testimonialsData] = await Promise.all([
+      getProjects(),
+      getTestimonials(),
+    ]);
+    setProjects(projectsData);
+    setTestimonials(testimonialsData);
+  }, []);
   
   useEffect(() => {
-    fetchProjects();
-    fetchTestimonials();
-  }, [fetchProjects, fetchTestimonials]);
+    fetchAllData();
+  }, [fetchAllData]);
 
   const handleBroadcastMessage = useCallback((message: BroadcastMessage<any>) => {
     switch (message.type) {
       case 'refetch-projects':
-        fetchProjects();
-        break;
       case 'refetch-testimonials':
-        fetchTestimonials();
+        fetchAllData();
         break;
       case 'update-media':
         if (message.payload?.heroImage) {
@@ -45,7 +51,7 @@ export default function Home() {
         }
         break;
     }
-  }, [fetchProjects, fetchTestimonials, setHeroImage]);
+  }, [fetchAllData, setHeroImage]);
 
   useBroadcastListener(handleBroadcastMessage);
 
@@ -85,7 +91,7 @@ export default function Home() {
           </div>
         </motion.section>
 
-        <Testimonials testimonials={testimonials} />
+        <TestimonialsComponent testimonials={testimonials} />
 
         <motion.section
           id="faq"

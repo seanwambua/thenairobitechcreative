@@ -1,6 +1,4 @@
-'use client';
-import { useEffect, useState, useCallback } from 'react';
-import { notFound, useParams } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
@@ -8,48 +6,14 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { PostInteractions } from '@/components/post-interactions';
-import { usePostStore } from '@/store/posts';
-import { Loader2 } from 'lucide-react';
-import type { Post } from '@/store/posts';
-import { useBroadcastListener, type BroadcastMessage } from '@/hooks/use-broadcast';
+import { getPosts } from '@/app/actions/posts';
 
-export default function BlogPostPage() {
-  const { slug } = useParams<{ slug: string }>();
-  const { posts, isLoading, fetchPosts } = usePostStore();
-  const [post, setPost] = useState<Post | undefined>(undefined);
+export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+  const posts = await getPosts();
+  const post = posts.find((p) => p.slug === params.slug);
 
-  useEffect(() => {
-    // If posts are not in the store, fetch them.
-    if (posts.length === 0) {
-      fetchPosts();
-    }
-  }, [posts.length, fetchPosts]);
-
-  const handleBroadcastMessage = useCallback((message: BroadcastMessage<any>) => {
-    if (message.type === 'refetch-posts') {
-      fetchPosts();
-    }
-  }, [fetchPosts]);
-
-  useBroadcastListener(handleBroadcastMessage);
-
-  useEffect(() => {
-    // Once posts are available, find the current post.
-    const currentPost = posts.find((p) => p.slug === slug);
-    setPost(currentPost);
-  }, [slug, posts]);
-  
-  if (isLoading || (posts.length > 0 && post === undefined)) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <Loader2 className="h-12 w-12 animate-spin" />
-      </div>
-    );
-  }
-  
-  // If after loading, the post is still not found, then it's a 404.
-  if (!post && !isLoading) {
-    return notFound();
+  if (!post) {
+    notFound();
   }
 
   // Comments are not implemented as an array
