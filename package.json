@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push:sqlite",
-    "db:seed": "ts-node --compiler-options '{\\\"module\\\":\\\"CommonJS\\\"}' src/lib/db/seed.ts",
+    "db:seed": "ts-node src/lib/db/seed.ts",
     "reinitialize": "rm -f sqlite.db && npm run db:push && npm run db:seed"
   },
   "dependencies": {
