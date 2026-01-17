@@ -26,11 +26,12 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { useTestimonialStore, type Testimonial } from '@/store/testimonials';
+import type { Testimonial } from '@prisma/client';
 import { placeholderImages } from '@/lib/placeholder-images';
 import { Upload, Loader2 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { TestimonialSchema } from '@/lib/schemas';
+import { createTestimonial, updateTestimonial } from '@/app/actions/testimonials';
 
 const formSchema = TestimonialSchema.pick({
   quote: true,
@@ -44,18 +45,20 @@ interface TestimonialEditorSheetProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   testimonial: Testimonial | null;
+  onSave: () => void;
 }
 
 export function TestimonialEditorSheet({
   isOpen,
   setIsOpen,
   testimonial,
+  onSave,
 }: TestimonialEditorSheetProps) {
   const { toast } = useToast();
-  const { addTestimonial, updateTestimonial, isLoading } = useTestimonialStore();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const form = useForm<TestimonialFormValues>({
     resolver: zodResolver(formSchema),
@@ -117,6 +120,7 @@ export function TestimonialEditorSheet({
   };
 
   async function onSubmit(values: TestimonialFormValues) {
+    setIsSaving(true);
     const testimonialData = {
         ...values,
         avatarUrl: imagePreview || (testimonial ? testimonial.avatarUrl : placeholderImages.testimonial1.imageUrl),
@@ -127,20 +131,22 @@ export function TestimonialEditorSheet({
       if (testimonial) {
         await updateTestimonial({ ...testimonial, ...testimonialData });
       } else {
-        await addTestimonial(testimonialData);
+        await createTestimonial(testimonialData);
       }
       
       toast({
         title: `Testimonial ${testimonial ? 'Updated' : 'Created'}!`,
         description: `The testimonial from "${values.author}" has been successfully saved.`,
       });
-      setIsOpen(false);
+      onSave();
     } catch (error) {
       toast({
         variant: 'destructive',
         title: 'Error',
         description: `Failed to ${testimonial ? 'update' : 'create'} testimonial.`,
       });
+    } finally {
+      setIsSaving(false);
     }
   }
 
@@ -243,8 +249,8 @@ export function TestimonialEditorSheet({
                     Cancel
                   </Button>
                 </SheetClose>
-                <Button type="submit" disabled={isUploading || isLoading}>
-                  {isUploading || isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                <Button type="submit" disabled={isUploading || isSaving}>
+                  {(isUploading || isSaving) ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                   Save Testimonial
                 </Button>
               </SheetFooter>

@@ -6,17 +6,18 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Upload, X, Loader2 } from 'lucide-react';
-import { usePostStore, type Post } from '@/store/posts';
+import type { Post } from '@prisma/client';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
 import { placeholderImages } from '@/lib/placeholder-images';
+import { updatePost } from '@/app/actions/posts';
 
 interface PostImageManagerProps {
   post: Post;
+  onPostUpdate: (updatedPost: Post) => void;
 }
 
-export function PostImageManager({ post }: PostImageManagerProps) {
-  const { updatePost } = usePostStore();
+export function PostImageManager({ post, onPostUpdate }: PostImageManagerProps) {
   const { toast } = useToast();
   const coverImageInputRef = useRef<HTMLInputElement>(null);
   const avatarImageInputRef = useRef<HTMLInputElement>(null);
@@ -41,15 +42,17 @@ export function PostImageManager({ post }: PostImageManagerProps) {
         }
 
         const { secure_url } = await res.json();
-        const updatedPost = { ...post };
+        const updatedPostData = { ...post };
 
         if (imageType === 'cover') {
-          updatedPost.imageUrl = secure_url;
+          updatedPostData.imageUrl = secure_url;
         } else {
-          updatedPost.authorAvatarUrl = secure_url;
+          updatedPostData.authorAvatarUrl = secure_url;
         }
 
-        updatePost(updatedPost);
+        const updatedPost = await updatePost(updatedPostData);
+        onPostUpdate(updatedPost);
+
         toast({
           title: 'Image Updated!',
           description: `The ${imageType} image for "${post.title}" has been updated.`,
@@ -75,21 +78,23 @@ export function PostImageManager({ post }: PostImageManagerProps) {
     }
   };
   
-  const handleImageReset = (imageType: 'cover' | 'avatar') => {
-    const updatedPost = { ...post };
+  const handleImageReset = async (imageType: 'cover' | 'avatar') => {
+    const updatedPostData = { ...post };
     let message = '';
 
     if (imageType === 'cover') {
-        updatedPost.imageUrl = placeholderImages.blog1.imageUrl;
-        updatedPost.imageHint = placeholderImages.blog1.imageHint;
+        updatedPostData.imageUrl = placeholderImages.blog1.imageUrl;
+        updatedPostData.imageHint = placeholderImages.blog1.imageHint;
         message = 'Cover image';
     } else {
-        updatedPost.authorAvatarUrl = placeholderImages.testimonial1.imageUrl;
-        updatedPost.authorAvatarHint = placeholderImages.testimonial1.imageHint;
+        updatedPostData.authorAvatarUrl = placeholderImages.testimonial1.imageUrl;
+        updatedPostData.authorAvatarHint = placeholderImages.testimonial1.imageHint;
         message = 'Author avatar';
     }
 
-    updatePost(updatedPost);
+    const updatedPost = await updatePost(updatedPostData);
+    onPostUpdate(updatedPost);
+    
     toast({
         title: 'Image Reset',
         description: `${message} for "${post.title}" has been reset to default.`

@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   CardContent,
 } from '@/components/ui/card';
@@ -30,23 +31,19 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { useProjectStore } from '@/store/projects';
-import { MoreHorizontal, PlusCircle, Loader2 } from 'lucide-react';
+import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ProjectEditorSheet } from '@/components/project-editor-sheet';
 import type { Project } from '@/lib/data';
+import { deleteProject } from '@/app/actions/projects';
 
 export function ProjectsClient({ initialProjects }: { initialProjects: Project[] }) {
-  const { projects, setProjects, deleteProject, isLoading, error } = useProjectStore();
+  const router = useRouter();
   const [isEditorOpen, setEditorOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
   const { toast } = useToast();
-
-  useEffect(() => {
-    setProjects(initialProjects);
-  }, [initialProjects, setProjects]);
 
   const handleCreateNew = () => {
     setEditingProject(null);
@@ -67,6 +64,7 @@ export function ProjectsClient({ initialProjects }: { initialProjects: Project[]
     if (projectToDelete) {
       try {
         await deleteProject(projectToDelete.id);
+        router.refresh();
         toast({
           title: 'Project Deleted',
           description: `"${projectToDelete.title}" has been successfully deleted.`,
@@ -84,6 +82,11 @@ export function ProjectsClient({ initialProjects }: { initialProjects: Project[]
     }
   };
 
+  const handleSave = () => {
+    setEditorOpen(false);
+    router.refresh();
+  };
+
   return (
     <>
       <div className="flex justify-end p-6 pt-0">
@@ -93,12 +96,8 @@ export function ProjectsClient({ initialProjects }: { initialProjects: Project[]
           </Button>
       </div>
       <CardContent>
-        {isLoading && !projects.length ? (
-          <div className="flex justify-center p-8">
-            <Loader2 className="h-8 w-8 animate-spin" />
-          </div>
-        ) : error && !projects.length ? (
-          <div className="py-8 text-center text-destructive">{error}</div>
+        {initialProjects.length === 0 ? (
+          <div className="py-8 text-center text-muted-foreground">No projects found.</div>
         ) : (
           <Table>
             <TableHeader>
@@ -111,7 +110,7 @@ export function ProjectsClient({ initialProjects }: { initialProjects: Project[]
               </TableRow>
             </TableHeader>
             <TableBody>
-              {projects.map((project) => (
+              {initialProjects.map((project) => (
                 <TableRow key={project.id}>
                   <TableCell className="font-medium">{project.title}</TableCell>
                   <TableCell className="hidden max-w-sm truncate md:table-cell">
@@ -147,8 +146,9 @@ export function ProjectsClient({ initialProjects }: { initialProjects: Project[]
       </CardContent>
       <ProjectEditorSheet
         isOpen={isEditorOpen}
-        setIsOpen={setIsOpen}
+        setIsOpen={setEditorOpen}
         project={editingProject}
+        onSave={handleSave}
       />
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>

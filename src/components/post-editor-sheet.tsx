@@ -25,9 +25,10 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { usePostStore, type Post } from '@/store/posts';
+import type { Post } from '@prisma/client';
 import { Loader2 } from 'lucide-react';
 import { PostSchema } from '@/lib/schemas';
+import { createPost, updatePost } from '@/app/actions/posts';
 
 const formSchema = PostSchema.pick({
   title: true,
@@ -42,11 +43,12 @@ interface PostEditorSheetProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   post: Post | null;
+  onSave: () => void;
 }
 
-export function PostEditorSheet({ isOpen, setIsOpen, post }: PostEditorSheetProps) {
+export function PostEditorSheet({ isOpen, setIsOpen, post, onSave }: PostEditorSheetProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { addPost, updatePost, isLoading } = usePostStore();
   
   const form = useForm<PostFormValues>({
     resolver: zodResolver(formSchema),
@@ -80,6 +82,7 @@ export function PostEditorSheet({ isOpen, setIsOpen, post }: PostEditorSheetProp
 
 
   async function onSubmit(values: PostFormValues) {
+    setIsLoading(true);
     try {
       if (post) {
         const updatedPostData = {
@@ -89,20 +92,22 @@ export function PostEditorSheet({ isOpen, setIsOpen, post }: PostEditorSheetProp
         };
         await updatePost(updatedPostData);
       } else {
-        await addPost(values);
+        await createPost(values);
       }
 
       toast({
           title: `Post ${post ? 'Updated' : 'Created'}!`,
           description: `"${values.title}" has been successfully saved.`,
       });
-      setIsOpen(false);
+      onSave();
     } catch (error) {
        toast({
         variant: 'destructive',
         title: 'Error',
         description: `Failed to ${post ? 'update' : 'create'} post.`,
       });
+    } finally {
+        setIsLoading(false);
     }
   }
 

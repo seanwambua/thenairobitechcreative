@@ -1,30 +1,21 @@
-'use client';
-import * as React from 'react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { BlogPostCard } from '@/components/blog-post-card';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowRight, Loader2 } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { usePostStore } from '@/store/posts';
-import { useBroadcastListener } from '@/hooks/use-broadcast';
+import { getPosts } from '@/app/actions/posts';
 import { DbUninitializedError } from '@/components/db-uninitialized-error';
 
-export default function BlogPage() {
-  const { posts, fetchPosts, isLoading, error } = usePostStore();
-
-  React.useEffect(() => {
-    fetchPosts();
-  }, [fetchPosts]);
-
-  useBroadcastListener((event) => {
-    if (event.data.type === 'refetch-posts') {
-      fetchPosts();
+export default async function BlogPage() {
+  let posts = [];
+  try {
+    posts = await getPosts();
+  } catch (error: any) {
+    if (error.message.includes('no such table')) {
+      return <DbUninitializedError />;
     }
-  });
-
-  if (error && error.includes('no such table')) {
-    return <DbUninitializedError />;
+    throw error;
   }
 
   const featuredPosts = posts.slice(0, 3);
@@ -44,16 +35,14 @@ export default function BlogPage() {
                 Insights, stories, and updates from the heart of African tech innovation.
               </p>
             </div>
-            {isLoading && posts.length === 0 ? (
-              <div className="flex justify-center">
-                <Loader2 className="h-8 w-8 animate-spin" />
-              </div>
-            ) : (
+            {posts.length > 0 ? (
               <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                 {featuredPosts.map((post) => (
                   <BlogPostCard key={post.id} post={post} />
                 ))}
               </div>
+            ) : (
+              <p className="text-center text-muted-foreground">No posts yet. Check back soon!</p>
             )}
           </div>
         </section>
@@ -70,16 +59,20 @@ export default function BlogPage() {
             </div>
             <div className="mx-auto max-w-2xl">
               <div className="space-y-4">
-                {otherArticles.map((article) => (
-                  <Link href={`/blog/${article.slug}`} className="group block" key={article.id}>
-                    <Card className="transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-primary/10">
-                      <CardContent className="flex items-center justify-between p-6">
-                        <h3 className="font-semibold text-foreground">{article.title}</h3>
-                        <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-primary" />
-                      </CardContent>
-                    </Card>
-                  </Link>
-                ))}
+                {otherArticles.length > 0 ? (
+                  otherArticles.map((article) => (
+                    <Link href={`/blog/${article.slug}`} className="group block" key={article.id}>
+                      <Card className="transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-primary/10">
+                        <CardContent className="flex items-center justify-between p-6">
+                          <h3 className="font-semibold text-foreground">{article.title}</h3>
+                          <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-primary" />
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  ))
+                ) : (
+                  <p className="text-center text-muted-foreground">No other articles available.</p>
+                )}
               </div>
             </div>
           </div>

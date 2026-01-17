@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Table,
   TableBody,
@@ -27,26 +28,22 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { usePostStore } from '@/store/posts';
-import { MoreHorizontal, PlusCircle, Loader2 } from 'lucide-react';
+import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { PostEditorSheet } from '@/components/post-editor-sheet';
 import { useToast } from '@/hooks/use-toast';
-import type { Post } from '@/store/posts';
+import type { Post } from '@prisma/client';
 import { format } from 'date-fns';
 import { CardContent } from '@/components/ui/card';
+import { deletePost } from '@/app/actions/posts';
 
 export function ContentClient({ initialPosts }: { initialPosts: Post[] }) {
-  const { posts, setPosts, deletePost, isLoading, error } = usePostStore();
+  const router = useRouter();
   const [isEditorOpen, setEditorOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<Post | null>(null);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState<Post | null>(null);
   const { toast } = useToast();
-
-  useEffect(() => {
-    setPosts(initialPosts);
-  }, [initialPosts, setPosts]);
 
   const handleCreateNew = () => {
     setEditingPost(null);
@@ -67,6 +64,7 @@ export function ContentClient({ initialPosts }: { initialPosts: Post[] }) {
     if (postToDelete) {
       try {
         await deletePost(postToDelete.id);
+        router.refresh(); // Re-fetches server data and re-renders
         toast({
           title: 'Post Deleted',
           description: `"${postToDelete.title}" has been successfully deleted.`,
@@ -84,6 +82,11 @@ export function ContentClient({ initialPosts }: { initialPosts: Post[] }) {
     }
   };
 
+  const handleSave = () => {
+    setEditorOpen(false);
+    router.refresh();
+  };
+
   return (
     <>
       <div className="flex justify-end p-6 pt-0">
@@ -93,12 +96,8 @@ export function ContentClient({ initialPosts }: { initialPosts: Post[] }) {
         </Button>
       </div>
       <CardContent>
-        {isLoading && !posts.length ? (
-          <div className="flex justify-center p-8">
-            <Loader2 className="h-8 w-8 animate-spin" />
-          </div>
-        ) : error && !posts.length ? (
-          <div className="py-8 text-center text-destructive">{error}</div>
+        {initialPosts.length === 0 ? (
+           <div className="py-8 text-center text-muted-foreground">No posts found.</div>
         ) : (
           <Table>
             <TableHeader>
@@ -113,7 +112,7 @@ export function ContentClient({ initialPosts }: { initialPosts: Post[] }) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {posts.map((post) => (
+              {initialPosts.map((post) => (
                 <TableRow key={post.id}>
                   <TableCell className="font-medium">{post.title}</TableCell>
                   <TableCell className="hidden md:table-cell">{post.author}</TableCell>
@@ -149,7 +148,12 @@ export function ContentClient({ initialPosts }: { initialPosts: Post[] }) {
           </Table>
         )}
       </CardContent>
-      <PostEditorSheet isOpen={isEditorOpen} setIsOpen={setEditorOpen} post={editingPost} />
+      <PostEditorSheet 
+        isOpen={isEditorOpen} 
+        setIsOpen={setEditorOpen} 
+        post={editingPost}
+        onSave={handleSave}
+       />
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>

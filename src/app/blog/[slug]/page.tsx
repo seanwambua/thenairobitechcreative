@@ -1,5 +1,3 @@
-'use client';
-import * as React from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Header } from '@/components/layout/header';
@@ -8,53 +6,23 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { PostInteractions } from '@/components/post-interactions';
-import { usePostStore, type Post } from '@/store/posts';
 import { DbUninitializedError } from '@/components/db-uninitialized-error';
-import { useBroadcastListener } from '@/hooks/use-broadcast';
-import { Loader2 } from 'lucide-react';
+import { getPostBySlug } from '@/app/actions/posts';
 
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
-  const { posts, fetchPosts, error } = usePostStore();
-  const [post, setPost] = React.useState<Post | null>(null);
-
-  const findPost = React.useCallback(() => {
-    const foundPost = posts.find((p) => p.slug === params.slug);
-    if (foundPost) {
-      setPost(foundPost);
-    } else if (posts.length > 0) {
-      notFound();
+export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+  
+  let post;
+  try {
+    post = await getPostBySlug(params.slug);
+  } catch (error: any) {
+    if (error.message.includes('no such table')) {
+      return <DbUninitializedError />;
     }
-  }, [posts, params.slug]);
-
-  React.useEffect(() => {
-    if (posts.length === 0) {
-      fetchPosts();
-    } else {
-      findPost();
-    }
-  }, [posts.length, fetchPosts, findPost]);
-
-  React.useEffect(() => {
-    findPost();
-  }, [posts, findPost]);
-
-
-  useBroadcastListener((event) => {
-    if (event.data.type === 'refetch-posts') {
-      fetchPosts();
-    }
-  });
-
-  if (error && error.includes('no such table')) {
-    return <DbUninitializedError />;
+    throw error;
   }
 
   if (!post) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center bg-background">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
+    notFound();
   }
   
   const commentsCount = 0;

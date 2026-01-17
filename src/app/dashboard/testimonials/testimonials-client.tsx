@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { CardContent } from '@/components/ui/card';
 import {
   Table,
@@ -28,23 +29,20 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { useTestimonialStore, type Testimonial } from '@/store/testimonials';
-import { MoreHorizontal, PlusCircle, Loader2 } from 'lucide-react';
+import type { Testimonial } from '@prisma/client';
+import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { TestimonialEditorSheet } from '@/components/testimonial-editor-sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { deleteTestimonial } from '@/app/actions/testimonials';
 
 export function TestimonialsClient({ initialTestimonials }: { initialTestimonials: Testimonial[] }) {
-  const { testimonials, setTestimonials, deleteTestimonial, isLoading, error } = useTestimonialStore();
+  const router = useRouter();
   const [isEditorOpen, setEditorOpen] = useState(false);
   const [editingTestimonial, setEditingTestimonial] = useState<Testimonial | null>(null);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [testimonialToDelete, setTestimonialToDelete] = useState<Testimonial | null>(null);
   const { toast } = useToast();
-
-  useEffect(() => {
-    setTestimonials(initialTestimonials);
-  }, [initialTestimonials, setTestimonials]);
 
   const handleCreateNew = () => {
     setEditingTestimonial(null);
@@ -65,6 +63,7 @@ export function TestimonialsClient({ initialTestimonials }: { initialTestimonial
     if (testimonialToDelete) {
       try {
         await deleteTestimonial(testimonialToDelete.id);
+        router.refresh();
         toast({
           title: 'Testimonial Deleted',
           description: `The testimonial from "${testimonialToDelete.author}" has been successfully deleted.`,
@@ -82,6 +81,11 @@ export function TestimonialsClient({ initialTestimonials }: { initialTestimonial
     }
   };
 
+  const handleSave = () => {
+    setEditorOpen(false);
+    router.refresh();
+  };
+
   return (
     <>
       <div className="flex justify-end p-6 pt-0">
@@ -91,12 +95,8 @@ export function TestimonialsClient({ initialTestimonials }: { initialTestimonial
           </Button>
         </div>
       <CardContent>
-        {isLoading && !testimonials.length ? (
-          <div className="flex justify-center p-8">
-            <Loader2 className="h-8 w-8 animate-spin" />
-          </div>
-        ) : error && !testimonials.length ? (
-          <div className="py-8 text-center text-destructive">{error}</div>
+        {initialTestimonials.length === 0 ? (
+          <div className="py-8 text-center text-muted-foreground">No testimonials found.</div>
         ) : (
           <Table>
             <TableHeader>
@@ -110,7 +110,7 @@ export function TestimonialsClient({ initialTestimonials }: { initialTestimonial
               </TableRow>
             </TableHeader>
             <TableBody>
-              {testimonials.map((testimonial) => (
+              {initialTestimonials.map((testimonial) => (
                 <TableRow key={testimonial.id}>
                   <TableCell className="font-medium">
                     <div className="flex items-center gap-3">
@@ -157,6 +157,7 @@ export function TestimonialsClient({ initialTestimonials }: { initialTestimonial
         isOpen={isEditorOpen}
         setIsOpen={setIsOpen}
         testimonial={editingTestimonial}
+        onSave={handleSave}
       />
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>

@@ -33,11 +33,11 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { useProjectStore } from '@/store/projects';
 import { placeholderImages } from '@/lib/placeholder-images';
 import { type Project } from '@/lib/data';
 import { Upload, Loader2 } from 'lucide-react';
 import { ProjectSchema, iconNames } from '@/lib/schemas';
+import { createProject, updateProject } from '@/app/actions/projects';
 
 const formSchema = ProjectSchema.pick({
   title: true,
@@ -55,14 +55,15 @@ interface ProjectEditorSheetProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   project: Project | null;
+  onSave: () => void;
 }
 
-export function ProjectEditorSheet({ isOpen, setIsOpen, project }: ProjectEditorSheetProps) {
+export function ProjectEditorSheet({ isOpen, setIsOpen, project, onSave }: ProjectEditorSheetProps) {
   const { toast } = useToast();
-  const { addProject, updateProject, isLoading } = useProjectStore();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(formSchema),
@@ -130,6 +131,7 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project }: ProjectEditor
   };
 
   async function onSubmit(values: ProjectFormValues) {
+    setIsSaving(true);
     const projectData = {
       ...values,
       keyFeatures: values.keyFeatures.split(',').map((s) => s.trim()),
@@ -141,20 +143,22 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project }: ProjectEditor
       if (project) {
         await updateProject({ ...project, ...projectData });
       } else {
-        await addProject(projectData);
+        await createProject(projectData);
       }
       
       toast({
         title: `Project ${project ? 'Updated' : 'Created'}!`,
         description: `"${values.title}" has been successfully saved.`,
       });
-      setIsOpen(false);
+      onSave();
     } catch (error) {
       toast({
         variant: 'destructive',
         title: 'Error',
         description: `Failed to ${project ? 'update' : 'create'} project.`,
       });
+    } finally {
+      setIsSaving(false);
     }
   }
 
@@ -311,8 +315,8 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project }: ProjectEditor
                         Cancel
                     </Button>
                     </SheetClose>
-                    <Button type="submit" disabled={isUploading || isLoading}>
-                      {isUploading || isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                    <Button type="submit" disabled={isUploading || isSaving}>
+                      {(isUploading || isSaving) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                       Save Project
                     </Button>
                 </SheetFooter>

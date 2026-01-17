@@ -13,6 +13,13 @@ export async function getPosts() {
     return results;
 }
 
+export async function getPostBySlug(slug: string) {
+    const result = await db.post.findUnique({
+        where: { slug },
+    });
+    return result;
+}
+
 export async function createPost(data: Pick<Post, 'title' | 'description' | 'content' | 'author'>) {
     const validatedData = PostSchema.pick({
       title: true,
@@ -66,6 +73,7 @@ export async function updatePost(post: Post) {
     revalidatePath('/dashboard/analytics');
     revalidatePath('/blog');
     revalidatePath(`/blog/${updatedPost.slug}`);
+    revalidatePath('/');
     return updatedPost;
 }
 

@@ -14,12 +14,13 @@ import { CheckCircle, Upload, X, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
-import { usePostStore } from '@/store/posts';
 import { PostImageManager } from '@/components/post-image-manager';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Stamp } from '@/components/stamp';
-import type { Post } from '@/lib/data';
+import type { Post } from '@prisma/client';
 import { useMediaStore } from '@/store/media';
+import { updatePost } from '@/app/actions/posts';
+import { useRouter } from 'next/navigation';
 
 const defaultHeroImages = [
   placeholderImages.hero,
@@ -33,7 +34,8 @@ type MediaClientProps = {
 }
 
 export function MediaClient({ initialPosts }: MediaClientProps) {
-  const { posts, setPosts } = usePostStore();
+  const router = useRouter();
+  const [posts, setPosts] = useState(initialPosts);
   const { 
     heroImage, logoUrl, founderImage, 
     fetchHeroImage, fetchLogoUrl, fetchFounderImage,
@@ -47,10 +49,6 @@ export function MediaClient({ initialPosts }: MediaClientProps) {
   const heroImageFileInputRef = useRef<HTMLInputElement>(null);
   const founderImageFileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
-
-  useEffect(() => {
-    setPosts(initialPosts);
-  }, [initialPosts, setPosts]);
 
   useEffect(() => {
     fetchHeroImage();
@@ -75,6 +73,11 @@ export function MediaClient({ initialPosts }: MediaClientProps) {
     }
   }, [heroImage, heroImageOptions]);
 
+  const handlePostUpdate = (updatedPost: Post) => {
+    setPosts(currentPosts => currentPosts.map(p => p.id === updatedPost.id ? updatedPost : p));
+    router.refresh();
+  };
+  
   const handleFileChange = async (
     event: ChangeEvent<HTMLInputElement>,
     settingKey: 'heroImage' | 'logo' | 'founderImage',
@@ -293,7 +296,11 @@ export function MediaClient({ initialPosts }: MediaClientProps) {
           <CardContent className="space-y-6 max-h-[calc(100vh-12rem)] overflow-y-auto">
             {posts.length > 0 ? (
                 posts.map((post) => (
-                    <PostImageManager key={post.id} post={post} />
+                    <PostImageManager 
+                      key={post.id} 
+                      post={post}
+                      onPostUpdate={handlePostUpdate}
+                    />
                 ))
             ) : (
                 <div className="flex flex-col items-center justify-center text-center p-8 border-2 border-dashed rounded-lg">
