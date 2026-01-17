@@ -4,12 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack -p 9002",
-    "build": "drizzle-kit generate && next build",
+    "build": "drizzle-kit generate:pg && next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "db:generate": "drizzle-kit generate",
-    "db:push": "drizzle-kit push",
+    "db:generate": "drizzle-kit generate:pg",
+    "db:push": "drizzle-kit push:pg",
     "db:seed": "ts-node --compiler-options '{\\\"module\\\":\\\"CommonJS\\\"}' src/lib/db/seed.ts",
     "reinitialize": "npm run db:push && npm run db:seed"
   },
@@ -42,7 +42,6 @@
     "cloudinary": "^2.5.0",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
-    "dotenv": "^16.4.5",
     "drizzle-orm": "^0.30.10",
     "embla-carousel-react": "^8.6.0",
     "firebase": "^11.9.1",
