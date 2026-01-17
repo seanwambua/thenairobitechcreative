@@ -2,25 +2,13 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
 }
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
-}
-
-model Project {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String
-  keyFeatures String // Storing as comma-separated string
-  imageUrl    String
-  imageHint   String
-  gridSpan    String
-  icon        String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  url      = "file:./dev.db"
 }
 
 model Post {
@@ -34,10 +22,23 @@ model Post {
   author           String
   authorAvatarUrl  String
   authorAvatarHint String
-  likes            Int      @default(0)
-  comments         String   @default("")
+  likes            Int
+  comments         String
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+}
+
+model Project {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  keyFeatures String
+  imageUrl    String
+  imageHint   String
+  gridSpan    String
+  icon        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Testimonial {
@@ -52,6 +53,8 @@ model Testimonial {
 }
 
 model Settings {
-  key   String  @id
-  value String?
+  key       String   @id
+  value     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
