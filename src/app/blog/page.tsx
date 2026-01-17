@@ -1,5 +1,5 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { BlogPostCard } from '@/components/blog-post-card';
@@ -8,6 +8,7 @@ import { ArrowRight, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { usePostStore } from '@/store/posts';
+import { useBroadcastListener, type BroadcastMessage } from '@/hooks/use-broadcast';
 
 export default function BlogPage() {
   const { posts, isLoading, error, fetchPosts } = usePostStore();
@@ -19,6 +20,13 @@ export default function BlogPage() {
     }
   }, [posts.length, fetchPosts]);
 
+  const handleBroadcastMessage = useCallback((message: BroadcastMessage<any>) => {
+    if (message.type === 'refetch-posts') {
+      fetchPosts();
+    }
+  }, [fetchPosts]);
+
+  useBroadcastListener(handleBroadcastMessage);
 
   const featuredPosts = posts.slice(0, 3);
   const otherArticles = posts.slice(3);

@@ -8,6 +8,7 @@ import {
     deleteTestimonial as deleteTestimonialAction 
 } from '@/app/actions/testimonials';
 import { TestimonialSchemaType } from '@/lib/schemas';
+import { postBroadcastMessage } from '@/hooks/use-broadcast';
 
 export type Testimonial = TestimonialType;
 
@@ -43,6 +44,7 @@ export const useTestimonialStore = create<TestimonialState>((set, get) => ({
     try {
       await createTestimonialAction(testimonial);
       await get().fetchTestimonials();
+      postBroadcastMessage({ type: 'refetch-testimonials' });
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
@@ -53,6 +55,7 @@ export const useTestimonialStore = create<TestimonialState>((set, get) => ({
     try {
       await updateTestimonialAction(updatedTestimonial);
       await get().fetchTestimonials();
+      postBroadcastMessage({ type: 'refetch-testimonials' });
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
@@ -63,6 +66,7 @@ export const useTestimonialStore = create<TestimonialState>((set, get) => ({
     set(state => ({ testimonials: state.testimonials.filter(t => t.id !== testimonialId) }));
     try {
       await deleteTestimonialAction(testimonialId);
+      postBroadcastMessage({ type: 'refetch-testimonials' });
     } catch (error) {
       set({ testimonials: originalTestimonials, error: (error as Error).message });
       throw error;

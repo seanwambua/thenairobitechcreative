@@ -3,14 +3,26 @@ import Link from 'next/link';
 import {Button} from '@/components/ui/button';
 import {Stamp} from '@/components/stamp';
 import {Menu, X} from 'lucide-react';
-import {useState} from 'react';
+import {useState, useCallback} from 'react';
 import {cn} from '@/lib/utils';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { InquirySheet } from '../inquiry-sheet';
 import { navItems } from '@/lib/data';
+import { useMediaStore } from '@/store/media';
+import { useBroadcastListener, type BroadcastMessage } from '@/hooks/use-broadcast';
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const { setLogo } = useMediaStore();
+
+  const handleBroadcastMessage = useCallback((message: BroadcastMessage<any>) => {
+    if (message.type === 'update-media' && message.payload?.logo) {
+      setLogo(message.payload.logo);
+    }
+  }, [setLogo]);
+
+  useBroadcastListener(handleBroadcastMessage);
+
 
   const visibleNavItems = navItems.filter(item => !item.hidden);
 

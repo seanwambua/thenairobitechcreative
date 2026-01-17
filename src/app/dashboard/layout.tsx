@@ -41,6 +41,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { useMediaStore } from '@/store/media';
 import { placeholderImages } from '@/lib/placeholder-images';
 import { Logo } from '@/components/logo';
+import { useBroadcastListener, type BroadcastMessage } from '@/hooks/use-broadcast';
 
 export default function DashboardLayout({
   children,
@@ -48,7 +49,16 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { founderImage } = useMediaStore();
+  const { founderImage, setFounderImage } = useMediaStore();
+
+  const handleBroadcastMessage = React.useCallback((message: BroadcastMessage<any>) => {
+    if (message.type === 'update-media' && 'founderImage' in message.payload) {
+      setFounderImage(message.payload.founderImage);
+    }
+  }, [setFounderImage]);
+
+  useBroadcastListener(handleBroadcastMessage);
+  
   const founderInfo = placeholderImages.founder;
   const founderInitials = founderInfo.imageHint
     .split(' ')

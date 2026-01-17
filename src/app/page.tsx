@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Hero } from '@/components/hero';
@@ -19,9 +19,10 @@ import { motion } from 'framer-motion';
 import { useMediaStore } from '@/store/media';
 import { useProjectStore } from '@/store/projects';
 import { useTestimonialStore } from '@/store/testimonials';
+import { useBroadcastListener, type BroadcastMessage } from '@/hooks/use-broadcast';
 
 export default function Home() {
-  const { heroImage } = useMediaStore();
+  const { heroImage, setHeroImage } = useMediaStore();
   const { projects, fetchProjects } = useProjectStore();
   const { testimonials, fetchTestimonials } = useTestimonialStore();
   
@@ -29,6 +30,24 @@ export default function Home() {
     fetchProjects();
     fetchTestimonials();
   }, [fetchProjects, fetchTestimonials]);
+
+  const handleBroadcastMessage = useCallback((message: BroadcastMessage<any>) => {
+    switch (message.type) {
+      case 'refetch-projects':
+        fetchProjects();
+        break;
+      case 'refetch-testimonials':
+        fetchTestimonials();
+        break;
+      case 'update-media':
+        if (message.payload?.heroImage) {
+          setHeroImage(message.payload.heroImage);
+        }
+        break;
+    }
+  }, [fetchProjects, fetchTestimonials, setHeroImage]);
+
+  useBroadcastListener(handleBroadcastMessage);
 
   const sectionVariants = {
     hidden: { opacity: 0, y: 50 },

@@ -7,6 +7,7 @@ import {
   updatePost as updatePostAction,
   deletePost as deletePostAction,
 } from '@/app/actions/posts';
+import { postBroadcastMessage } from '@/hooks/use-broadcast';
 
 export interface Post extends PostType {}
 
@@ -41,7 +42,8 @@ export const usePostStore = create<PostState>((set, get) => ({
     set({ isLoading: true });
     try {
       await createPostAction(post);
-      await get().fetchPosts(); // Re-fetch to get the latest list
+      await get().fetchPosts(); // Re-fetch for current tab
+      postBroadcastMessage({ type: 'refetch-posts' });
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
@@ -51,7 +53,8 @@ export const usePostStore = create<PostState>((set, get) => ({
     set({ isLoading: true });
     try {
       await updatePostAction(updatedPost);
-      await get().fetchPosts(); // Re-fetch to get the latest list
+      await get().fetchPosts(); // Re-fetch for current tab
+      postBroadcastMessage({ type: 'refetch-posts' });
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
@@ -63,7 +66,7 @@ export const usePostStore = create<PostState>((set, get) => ({
     set((state) => ({ posts: state.posts.filter((p) => p.id !== postId) }));
     try {
       await deletePostAction(postId);
-      // No need to re-fetch, optimistic update is enough for deletion
+      postBroadcastMessage({ type: 'refetch-posts' });
     } catch (error) {
       // Revert if the deletion fails
       set({ posts: originalPosts, error: (error as Error).message });

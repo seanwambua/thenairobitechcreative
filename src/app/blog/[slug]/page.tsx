@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { notFound, useParams } from 'next/navigation';
 import Image from 'next/image';
 import { Header } from '@/components/layout/header';
@@ -11,6 +11,7 @@ import { PostInteractions } from '@/components/post-interactions';
 import { usePostStore } from '@/store/posts';
 import { Loader2 } from 'lucide-react';
 import type { Post } from '@/store/posts';
+import { useBroadcastListener, type BroadcastMessage } from '@/hooks/use-broadcast';
 
 export default function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -23,6 +24,14 @@ export default function BlogPostPage() {
       fetchPosts();
     }
   }, [posts.length, fetchPosts]);
+
+  const handleBroadcastMessage = useCallback((message: BroadcastMessage<any>) => {
+    if (message.type === 'refetch-posts') {
+      fetchPosts();
+    }
+  }, [fetchPosts]);
+
+  useBroadcastListener(handleBroadcastMessage);
 
   useEffect(() => {
     // Once posts are available, find the current post.

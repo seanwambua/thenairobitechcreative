@@ -8,6 +8,7 @@ import {
     deleteProject as deleteProjectAction 
 } from '@/app/actions/projects';
 import { ProjectSchemaType } from '@/lib/schemas';
+import { postBroadcastMessage } from '@/hooks/use-broadcast';
 
 
 interface ProjectState {
@@ -40,6 +41,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     try {
       await createProjectAction(project);
       await get().fetchProjects();
+      postBroadcastMessage({ type: 'refetch-projects' });
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
@@ -50,6 +52,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     try {
       await updateProjectAction(updatedProject);
       await get().fetchProjects();
+      postBroadcastMessage({ type: 'refetch-projects' });
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
@@ -60,6 +63,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     set(state => ({ projects: state.projects.filter(p => p.id !== projectId) }));
     try {
       await deleteProjectAction(projectId);
+      postBroadcastMessage({ type: 'refetch-projects' });
     } catch (error) {
       set({ projects: originalProjects, error: (error as Error).message });
       throw error;

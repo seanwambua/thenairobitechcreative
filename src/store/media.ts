@@ -1,6 +1,7 @@
 'use client';
 import { create } from 'zustand';
 import { placeholderImages } from '@/lib/placeholder-images';
+import { postBroadcastMessage } from '@/hooks/use-broadcast';
 
 interface MediaState {
   heroImage: string;
@@ -13,9 +14,18 @@ interface MediaState {
 
 export const useMediaStore = create<MediaState>((set) => ({
   heroImage: placeholderImages.hero.imageUrl,
-  setHeroImage: (imageUrl) => set({ heroImage: imageUrl }),
+  setHeroImage: (imageUrl) => {
+    set({ heroImage: imageUrl });
+    postBroadcastMessage({ type: 'update-media', payload: { heroImage: imageUrl } });
+  },
   logo: null,
-  setLogo: (logoUrl) => set({ logo: logoUrl }),
+  setLogo: (logoUrl) => {
+    set({ logo: logoUrl });
+    postBroadcastMessage({ type: 'update-media', payload: { logo: logoUrl } });
+  },
   founderImage: null,
-  setFounderImage: (imageUrl) => set({ founderImage: imageUrl }),
+  setFounderImage: (imageUrl) => {
+    set({ founderImage: imageUrl });
+    postBroadcastMessage({ type: 'update-media', payload: { founderImage: imageUrl } });
+  },
 }));
