@@ -10,8 +10,8 @@ export const projects = sqliteTable('projects', {
   imageHint: text('imageHint').notNull(),
   gridSpan: text('gridSpan').notNull(),
   icon: text('icon').notNull(),
-  createdAt: text('created_at').notNull().default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: text('updated_at').notNull().default(sql`CURRENT_TIMESTAMP`),
+  createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`).notNull(),
+  updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
 export const posts = sqliteTable('posts', {
@@ -27,8 +27,8 @@ export const posts = sqliteTable('posts', {
     authorAvatarHint: text('authorAvatarHint').notNull(),
     likes: integer('likes').notNull().default(0),
     comments: text('comments').notNull().default(''),
-    createdAt: text('created_at').notNull().default(sql`CURRENT_TIMESTAMP`),
-    updatedAt: text('updated_at').notNull().default(sql`CURRENT_TIMESTAMP`),
+    createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`).notNull(),
+    updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
 export const testimonials = sqliteTable('testimonials', {
@@ -38,6 +38,6 @@ export const testimonials = sqliteTable('testimonials', {
     title: text('title').notNull(),
     avatarUrl: text('avatarUrl').notNull(),
     avatarHint: text('avatarHint').notNull(),
-    createdAt: text('created_at').notNull().default(sql`CURRENT_TIMESTAMP`),
-    updatedAt: text('updated_at').notNull().default(sql`CURRENT_TIMESTAMP`),
+    createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`).notNull(),
+    updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`).notNull(),
 });

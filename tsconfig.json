@@ -1,3 +1,4 @@
+
 {
   "compilerOptions": {
     "target": "ES2017",
@@ -19,18 +20,14 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "lib/*": ["./lib/*"],
-      "components/*": ["./components/*"],
-      "store/*": ["./store/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts",
-    "prisma/**/*.ts"
+    ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }

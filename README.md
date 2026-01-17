@@ -158,3 +158,4 @@ To reset the database tables and re-populate it with the initial content, run:
 ```bash
 npm run reinitialize
 ```
+This command is the recommended way to reset your database during development. You can also trigger a re-seed (without resetting the schema) from the UI on the dashboard's **Analytics** page.
