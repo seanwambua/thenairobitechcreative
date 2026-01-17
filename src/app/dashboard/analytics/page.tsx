@@ -15,8 +15,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { revalidatePath } from 'next/cache';
 import { db } from '@/lib/db';
-import * as schema from '@/lib/db/schema';
-import { count } from 'drizzle-orm';
 import { seedDatabase } from '@/lib/db/seed';
 
 async function reinitializeDatabase() {
@@ -35,13 +33,9 @@ async function reinitializeDatabase() {
 }
 
 export default async function AnalyticsPage() {
-  const postCountResult = await db.select({ value: count() }).from(schema.posts);
-  const projectCountResult = await db.select({ value: count() }).from(schema.projects);
-  const testimonialCountResult = await db.select({ value: count() }).from(schema.testimonials);
-
-  const postCount = postCountResult[0].value;
-  const projectCount = projectCountResult[0].value;
-  const testimonialCount = testimonialCountResult[0].value;
+  const postCount = await db.post.count();
+  const projectCount = await db.project.count();
+  const testimonialCount = await db.testimonial.count();
 
   return (
     <div className="grid gap-6">

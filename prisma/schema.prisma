@@ -14,13 +14,30 @@ model Project {
   id          Int      @id @default(autoincrement())
   title       String
   description String
-  keyFeatures String
+  keyFeatures String // Storing as comma-separated string
   imageUrl    String
   imageHint   String
   gridSpan    String
   icon        String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Post {
+  id               Int      @id @default(autoincrement())
+  slug             String   @unique
+  title            String
+  description      String
+  content          String
+  imageUrl         String
+  imageHint        String
+  author           String
+  authorAvatarUrl  String
+  authorAvatarHint String
+  likes            Int      @default(0)
+  comments         String   @default("")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }
 
 model Testimonial {
@@ -34,19 +51,7 @@ model Testimonial {
   updatedAt  DateTime @updatedAt
 }
 
-model Post {
-  id              Int      @id @default(autoincrement())
-  slug            String   @unique
-  title           String
-  description     String
-  content         String   @db.Text
-  imageUrl        String
-  imageHint       String
-  author          String
-  authorAvatarUrl String
-  authorAvatarHint String
-  likes           Int
-  comments        String
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+model Settings {
+  key   String  @id
+  value String?
 }

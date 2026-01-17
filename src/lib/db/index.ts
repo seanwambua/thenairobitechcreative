@@ -1,8 +1,15 @@
-import { drizzle } from 'drizzle-orm/better-sqlite3';
-import Database from 'better-sqlite3';
-import * as schema from './schema';
+import { PrismaClient } from '@prisma/client'
 
-const dbUrl = process.env.DATABASE_URL || "sqlite.db";
+const prismaClientSingleton = () => {
+  return new PrismaClient()
+}
 
-const sqlite = new Database(dbUrl);
-export const db = drizzle(sqlite, { schema, logger: true });
+declare global {
+  var prisma: undefined | ReturnType<typeof prismaClientSingleton>
+}
+
+const db = globalThis.prisma ?? prismaClientSingleton()
+
+export { db }
+
+if (process.env.NODE_ENV !== 'production') globalThis.prisma = db

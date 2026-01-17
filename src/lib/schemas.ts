@@ -1,8 +1,11 @@
 import { z } from 'zod';
+import type { Project as PrismaProject, Post as PrismaPost, Testimonial as PrismaTestimonial } from '@prisma/client';
 
 export const iconNames = ['Boxes', 'BookOpen', 'PenTool', 'LineChart', 'Globe', 'Server', 'ScanSearch', 'LayoutTemplate', 'Rocket', 'Scaling', 'Briefcase', 'Computer', 'Wrench', 'ServerCog', 'Star'] as const;
 export type IconName = (typeof iconNames)[number];
 
+
+// Schema for project input. `keyFeatures` is an array for the form, but a string in the DB.
 export const ProjectSchema = z.object({
   id: z.number(),
   title: z.string().min(5, 'Title must be at least 5 characters.'),
@@ -16,7 +19,8 @@ export const ProjectSchema = z.object({
   updatedAt: z.date(),
 });
 
-export type ProjectSchemaType = z.infer<typeof ProjectSchema>;
+// Used for create/update actions where some fields are not required.
+export type ProjectInputSchemaType = z.infer<typeof ProjectSchema.omit({ id: true, createdAt: true, updatedAt: true })>;
 
 
 export const TestimonialSchema = z.object({
@@ -30,23 +34,10 @@ export const TestimonialSchema = z.object({
     updatedAt: z.date(),
 });
 
-export type TestimonialSchemaType = z.infer<typeof TestimonialSchema>;
+export type TestimonialInputSchemaType = z.infer<typeof TestimonialSchema.omit({id: true, createdAt: true, updatedAt: true})>;
 
-export const PostSchema = z.object({
-    id: z.number(),
-    slug: z.string(),
-    title: z.string().min(5, 'Title must be at least 5 characters.'),
-    description: z.string().min(10, 'Description must be at least 10 characters.'),
-    content: z.string().min(50, 'Content must be at least 50 characters.'),
-    imageUrl: z.string().url(),
-    imageHint: z.string(),
-    author: z.string().min(2, 'Author name must be at least 2 characters.'),
-    authorAvatarUrl: z.string().url(),
-    authorAvatarHint: z.string(),
-    likes: z.number(),
-    comments: z.string(),
-    createdAt: z.date(),
-    updatedAt: z.date(),
-});
+
+// Prisma's Post type already matches what we need for validation of the full object.
+export const PostSchema = z.custom<PrismaPost>();
 
 export type PostSchemaType = z.infer<typeof PostSchema>;

@@ -1,74 +1,66 @@
 'use server';
 
 import { db } from '@/lib/db';
-import * as schema from '@/lib/db/schema';
-import { eq, desc } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
-import { ProjectSchema, type ProjectSchemaType } from '@/lib/schemas';
+import { ProjectSchema, type ProjectInputSchemaType } from '@/lib/schemas';
 import type { Project } from '@/lib/data';
 
 
-export async function getProjects() {
-    const projectsData = await db.query.projects.findMany({
-        orderBy: [desc(schema.projects.createdAt)],
+export async function getProjects(): Promise<Project[]> {
+    const projectsData = await db.project.findMany({
+        orderBy: { createdAt: 'desc' },
     });
+
     return projectsData.map(p => ({
         ...p,
         keyFeatures: p.keyFeatures.split(',').map(s => s.trim()),
-        createdAt: new Date(p.createdAt),
-        updatedAt: new Date(p.updatedAt),
     }));
 }
 
-export async function createProject(data: Omit<ProjectSchemaType, 'id' | 'createdAt' | 'updatedAt'>) {
+export async function createProject(data: ProjectInputSchemaType): Promise<Project> {
     const validatedData = ProjectSchema.omit({ id: true, createdAt: true, updatedAt: true }).parse(data);
     
     const { keyFeatures, ...rest } = validatedData;
-    const [newProjectData] = await db.insert(schema.projects).values({
-        ...rest,
-        keyFeatures: keyFeatures.join(','),
-      }).returning();
+    const newProjectData = await db.project.create({
+        data: {
+            ...rest,
+            keyFeatures: keyFeatures.join(','),
+        }
+    });
 
     revalidatePath('/dashboard/projects');
     revalidatePath('/dashboard/analytics');
     revalidatePath('/');
 
-    const formattedProject = {
+    return {
         ...newProjectData,
         keyFeatures: newProjectData.keyFeatures.split(',').map(s => s.trim()),
-        createdAt: new Date(newProjectData.createdAt),
-        updatedAt: new Date(newProjectData.updatedAt),
     };
-    return formattedProject;
 }
 
-export async function updateProject(project: Project) {
-    const { keyFeatures, ...rest } = ProjectSchema.parse(project);
-    const { createdAt, updatedAt, ...updateData } = rest;
+export async function updateProject(project: Project): Promise<Project> {
+    const { id, keyFeatures, ...rest } = ProjectSchema.parse(project);
 
-    const [updatedProjectData] = await db.update(schema.projects).set({
-            ...updateData,
+    const updatedProjectData = await db.project.update({
+        where: { id },
+        data: {
+            ...rest,
             keyFeatures: keyFeatures.join(','),
-            updatedAt: new Date().toISOString(),
-        })
-        .where(eq(schema.projects.id, rest.id))
-        .returning();
+        },
+    });
 
     revalidatePath('/dashboard/projects');
     revalidatePath('/dashboard/analytics');
     revalidatePath('/');
 
-     const formattedProject = {
+     return {
         ...updatedProjectData,
         keyFeatures: updatedProjectData.keyFeatures.split(',').map(s => s.trim()),
-        createdAt: new Date(updatedProjectData.createdAt),
-        updatedAt: new Date(updatedProjectData.updatedAt),
     };
-    return formattedProject;
 }
 
 export async function deleteProject(projectId: number) {
-    await db.delete(schema.projects).where(eq(schema.projects.id, projectId));
+    await db.project.delete({ where: { id: projectId }});
     revalidatePath('/dashboard/projects');
     revalidatePath('/dashboard/analytics');
     revalidatePath('/');
