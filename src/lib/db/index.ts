@@ -1,7 +1,12 @@
 import { PrismaClient } from '@/generated/client';
+import { PrismaBetterSQLite3 } from '@prisma/adapter-better-sqlite3';
+import Database from 'better-sqlite3';
+
+const sqlite = new Database('prisma/dev.db');
+const adapter = new PrismaBetterSQLite3(sqlite);
 
 const prismaClientSingleton = () => {
-  return new PrismaClient();
+  return new PrismaClient({ adapter });
 };
 
 declare global {

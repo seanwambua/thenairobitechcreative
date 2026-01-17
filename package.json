@@ -10,10 +10,11 @@
     "typecheck": "tsc --noEmit",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
-    "reinitialize": "rm -f prisma/dev.db && prisma db push && ts-node src/lib/db/seed.ts"
+    "reinitialize": "rm -f prisma/dev.db && prisma db push && ts-node --esm src/lib/db/seed.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
+    "@prisma/adapter-better-sqlite3": "^7.2.0",
     "@prisma/client": "^7.2.0",
     "@radix-ui/react-accordion": "^1.2.3",
     "@radix-ui/react-alert-dialog": "^1.1.6",
@@ -37,6 +38,7 @@
     "@radix-ui/react-tabs": "^1.1.3",
     "@radix-ui/react-toast": "^1.2.6",
     "@radix-ui/react-tooltip": "^1.1.8",
+    "better-sqlite3": "^11.1.2",
     "class-variance-authority": "^0.7.1",
     "cloudinary": "^2.5.0",
     "clsx": "^2.1.1",
@@ -59,6 +61,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.11",
     "@types/node": "^20",
     "@types/react": "^19.2.1",
     "@types/react-dom": "^19.2.1",

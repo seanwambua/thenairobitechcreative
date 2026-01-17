@@ -1,25 +1,14 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
-  provider      = "prisma-client"
+  provider      = "prisma-client-js"
   output        = "../src/generated/client"
   binaryTargets = ["native"]
 }
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./dev.db"
-}
-
-model Project {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String
-  keyFeatures String
-  imageUrl    String
-  imageHint   String
-  gridSpan    String
-  icon        String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 }
 
 model Post {
@@ -39,6 +28,19 @@ model Post {
   updatedAt        DateTime @updatedAt
 }
 
+model Project {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  keyFeatures String
+  imageUrl    String
+  imageHint   String
+  gridSpan    String
+  icon        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model Testimonial {
   id         Int      @id @default(autoincrement())
   quote      String
@@ -51,6 +53,9 @@ model Testimonial {
 }
 
 model Settings {
-  key   String  @id @unique
-  value String?
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
