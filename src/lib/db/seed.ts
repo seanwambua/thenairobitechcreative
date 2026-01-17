@@ -136,8 +136,6 @@ export async function seedDatabase() {
   console.log('Start seeding with Prisma...');
   
   try {
-    // Prisma `createMany` is more efficient but doesn't work for SQLite with default values.
-    // We will create records one by one.
     console.log('Clearing existing data...');
     await db.post.deleteMany();
     await db.project.deleteMany();
@@ -184,19 +182,4 @@ export async function seedDatabase() {
       console.error('Error during seeding:', error);
       throw new Error('Database seeding failed.');
   }
-}
-
-async function main() {
-  try {
-      await seedDatabase();
-      console.log('Seeding finished successfully.');
-  } catch (e) {
-      console.error('Error during seeding:', e);
-      process.exit(1);
-  }
-}
-
-// This allows the script to be run directly from the command line
-if (require.main === module) {
-  main();
 }

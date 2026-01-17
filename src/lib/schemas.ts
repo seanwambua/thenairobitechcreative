@@ -40,6 +40,21 @@ export type TestimonialInputSchemaType = z.infer<typeof TestimonialInputSchema>;
 
 
 // Prisma's Post type already matches what we need for validation of the full object.
-export const PostSchema = z.custom<PrismaPost>();
+export const PostSchema = z.object({
+  id: z.number(),
+  slug: z.string(),
+  title: z.string().min(3, 'Title must be at least 3 characters.'),
+  description: z.string().min(10, 'Description must be at least 10 characters.'),
+  content: z.string().min(20, 'Content must be at least 20 characters.'),
+  imageUrl: z.string().url(),
+  imageHint: z.string(),
+  author: z.string().min(2, 'Author name must be at least 2 characters.'),
+  authorAvatarUrl: z.string().url(),
+  authorAvatarHint: z.string(),
+  likes: z.number(),
+  comments: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+});
 
 export type PostSchemaType = z.infer<typeof PostSchema>;
