@@ -1,10 +1,12 @@
+
 'use server';
 
-import { db } from '@/lib/db';
+import { db } from '@/lib/db/index';
 import { revalidatePath } from 'next/cache';
-import { PostSchema } from '@/lib/schemas';
+import { PostSchema, PostInputSchema } from '@/lib/schemas';
 import { placeholderImages } from '@/lib/placeholder-images';
 import type { Post } from '@prisma/client';
+import { z } from 'zod';
 
 export async function getPosts() {
     const results = await db.post.findMany({
@@ -20,18 +22,13 @@ export async function getPostBySlug(slug: string) {
     return result;
 }
 
-export async function createPost(data: Pick<Post, 'title' | 'description' | 'content' | 'author'>) {
-    const validatedData = PostSchema.pick({
-      title: true,
-      description: true,
-      content: true,
-      author: true,
-    }).parse(data);
+export async function createPost(data: z.infer<typeof PostInputSchema>) {
+    const validatedData = PostInputSchema.parse(data);
 
     const newPost = await db.post.create({
         data: {
             ...validatedData,
-            slug: validatedData.title.toLowerCase().replace(/\s+/g, '-'),
+            slug: (validatedData.title || '').toLowerCase().replace(/\s+/g, '-'),
             imageUrl: placeholderImages.blog1.imageUrl,
             imageHint: placeholderImages.blog1.imageHint,
             authorAvatarUrl: placeholderImages.testimonial1.imageUrl,
@@ -50,22 +47,14 @@ export async function createPost(data: Pick<Post, 'title' | 'description' | 'con
 
 
 export async function updatePost(post: Post) {
-    const { id, title, description, content, author, imageUrl, imageHint, authorAvatarUrl, authorAvatarHint, likes, comments } = PostSchema.parse(post);
+    const validatedData = PostSchema.parse(post);
+    const { id, title } = validatedData;
     
     const updatedPost = await db.post.update({
         where: { id },
         data: { 
-            title,
-            description,
-            content,
-            author,
-            imageUrl,
-            imageHint,
-            authorAvatarUrl,
-            authorAvatarHint,
-            likes,
-            comments,
-            slug: title.toLowerCase().replace(/\s+/g, '-'),
+            ...validatedData,
+            slug: (title || '').toLowerCase().replace(/\s+/g, '-'),
         },
     });
 

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -27,17 +28,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import type { Post } from '@prisma/client';
 import { Loader2 } from 'lucide-react';
-import { PostSchema } from '@/lib/schemas';
+import { PostInputSchema } from '@/lib/schemas';
 import { createPost, updatePost } from '@/app/actions/posts';
 
-const formSchema = PostSchema.pick({
-  title: true,
-  description: true,
-  content: true,
-  author: true,
-});
-
-type PostFormValues = z.infer<typeof formSchema>;
+type PostFormValues = z.infer<typeof PostInputSchema>;
 
 interface PostEditorSheetProps {
   isOpen: boolean;
@@ -51,7 +45,7 @@ export function PostEditorSheet({ isOpen, setIsOpen, post, onSave }: PostEditorS
   const { toast } = useToast();
   
   const form = useForm<PostFormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(PostInputSchema),
     defaultValues: {
       title: '',
       description: '',
@@ -88,7 +82,7 @@ export function PostEditorSheet({ isOpen, setIsOpen, post, onSave }: PostEditorS
         const updatedPostData = {
           ...post,
           ...values,
-          slug: values.title.toLowerCase().replace(/\s+/g, '-'),
+          slug: (values.title || '').toLowerCase().replace(/\s+/g, '-'),
         };
         await updatePost(updatedPostData);
       } else {

@@ -1,3 +1,4 @@
+
 'use server';
 
 import { db } from '@/lib/db';
@@ -13,7 +14,7 @@ export async function getProjects(): Promise<Project[]> {
 
     return projectsData.map(p => ({
         ...p,
-        keyFeatures: p.keyFeatures.split(',').map(s => s.trim()),
+        keyFeatures: (p.keyFeatures || '').split(',').map(s => s.trim()),
     }));
 }
 
@@ -34,7 +35,7 @@ export async function createProject(data: ProjectInputSchemaType): Promise<Proje
 
     return {
         ...newProjectData,
-        keyFeatures: newProjectData.keyFeatures.split(',').map(s => s.trim()),
+        keyFeatures: (newProjectData.keyFeatures || '').split(',').map(s => s.trim()),
     };
 }
 
@@ -55,7 +56,7 @@ export async function updateProject(project: Project): Promise<Project> {
 
      return {
         ...updatedProjectData,
-        keyFeatures: updatedProjectData.keyFeatures.split(',').map(s => s.trim()),
+        keyFeatures: (updatedProjectData.keyFeatures || '').split(',').map(s => s.trim()),
     };
 }
 

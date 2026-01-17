@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import type { Project as PrismaProject, Post as PrismaPost, Testimonial as PrismaTestimonial } from '@prisma/client';
 
 export const iconNames = ['Boxes', 'BookOpen', 'PenTool', 'LineChart', 'Globe', 'Server', 'ScanSearch', 'LayoutTemplate', 'Rocket', 'Scaling', 'Briefcase', 'Computer', 'Wrench', 'ServerCog', 'Star'] as const;
 export type IconName = (typeof iconNames)[number];
@@ -39,16 +38,20 @@ const TestimonialInputSchema = TestimonialSchema.omit({id: true, createdAt: true
 export type TestimonialInputSchemaType = z.infer<typeof TestimonialInputSchema>;
 
 
-// Prisma's Post type already matches what we need for validation of the full object.
-export const PostSchema = z.object({
-  id: z.number(),
-  slug: z.string(),
+// Schema for validating post form input
+export const PostInputSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
   description: z.string().min(10, 'Description must be at least 10 characters.'),
   content: z.string().min(20, 'Content must be at least 20 characters.'),
+  author: z.string().min(2, 'Author name must be at least 2 characters.'),
+});
+
+// Schema for validating the full Post object, often after retrieval from the DB.
+export const PostSchema = PostInputSchema.extend({
+  id: z.number(),
+  slug: z.string(),
   imageUrl: z.string().url(),
   imageHint: z.string(),
-  author: z.string().min(2, 'Author name must be at least 2 characters.'),
   authorAvatarUrl: z.string().url(),
   authorAvatarHint: z.string(),
   likes: z.number(),

@@ -10,8 +10,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "db:generate": "prisma generate",
-    "db:seed": "ts-node --esm prisma/seed.ts",
-    "reinitialize": "npm run db:seed"
+    "db:seed": "tsnode --esm prisma/seed.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
