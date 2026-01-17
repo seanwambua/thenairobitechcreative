@@ -7,24 +7,26 @@ import { DbUninitializedError } from '@/components/db-uninitialized-error';
 import { placeholderImages } from '@/lib/placeholder-images';
 
 export default async function ServicesPage() {
-  let founderImage;
   try {
-    founderImage = await getSetting('founderImage');
+    const [founderImage, logoUrl] = await Promise.all([
+      getSetting('founderImage'),
+      getSetting('logo'),
+    ]);
+
+    return (
+      <div className="flex min-h-screen flex-col bg-background">
+        <Header />
+        <main className="flex-1">
+          <ServicesClient founderImage={founderImage ?? placeholderImages.founder.imageUrl} />
+          <Cta logoUrl={logoUrl} />
+        </main>
+        <Footer />
+      </div>
+    );
   } catch (error: any) {
      if (error.message.includes('no such table')) {
       return <DbUninitializedError />;
     }
     throw error;
   }
-
-  return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <Header />
-      <main className="flex-1">
-        <ServicesClient founderImage={founderImage ?? placeholderImages.founder.imageUrl} />
-        <Cta />
-      </main>
-      <Footer />
-    </div>
-  );
 }

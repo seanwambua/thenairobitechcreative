@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { InquirySheet } from './inquiry-sheet';
 import { placeholderImages } from '@/lib/placeholder-images';
 
-export function Hero({heroImage}: {heroImage: string | null}) {
+export function Hero({heroImage, logoUrl}: {heroImage: string | null; logoUrl: string | null}) {
   const containerVariants = {
     hidden: {opacity: 0},
     visible: {
@@ -69,7 +69,7 @@ export function Hero({heroImage}: {heroImage: string | null}) {
             variants={textItemVariants}
           >
             <Button size="lg">Explore Our Work</Button>
-            <InquirySheet>
+            <InquirySheet logoUrl={logoUrl}>
               <Button
                 size="lg"
                 variant="outline"

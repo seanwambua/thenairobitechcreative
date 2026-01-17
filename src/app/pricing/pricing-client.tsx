@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
 import { InquirySheet } from '@/components/inquiry-sheet';
 
-export function PricingClient() {
+export function PricingClient({ logoUrl }: { logoUrl: string | null }) {
     const cardVariants = {
         hidden: { opacity: 0, y: 30 },
         visible: { opacity: 1, y: 0 },
@@ -70,7 +70,7 @@ export function PricingClient() {
                                     </ul>
                                 </CardContent>
                                 <CardFooter className="p-0 pt-6">
-                                    <InquirySheet>
+                                    <InquirySheet logoUrl={logoUrl}>
                                         <Button className="w-full" variant={plan.id === 2 ? "default" : "outline"}>
                                             Get Started
                                         </Button>

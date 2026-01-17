@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { InquirySheet } from './inquiry-sheet';
 
-export function Cta() {
+export function Cta({ logoUrl }: { logoUrl: string | null }) {
   return (
     <section id="contact" className="py-20 lg:py-24">
       <div className="container mx-auto px-4">
@@ -24,7 +24,7 @@ export function Cta() {
               your vision into a global success story.
             </p>
             <div className="mt-8">
-              <InquirySheet>
+              <InquirySheet logoUrl={logoUrl}>
                 <Button
                   size="lg"
                   variant="outline"

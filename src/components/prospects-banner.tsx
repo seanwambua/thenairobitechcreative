@@ -6,7 +6,7 @@ import { ArrowRight, X } from 'lucide-react';
 import { InquirySheet } from './inquiry-sheet';
 import { useState } from 'react';
 
-export function ProspectsBanner() {
+export function ProspectsBanner({ logoUrl }: { logoUrl: string | null }) {
   const [isVisible, setIsVisible] = useState(true);
 
   const bannerVariants = {
@@ -48,7 +48,7 @@ export function ProspectsBanner() {
                 </p>
               </div>
               <div className="mt-6">
-                <InquirySheet>
+                <InquirySheet logoUrl={logoUrl}>
                   <Button size="lg" className="flex-shrink-0">
                     Inquire Now <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
