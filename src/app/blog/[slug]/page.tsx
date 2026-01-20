@@ -1,3 +1,5 @@
+'use client';
+import { useState, useEffect } from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Header } from '@/components/layout/header';
@@ -8,17 +10,89 @@ import { Separator } from '@/components/ui/separator';
 import { PostInteractions } from '@/components/post-interactions';
 import { DbUninitializedError } from '@/components/db-uninitialized-error';
 import { getPostBySlug } from '@/app/actions/posts';
+import type { Post } from '@prisma/client';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Terminal } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  
-  let post;
-  try {
-    post = await getPostBySlug(params.slug);
-  } catch (error: any) {
-    if (error.message.includes('no such table')) {
-      return <DbUninitializedError />;
+function PostSkeleton() {
+    return (
+        <article className="container mx-auto max-w-4xl px-4 py-12">
+            <header className="mb-12 text-center">
+                <Skeleton className="h-16 w-3/4 mx-auto" />
+                <div className="mt-6 flex items-center justify-center gap-4">
+                    <Skeleton className="h-12 w-12 rounded-full" />
+                    <div className="space-y-2">
+                        <Skeleton className="h-4 w-24" />
+                        <Skeleton className="h-4 w-32" />
+                    </div>
+                </div>
+            </header>
+            <Skeleton className="relative mb-12 h-[600px] w-full rounded-2xl" />
+            <div className="prose prose-lg mx-auto max-w-none space-y-4">
+                <Skeleton className="h-6 w-full" />
+                <Skeleton className="h-6 w-full" />
+                <Skeleton className="h-6 w-5/6" />
+                <Skeleton className="h-6 w-full" />
+                <Skeleton className="h-6 w-full" />
+                <Skeleton className="h-6 w-2/3" />
+            </div>
+        </article>
+    )
+}
+
+export default function BlogPostPage({ params }: { params: { slug: string } }) {
+  const [post, setPost] = useState<Post | null | undefined>(undefined);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    if (params.slug) {
+        getPostBySlug(params.slug)
+            .then(data => {
+                if(!data) {
+                    setPost(null);
+                } else {
+                    setPost(data)
+                }
+            })
+            .catch(e => {
+                console.error("Failed to fetch post:", e);
+                setError(e);
+            })
     }
-    throw error;
+  }, [params.slug]);
+
+  if (error) {
+    if (error.message.includes('no such table')) {
+        return <DbUninitializedError />;
+    }
+    return (
+        <div className="flex min-h-screen flex-col bg-background">
+            <Header />
+            <main className="flex-1 container py-20">
+                <Alert variant="destructive">
+                    <Terminal className="h-4 w-4" />
+                    <AlertTitle>Error Loading Post</AlertTitle>
+                    <AlertDescription>
+                        There was a problem fetching this article. It may be temporarily unavailable or the link may be broken. Please try refreshing the page.
+                    </AlertDescription>
+                </Alert>
+            </main>
+            <Footer />
+        </div>
+    )
+  }
+  
+  if (post === undefined) {
+    return (
+        <div className="flex min-h-screen flex-col bg-background">
+            <Header />
+            <main className="flex-1">
+                <PostSkeleton />
+            </main>
+            <Footer />
+        </div>
+    );
   }
 
   if (!post) {

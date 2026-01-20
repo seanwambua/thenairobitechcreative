@@ -1,25 +1,71 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { BlogPostCard } from '@/components/blog-post-card';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Terminal } from 'lucide-react';
 import Link from 'next/link';
 import { getPosts } from '@/app/actions/posts';
+import type { Post } from '@prisma/client';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Skeleton } from '@/components/ui/skeleton';
 import { DbUninitializedError } from '@/components/db-uninitialized-error';
 
-export default async function BlogPage() {
-  let posts = [];
-  try {
-    posts = await getPosts();
-  } catch (error: any) {
+function BlogSkeleton() {
+    return (
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {[...Array(3)].map((_, i) => (
+                <div key={i} className="flex flex-col space-y-3 rounded-lg border bg-card p-4">
+                    <Skeleton className="h-[224px] w-full rounded-lg" />
+                    <div className="space-y-2 pt-2">
+                        <Skeleton className="h-6 w-3/4" />
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-2/3" />
+                    </div>
+                </div>
+            ))}
+        </div>
+    )
+}
+
+export default function BlogPage() {
+  const [posts, setPosts] = useState<Post[] | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    getPosts()
+      .then(setPosts)
+      .catch((e) => {
+        console.error("Failed to fetch posts:", e)
+        setError(e)
+      });
+  }, []);
+
+  if (error) {
     if (error.message.includes('no such table')) {
-      return <DbUninitializedError />;
+        return <DbUninitializedError />;
     }
-    throw error;
+    return (
+        <div className="flex min-h-screen flex-col bg-background">
+            <Header />
+            <main className="flex-1 container py-20">
+                <Alert variant="destructive">
+                    <Terminal className="h-4 w-4" />
+                    <AlertTitle>Error Loading Blog Posts</AlertTitle>
+                    <AlertDescription>
+                        There was a problem fetching the articles. They may be temporarily unavailable. Please try refreshing the page.
+                    </AlertDescription>
+                </Alert>
+            </main>
+            <Footer />
+        </div>
+    )
   }
 
-  const featuredPosts = posts.slice(0, 3);
-  const otherArticles = posts.slice(3);
+  const featuredPosts = posts?.slice(0, 3) || [];
+  const otherArticles = posts?.slice(3) || [];
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -35,7 +81,9 @@ export default async function BlogPage() {
                 Insights, stories, and updates from the heart of African tech innovation.
               </p>
             </div>
-            {posts.length > 0 ? (
+            {!posts ? (
+                <BlogSkeleton />
+            ) : posts.length > 0 ? (
               <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                 {featuredPosts.map((post) => (
                   <BlogPostCard key={post.id} post={post} />
@@ -59,7 +107,7 @@ export default async function BlogPage() {
             </div>
             <div className="mx-auto max-w-2xl">
               <div className="space-y-4">
-                {otherArticles.length > 0 ? (
+                {posts && otherArticles.length > 0 ? (
                   otherArticles.map((article) => (
                     <Link href={`/blog/${article.slug}`} className="group block" key={article.id}>
                       <Card className="transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-primary/10">
@@ -70,8 +118,13 @@ export default async function BlogPage() {
                       </Card>
                     </Link>
                   ))
-                ) : (
-                  <p className="text-center text-muted-foreground">No other articles available.</p>
+                ) : posts && posts.length > 0 ? null : (
+                  !posts ? 
+                  <div className="space-y-4">
+                    <Skeleton className="h-20 w-full" />
+                    <Skeleton className="h-20 w-full" />
+                  </div>
+                  : <p className="text-center text-muted-foreground">No other articles available.</p>
                 )}
               </div>
             </div>

@@ -28,7 +28,7 @@ export async function createPost(data: z.infer<typeof PostInputSchema>) {
     const newPost = await db.post.create({
         data: {
             ...validatedData,
-            slug: (validatedData.title || '').toLowerCase().replace(/\s+/g, '-'),
+            slug: String(validatedData.title || '').toLowerCase().replace(/\s+/g, '-'),
             imageUrl: placeholderImages.blog1.imageUrl,
             imageHint: placeholderImages.blog1.imageHint,
             authorAvatarUrl: placeholderImages.testimonial1.imageUrl,
@@ -54,7 +54,7 @@ export async function updatePost(post: Post) {
         where: { id },
         data: { 
             ...validatedData,
-            slug: (title || '').toLowerCase().replace(/\s+/g, '-'),
+            slug: String(title || '').toLowerCase().replace(/\s+/g, '-'),
         },
     });
 

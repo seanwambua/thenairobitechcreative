@@ -82,7 +82,6 @@ export function PostEditorSheet({ isOpen, setIsOpen, post, onSave }: PostEditorS
         const updatedPostData = {
           ...post,
           ...values,
-          slug: (values.title || '').toLowerCase().replace(/\s+/g, '-'),
         };
         await updatePost(updatedPostData);
       } else {
