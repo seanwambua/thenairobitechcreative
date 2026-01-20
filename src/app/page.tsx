@@ -1,6 +1,4 @@
-'use client';
-
-import { useEffect, useState } from 'react';
+'use server';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Hero } from '@/components/hero';
@@ -17,44 +15,11 @@ import {
 } from '@/components/ui/accordion';
 import { getProjects } from '@/app/actions/projects';
 import { getTestimonials } from '@/app/actions/testimonials';
-import { getSetting } from '@/app/actions/settings';
+import { getSettings } from '@/app/actions/settings';
 import { DbUninitializedError } from '@/components/db-uninitialized-error';
 import { placeholderImages } from '@/lib/placeholder-images';
-import type { Project, Testimonial } from '@/lib/data';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Terminal } from 'lucide-react';
-
-function PortfolioSkeleton() {
-    return (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {[...Array(6)].map((_, i) => (
-                <div key={i} className="flex flex-col space-y-3 rounded-lg border bg-card p-4">
-                    <Skeleton className="h-[200px] w-full rounded-lg" />
-                    <div className="space-y-2">
-                        <Skeleton className="h-6 w-3/4" />
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="h-4 w-1/2" />
-                    </div>
-                </div>
-            ))}
-        </div>
-    );
-}
-
-function TestimonialsSkeleton() {
-    return (
-        <div className="w-full">
-             <div className="mx-auto mb-16 max-w-3xl text-center">
-                <Skeleton className="h-10 w-2/3 mx-auto" />
-                <Skeleton className="h-6 w-full mt-4 mx-auto" />
-             </div>
-            <div className="relative flex items-center justify-center">
-                 <Skeleton className="h-[350px] w-full max-w-4xl rounded-xl" />
-            </div>
-        </div>
-    )
-}
 
 function DataError({ sectionName }: { sectionName: string }) {
     return (
@@ -69,48 +34,25 @@ function DataError({ sectionName }: { sectionName: string }) {
 }
 
 
-export default function Home() {
-    const [projects, setProjects] = useState<Project[] | null>(null);
-    const [testimonials, setTestimonials] = useState<Testimonial[] | null>(null);
-    const [heroImage, setHeroImage] = useState<string | null>(null);
-    const [logoUrl, setLogoUrl] = useState<string | null>(null);
-    const [error, setError] = useState<Error | null>(null);
-    
-    const [projectsError, setProjectsError] = useState(false);
-    const [testimonialsError, setTestimonialsError] = useState(false);
+export default async function Home() {
+    let projectsResult, testimonialsResult, settingsResult;
 
-    useEffect(() => {
-        async function loadData() {
-            try {
-                const [heroImageData, logoUrlData] = await Promise.all([
-                    getSetting('heroImage'),
-                    getSetting('logo'),
-                ]);
-                setHeroImage(heroImageData);
-                setLogoUrl(logoUrlData);
-
-                getProjects().then(setProjects).catch(() => {
-                    console.error("Failed to fetch projects");
-                    setProjectsError(true)
-                });
-                getTestimonials().then(setTestimonials).catch(() => {
-                    console.error("Failed to fetch testimonials");
-                    setTestimonialsError(true)
-                });
-
-            } catch (e: any) {
-                console.error("Failed to load page settings", e);
-                setError(e);
-            }
-        }
-        loadData();
-    }, []);
-
-    if (error) {
-        if (error.message.includes('no such table')) {
+    try {
+        [
+            projectsResult, 
+            testimonialsResult, 
+            settingsResult
+        ] = await Promise.allSettled([
+            getProjects(),
+            getTestimonials(),
+            getSettings(['heroImage', 'logo']),
+        ]);
+    } catch (e: any) {
+        // This will catch db connection errors etc.
+        if (e.message.includes('no such table')) {
             return <DbUninitializedError />;
         }
-        // Render a full-page error if critical settings fail
+         // Render a full-page error for other critical failures
         return (
              <div className="flex min-h-screen w-full items-center justify-center bg-background p-4">
                 <DataError sectionName="Homepage Content" />
@@ -118,11 +60,14 @@ export default function Home() {
         )
     }
 
+    const heroImage = settingsResult.status === 'fulfilled' ? (settingsResult.value.heroImage ?? placeholderImages.hero.imageUrl) : placeholderImages.hero.imageUrl;
+    const logoUrl = settingsResult.status === 'fulfilled' ? settingsResult.value.logo : null;
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1">
-        <Hero heroImage={heroImage ?? placeholderImages.hero.imageUrl} logoUrl={logoUrl} />
+        <Hero heroImage={heroImage} logoUrl={logoUrl} />
         <ProspectsBanner logoUrl={logoUrl} />
 
         <section id="portfolio" className="py-20 lg:py-32">
@@ -137,25 +82,22 @@ export default function Home() {
                 </p>
               </div>
               <div>
-                {projectsError 
-                    ? <DataError sectionName="Portfolio" /> 
-                    : projects ? <BentoPortfolio projects={projects} /> : <PortfolioSkeleton />}
+                {projectsResult.status === 'fulfilled'
+                    ? <BentoPortfolio projects={projectsResult.value} /> 
+                    : <DataError sectionName="Portfolio" />}
               </div>
             </div>
           </section>
 
-        {testimonialsError 
-            ? (
+        {testimonialsResult.status === 'fulfilled' && testimonialsResult.value.length > 0
+            ? <TestimonialsComponent testimonials={testimonialsResult.value} />
+            : (
                 <section id="testimonials" className="bg-background py-20 lg:py-32">
                     <div className="container">
-                        <DataError sectionName="Testimonials" />
-                    </div>
-                </section>
-            )
-            : testimonials ? <TestimonialsComponent testimonials={testimonials} /> : (
-                <section id="testimonials" className="bg-background py-20 lg:py-32">
-                    <div className="container">
-                        <TestimonialsSkeleton />
+                        {testimonialsResult.status === 'rejected' 
+                            ? <DataError sectionName="Testimonials" />
+                            : <div className="text-center text-muted-foreground">No testimonials to display.</div>
+                        }
                     </div>
                 </section>
             )
