@@ -22,6 +22,7 @@ import {
   NotebookText,
   Image as ImageIcon,
   Star,
+  Wrench,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -145,6 +146,18 @@ export function DashboardClient({
                 <Link href="/dashboard/analytics">
                   <LineChart />
                   <span>Analytics</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname.startsWith('/dashboard/troubleshooting')}
+                tooltip="Troubleshooting"
+              >
+                <Link href="/dashboard/troubleshooting">
+                  <Wrench />
+                  <span>Troubleshooting</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
