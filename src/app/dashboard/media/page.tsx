@@ -89,7 +89,7 @@ export default function MediaPage() {
               uploadPreset="nairobi_techcreative"
               onSuccess={(result) => handleUpload(result, 'heroImage')}
               onUploadAdded={() => setIsUploading('heroImage')}
-              onUploadError={() => setIsUploading(null)}
+              onError={() => setIsUploading(null)}
               className={cn(buttonVariants({ variant: 'default' }), 'w-full')}
               disabled={isUploading !== null}
             >
@@ -112,7 +112,7 @@ export default function MediaPage() {
               uploadPreset="nairobi_techcreative"
               onSuccess={(result) => handleUpload(result, 'logo')}
               onUploadAdded={() => setIsUploading('logo')}
-              onUploadError={() => setIsUploading(null)}
+              onError={() => setIsUploading(null)}
                className={cn(buttonVariants({ variant: 'default' }), 'w-full')}
                disabled={isUploading !== null}
             >
@@ -135,7 +135,7 @@ export default function MediaPage() {
               uploadPreset="nairobi_techcreative"
               onSuccess={(result) => handleUpload(result, 'founderImage')}
               onUploadAdded={() => setIsUploading('founderImage')}
-              onUploadError={() => setIsUploading(null)}
+              onError={() => setIsUploading(null)}
                className={cn(buttonVariants({ variant: 'default' }), 'w-full')}
                disabled={isUploading !== null}
             >
