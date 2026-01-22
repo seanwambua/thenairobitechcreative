@@ -160,13 +160,13 @@ export function TestimonialEditorSheet({
                   <CldUploadButton
                     uploadPreset="nairobi_techcreative"
                     onSuccess={handleUploadSuccess}
-                    onUploadAdded={() => setIsUploading(true)}
-                    onUploadError={(error) => {
+                    onUpload={() => setIsUploading(true)}
+                    onError={(error) => {
                       setIsUploading(false);
                       toast({
                         variant: 'destructive',
                         title: 'Upload Failed',
-                        description: String(error.info),
+                        description: String((error as any).info),
                       });
                     }}
                     className={cn(buttonVariants({ variant: 'outline' }), 'mt-2')}
