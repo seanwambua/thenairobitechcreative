@@ -1,161 +1,185 @@
-# The Nairobi Tech Creative - Full-Stack Portfolio & CMS
+# Bootstrap Next.js app with Prisma Postgres (Prisma 7)
 
-This is a complete, production-ready website and Content Management System (CMS) for "The Nairobi Tech Creative," a fictional digital agency. It's built with a modern, full-stack Next.js architecture and features a comprehensive dashboard for managing all site content.
+This is a full-stack Next.js application that serves as a portfolio and Content Management System (CMS). It uses Prisma ORM 7 for database interaction with a PostgreSQL database, following best practices for production-ready applications.
 
-The application uses a hybrid rendering approach, leveraging Next.js Server Components for static pages and Client Components for interactive, real-time updated sections.
-
-## ✨ Features
-
--   **Public-Facing Website:** A beautiful, responsive website including:
-    -   Homepage with Hero, Portfolio, Testimonials, and FAQ sections.
-    -   Services and Pricing pages.
-    -   A fully-featured Blog with individual post pages.
--   **Comprehensive Dashboard:** A secure, client-side rendered dashboard for managing:
-    -   **Content:** Create, update, and delete blog posts.
-    -   **Projects:** Manage portfolio projects displayed on the homepage.
-    -   **Testimonials:** Add and edit customer testimonials.
-    -   **Media:** Upload and manage all site imagery, including the hero image, logo, and author avatars.
--   **Real-time Updates:** Changes made in the dashboard are instantly reflected on the public website without requiring a page refresh.
--   **Cross-Tab Synchronization:** State is synchronized across multiple browser tabs using the Broadcast Channel API. A change in a dashboard tab will automatically update any other open tabs viewing the site.
--   **Dark Mode:** Full support for light and dark themes.
-
-## 💡 Business Logic & Recommendations
-
-This section outlines the core business purpose of the application and provides recommendations for future development.
-
-### Core Concept & Architectural Philosophy
-
-The application is designed to serve as the primary digital presence for a high-end creative technology agency. The core business logic is to showcase the agency's expertise, portfolio, and services to attract new clients.
-
--   **Hybrid Rendering Model:** The app intentionally uses a mix of Next.js Server Components and Client Components. Public-facing pages that require real-time interactivity (like the homepage, which must instantly reflect changes from the dashboard) are implemented as Client Components that fetch data from a client-side store (Zustand). The dashboard itself is also a Client Component to provide a rich, app-like experience. This hybrid approach offers the best of both worlds: the performance benefits of server rendering where possible and the dynamic capabilities of client rendering where needed.
--   **Server Actions for Mutations:** All database mutations (Create, Update, Delete) are handled via Next.js Server Actions. This modern approach simplifies the architecture by eliminating the need for traditional API endpoints for mutations, reducing boilerplate and improving security. Data revalidation is handled automatically via `revalidatePath`, ensuring the UI is always in sync with the database.
--   **Client-Side State Management (Zustand):** Zustand is used as a lightweight, centralized store for client-side state. It's crucial for managing UI state (like the current hero image) and for caching data fetched from the server, providing a snappy user experience and enabling real-time updates across components.
-
-### Key Features Explained
-
--   **The Dashboard as a CMS:** The `/dashboard` is a complete, custom-built Content Management System. It empowers non-technical users to manage every aspect of the public-facing site without writing a single line of code. This is a core value proposition for the agency's clients.
--   **Real-time & Cross-Tab Updates:** The combination of Zustand and the Broadcast Channel API provides a superior admin experience. An administrator can edit content in one browser tab and see those changes reflected instantly on the live site in another tab, which is perfect for live demos or content reviews.
-
-### Future Recommendations
-
-This application provides a solid foundation. Here are recommended next steps to elevate it further:
-
-1.  **Implement User Authentication:**
-    -   **Logic:** The most critical next step is to secure the dashboard. Currently, it's publicly accessible.
-    -   **Recommendation:** Integrate a full-fledged authentication solution like **Firebase Authentication**. This would allow you to create user accounts, manage roles (e.g., Admin, Editor), and protect the dashboard routes.
-
-2.  **Expand Analytics:**
-    -   **Logic:** The current analytics section in the dashboard is a placeholder. A real agency needs data on site traffic, user engagement, and content performance.
-    -   **Recommendation:** Integrate a service like **Google Analytics** or **Vercel Analytics**. Create a dedicated section in the dashboard to display key metrics, such as page views, top-performing blog posts, and referral sources.
-
-3.  **E-commerce for Services:**
-    -   **Logic:** The "Initial Consult" service is a perfect candidate for direct online payment.
-    -   **Recommendation:** Integrate a payment provider like **Stripe** or use a local alternative like **Paystack**. Allow users to purchase the consultation directly from the pricing page, creating a new revenue stream.
-
-4.  **Advanced AI/Generative Features:**
-    -   **Logic:** As a "Tech Creative" agency, leveraging AI is on-brand.
-    -   **Recommendation:** Use a framework like **Genkit** to add generative AI features. For example, you could add an "AI-powered content assistant" in the post editor to help with drafting articles, or an "image generation" feature in the media library to create placeholder images.
-
-## 🚀 Tech Stack
+## Tech Stack
 
 -   **Framework:** [Next.js](https://nextjs.org/) (App Router)
--   **Database:** SQLite (via Drizzle & `better-sqlite3`)
+-   **Database ORM:** [Prisma](https://www.prisma.io/)
+-   **Database:** PostgreSQL
 -   **Styling:** [Tailwind CSS](https://tailwindcss.com/)
 -   **UI Components:** [ShadCN UI](https://ui.shadcn.com/)
--   **Database ORM:** [Drizzle ORM](https://orm.drizzle.team/)
 -   **State Management:** [Zustand](https://github.com/pmndrs/zustand)
--   **Validation:** [Zod](https://zod.dev/) for end-to-end type-safe validation.
--   **Server Logic:** Next.js Server Actions for database mutations.
+-   **Validation:** [Zod](https://zod.dev/)
+-   **Server Logic:** Next.js Server Actions
 
-## 📂 Project Structure
+## Project Structure
+
+The project follows a structure designed for clarity and scalability, with the Prisma client generated inside the `src/app` directory as specified by the architectural guidelines.
 
 ```
 .
-├── drizzle/            # Drizzle migration files
-├── public/             # Static assets
+├── prisma/               # Prisma schema and migrations
+├── public/               # Static assets
+├── scripts/              # Test scripts (e.g., test-database.ts)
 ├── src/
 │   ├── app/
-│   │   ├── (public)/   # Route group for public-facing pages (page.tsx, blog/, etc.)
-│   │   ├── dashboard/  # Route group for the admin dashboard
-│   │   ├── actions/    # Server Actions for database mutations
-│   │   └── api/        # API routes for data fetching
+│   │   ├── generated/    # Generated Prisma Client
+│   │   │   └── prisma/
+│   │   ├── api/          # API routes
+│   │   └── ...           # Other Next.js app routes
 │   ├── components/
-│   │   ├── ui/         # ShadCN UI components
-│   │   └── (custom)    # Custom application components
-│   ├── hooks/          # Custom React hooks (e.g., useBroadcast)
-│   ├── lib/            # Core utilities, data, schemas, and database client
-│   │   └── db/         # Drizzle schema, client, and seed script
-│   └── store/          # Zustand stores for client-side state
-├── drizzle.config.ts   # Drizzle Kit configuration
+│   │   ├── ui/           # ShadCN UI components
+│   │   └── (custom)      # Custom application components
+│   ├── lib/              # Core utilities, schemas, and db client (prisma.ts)
+│   └── store/            # Zustand stores
+├── .env                  # Environment variables (DATABASE_URL)
 ├── package.json
 └── tailwind.config.ts
 ```
 
-## ▶️ Getting Started
+## Getting Started
 
-Follow these steps to get the project up and running on your local machine.
-
-### Prerequisites
-
--   Node.js (v18 or later)
--   npm or yarn
+Follow these steps to get the project up and running. This workflow is based on the provided architectural blueprint.
 
 ### 1. Install Dependencies
 
-Clone the repository and install the necessary packages.
+Clone the repository and install the required npm packages.
 
 ```bash
-npm install
+# Install production dependencies
+npm install @prisma/adapter-pg @prisma/client dotenv
+
+# Install development dependencies
+npm install prisma ts-node typescript @types/node --save-dev
 ```
 
-### 2. Set Up Environment Variables
+### 2. Initialize Prisma and Create Database
 
-Create a `.env` file in the root of the project. You will need to provide your Cloudinary credentials for image uploads. The database is now a local file, so no database URL is needed.
+Run the following command to initialize Prisma and create a cloud Prisma Postgres database.
+
+> **Note**: This command is **interactive**. You will be prompted to authenticate with Prisma and choose a region and project name. **You must run this command in your own terminal.**
+
+```bash
+npx prisma init --db --output ../src/app/generated/prisma
+```
+
+This will create a `.env` file with your `DATABASE_URL` and configure the output path for the Prisma client in your `prisma/schema.prisma` file.
+
+### 3. Verify `.env` File
+
+Ensure the generated `.env` file contains a `DATABASE_URL` with a `postgres://` scheme.
 
 ```env
-# Database file path (handled by default)
-DATABASE_URL="sqlite.db"
-
-# Cloudinary Credentials for Image Uploads
-CLOUDINARY_CLOUD_NAME="your_cloud_name"
-CLOUDINARY_API_KEY="your_api_key"
-CLOUDINARY_API_SECRET="your_api_secret"
+DATABASE_URL="postgres://..."
 ```
 
-### 3. Initialize the Database
+### 4. Update Database Schema
 
-This project uses Drizzle ORM to manage the database schema. To initialize your database with the correct schema and populate it with the starting content, run the `reinitialize` script:
+Add your data models to the `prisma/schema.prisma` file. For example:
+
+```prisma
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+```
+
+### 5. Create Global Prisma Client
+
+Create a file at `src/lib/prisma.ts` and add the following code to instantiate a global Prisma client singleton.
+
+```typescript
+import { PrismaClient } from '../app/generated/prisma/client'
+import { PrismaPg } from '@prisma/adapter-pg'
+
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL!,
+})
+
+const globalForPrisma = global as unknown as { prisma: PrismaClient }
+
+const prisma = globalForPrisma.prisma || new PrismaClient({
+  adapter,
+})
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+
+export default prisma
+```
+
+### 6. Update `package.json` Scripts
+
+Add the `db:test` and `db:studio` scripts to your `package.json`.
+
+```json
+"scripts": {
+  "dev": "next dev",
+  "build": "next build",
+  "start": "next start",
+  "lint": "next lint",
+  "db:seed": "ts-node prisma/seed.ts",
+  "db:test": "ts-node scripts/test-database.ts",
+  "db:studio": "prisma studio"
+}
+```
+
+### 7. Create Test Script
+
+Create a file at `scripts/test-database.ts` to verify the database connection.
+
+```typescript
+import 'dotenv/config'
+import prisma from '../src/lib/prisma'
+
+async function testDatabase() {
+  console.log('Testing database connection...')
+  try {
+    const user = await prisma.user.findFirst();
+    console.log('Successfully connected to database and fetched a user:', user);
+  } catch (error) {
+    console.error('Failed to connect to the database:', error);
+  }
+}
+
+testDatabase();
+```
+
+### 8. Push Schema and Generate Client
+
+Apply your schema to the database and generate the Prisma client.
 
 ```bash
-npm run reinitialize
+# Push schema to the database
+npx prisma db push
+
+# Generate Prisma Client
+npx prisma generate
 ```
 
-This command will:
-1.  Delete any existing `sqlite.db` file.
-2.  Push the Drizzle schema to your new SQLite database using `drizzle-kit`.
-3.  Run the seed script (`src/lib/db/seed.ts`) to populate the database with initial projects, posts, and testimonials.
+### 9. Test the Setup
 
-### 4. Run the Development Server
+Run the test script to ensure everything is configured correctly.
 
-Start the Next.js development server:
+```bash
+npm run db:test
+```
+
+### 10. Run the Development Server
+
+Start the Next.js development server.
 
 ```bash
 npm run dev
 ```
 
 The application will be available at [http://localhost:9002](http://localhost:9002).
-- The public website is at the root URL.
-- The dashboard is available at `/dashboard`.
 
-## 🗃️ Database Management
+## Useful Commands
 
-The `package.json` file includes a convenient script for resetting the database at any time during development.
-
-### Resetting and Re-seeding
-
-To reset the database tables and re-populate it with the initial content, run:
-
-```bash
-npm run reinitialize
-```
-This command is the recommended way to reset your database during development. You can also trigger a re-seed (without resetting the schema) from the UI on the dashboard's **Analytics** page.
+-   `npm run db:seed`: Populates the database with initial data.
+-   `npm run db:studio`: Opens Prisma Studio, a visual editor for your database.
+-   `npx prisma migrate dev`: Creates and applies a new database migration.

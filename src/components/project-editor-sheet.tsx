@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState, ChangeEvent } from 'react';
+import { useEffect, useState, ChangeEvent } from 'react';
 import Image from 'next/image';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -38,6 +38,8 @@ import { type Project } from '@/lib/data';
 import { Upload, Loader2 } from 'lucide-react';
 import { ProjectSchema, iconNames } from '@/lib/schemas';
 import { createProject, updateProject } from '@/app/actions/projects';
+import { CldUploadButton } from 'next-cloudinary';
+import { cn } from '@/lib/utils';
 
 const formSchema = ProjectSchema.pick({
   title: true,
@@ -61,7 +63,6 @@ interface ProjectEditorSheetProps {
 export function ProjectEditorSheet({ isOpen, setIsOpen, project, onSave }: ProjectEditorSheetProps) {
   const { toast } = useToast();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const imageInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -100,34 +101,11 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project, onSave }: Proje
     }
   }, [project, form, isOpen]);
 
-  const handleImageFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setIsUploading(true);
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = async () => {
-        const base64data = reader.result;
-        try {
-          const res = await fetch('/api/upload', {
-            method: 'POST',
-            body: JSON.stringify({ file: base64data }),
-            headers: { 'Content-Type': 'application/json' },
-          });
-
-          if (!res.ok) throw new Error('Upload failed');
-
-          const { secure_url } = await res.json();
-          setImagePreview(secure_url);
-          toast({ title: 'Image Uploaded', description: 'The project image has been updated.' });
-        } catch (error) {
-          console.error(error);
-          toast({ variant: 'destructive', title: 'Upload Failed' });
-        } finally {
-          setIsUploading(false);
-        }
-      };
-    }
+  const handleUploadSuccess = (result: any) => {
+    const secure_url = result.info.secure_url;
+    setImagePreview(secure_url);
+    toast({ title: 'Image Uploaded', description: 'The project image has been updated.' });
+    setIsUploading(false);
   };
 
   async function onSubmit(values: ProjectFormValues) {
@@ -141,7 +119,7 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project, onSave }: Proje
 
     try {
       if (project) {
-        await updateProject({ ...project, ...projectData });
+        await updateProject(project.id, projectData);
       } else {
         await createProject(projectData);
       }
@@ -195,23 +173,24 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project, onSave }: Proje
                       </div>
                     )}
                   </div>
-                  <Input
-                    type="file"
-                    ref={imageInputRef}
-                    className="hidden"
-                    onChange={handleImageFileChange}
-                    accept="image/png, image/jpeg, image/webp"
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full"
-                    onClick={() => imageInputRef.current?.click()}
+                  <CldUploadButton
+                    uploadPreset="nairobi_techcreative"
+                    onSuccess={handleUploadSuccess}
+                    onUploadAdded={() => setIsUploading(true)}
+                    onUploadError={(error) => {
+                      setIsUploading(false);
+                      toast({
+                        variant: 'destructive',
+                        title: 'Upload Failed',
+                        description: String(error.info),
+                      });
+                    }}
+                    className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}
                     disabled={isUploading}
                   >
                     <Upload className="mr-2 h-4 w-4" />
                     {isUploading ? 'Uploading...' : 'Upload Image'}
-                  </Button>
+                  </CldUploadButton>
                 </FormItem>
               </div>
 

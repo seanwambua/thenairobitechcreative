@@ -1,22 +1,22 @@
 
 'use server';
 
-import { db } from '@/lib/db/index';
+import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { PostSchema, PostInputSchema } from '@/lib/schemas';
+import type { Post } from '@/app/generated/prisma';
 import { placeholderImages } from '@/lib/placeholder-images';
-import type { Post } from '@prisma/client';
 import { z } from 'zod';
 
 export async function getPosts() {
-    const results = await db.post.findMany({
+    const results = await prisma.post.findMany({
         orderBy: { createdAt: 'desc' },
     });
     return results;
 }
 
 export async function getPostBySlug(slug: string) {
-    const result = await db.post.findUnique({
+    const result = await prisma.post.findUnique({
         where: { slug },
     });
     return result;
@@ -25,14 +25,14 @@ export async function getPostBySlug(slug: string) {
 export async function createPost(data: z.infer<typeof PostInputSchema>) {
     const validatedData = PostInputSchema.parse(data);
 
-    const newPost = await db.post.create({
+    const newPost = await prisma.post.create({
         data: {
             ...validatedData,
             slug: String(validatedData.title || '').toLowerCase().replace(/\s+/g, '-'),
-            imageUrl: placeholderImages.blog1.imageUrl,
-            imageHint: placeholderImages.blog1.imageHint,
-            authorAvatarUrl: placeholderImages.testimonial1.imageUrl,
-            authorAvatarHint: placeholderImages.testimonial1.imageHint,
+            imageUrl: placeholderImages.blog1Image.imageUrl,
+            imageHint: placeholderImages.blog1Image.imageHint,
+            authorAvatarUrl: placeholderImages.testimonial1Image.imageUrl,
+            authorAvatarHint: placeholderImages.testimonial1Image.imageHint,
             likes: 0,
             comments: '',
         }
@@ -50,7 +50,7 @@ export async function updatePost(post: Post) {
     const validatedData = PostSchema.parse(post);
     const { id, title } = validatedData;
     
-    const updatedPost = await db.post.update({
+    const updatedPost = await prisma.post.update({
         where: { id },
         data: { 
             ...validatedData,
@@ -67,9 +67,9 @@ export async function updatePost(post: Post) {
 }
 
 export async function deletePost(postId: number) {
-    const post = await db.post.findUnique({ where: { id: postId } });
+    const post = await prisma.post.findUnique({ where: { id: postId } });
     if (post) {
-        await db.post.delete({ where: { id: postId } });
+        await prisma.post.delete({ where: { id: postId } });
         revalidatePath('/dashboard/content');
         revalidatePath('/dashboard/analytics');
         revalidatePath('/blog');

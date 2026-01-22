@@ -1,5 +1,3 @@
-'use client';
-import { useState, useEffect } from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Header } from '@/components/layout/header';
@@ -10,57 +8,22 @@ import { Separator } from '@/components/ui/separator';
 import { PostInteractions } from '@/components/post-interactions';
 import { DbUninitializedError } from '@/components/db-uninitialized-error';
 import { getPostBySlug } from '@/app/actions/posts';
-import type { Post } from '@prisma/client';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import type { Post } from '@/app/generated/prisma';
 
-function PostSkeleton() {
-    return (
-        <article className="container mx-auto max-w-4xl px-4 py-12">
-            <header className="mb-12 text-center">
-                <Skeleton className="h-16 w-3/4 mx-auto" />
-                <div className="mt-6 flex items-center justify-center gap-4">
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                    <div className="space-y-2">
-                        <Skeleton className="h-4 w-24" />
-                        <Skeleton className="h-4 w-32" />
-                    </div>
-                </div>
-            </header>
-            <Skeleton className="relative mb-12 h-[600px] w-full rounded-2xl" />
-            <div className="prose prose-lg mx-auto max-w-none space-y-4">
-                <Skeleton className="h-6 w-full" />
-                <Skeleton className="h-6 w-full" />
-                <Skeleton className="h-6 w-5/6" />
-                <Skeleton className="h-6 w-full" />
-                <Skeleton className="h-6 w-full" />
-                <Skeleton className="h-6 w-2/3" />
-            </div>
-        </article>
-    )
+async function getPost(slug: string) {
+    try {
+        const post = await getPostBySlug(slug);
+        return { post, error: null };
+    } catch (error) {
+        console.error("Failed to fetch post:", error);
+        return { post: null, error: error as Error };
+    }
 }
 
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
-  const [post, setPost] = useState<Post | null | undefined>(undefined);
-  const [error, setError] = useState<Error | null>(null);
-
-  useEffect(() => {
-    if (params.slug) {
-        getPostBySlug(params.slug)
-            .then(data => {
-                if(!data) {
-                    setPost(null);
-                } else {
-                    setPost(data)
-                }
-            })
-            .catch(e => {
-                console.error("Failed to fetch post:", e);
-                setError(e);
-            })
-    }
-  }, [params.slug]);
+export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+  const { post, error } = await getPost(params.slug);
 
   if (error) {
     if (error.message.includes('no such table')) {
@@ -80,21 +43,9 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
             </main>
             <Footer />
         </div>
-    )
-  }
-  
-  if (post === undefined) {
-    return (
-        <div className="flex min-h-screen flex-col bg-background">
-            <Header />
-            <main className="flex-1">
-                <PostSkeleton />
-            </main>
-            <Footer />
-        </div>
     );
   }
-
+  
   if (!post) {
     notFound();
   }

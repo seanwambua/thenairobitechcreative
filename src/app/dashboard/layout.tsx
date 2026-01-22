@@ -15,7 +15,7 @@ export default async function DashboardLayout({
   return (
     <DashboardClient
       logoUrl={logoUrl}
-      founderImage={founderImage ?? placeholderImages.founder.imageUrl}
+      founderImage={founderImage ?? placeholderImages.founderImage.imageUrl}
     >
       {children}
     </DashboardClient>

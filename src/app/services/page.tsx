@@ -17,7 +17,7 @@ export default async function ServicesPage() {
       <div className="flex min-h-screen flex-col bg-background">
         <Header />
         <main className="flex-1">
-          <ServicesClient founderImage={founderImage ?? placeholderImages.founder.imageUrl} />
+          <ServicesClient founderImage={founderImage ?? placeholderImages.founderImage.imageUrl} />
           <Cta logoUrl={logoUrl} />
         </main>
         <Footer />

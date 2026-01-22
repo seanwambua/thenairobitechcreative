@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState, ChangeEvent } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -32,6 +32,8 @@ import { Upload, Loader2 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { TestimonialSchema } from '@/lib/schemas';
 import { createTestimonial, updateTestimonial } from '@/app/actions/testimonials';
+import { CldUploadButton } from 'next-cloudinary';
+import { cn } from '@/lib/utils';
 
 const formSchema = TestimonialSchema.pick({
   quote: true,
@@ -56,7 +58,6 @@ export function TestimonialEditorSheet({
 }: TestimonialEditorSheetProps) {
   const { toast } = useToast();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const imageInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -89,34 +90,11 @@ export function TestimonialEditorSheet({
     }
   }, [testimonial, form, isOpen]);
 
-  const handleImageFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setIsUploading(true);
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = async () => {
-        const base64data = reader.result;
-        try {
-          const res = await fetch('/api/upload', {
-            method: 'POST',
-            body: JSON.stringify({ file: base64data }),
-            headers: { 'Content-Type': 'application/json' },
-          });
-
-          if (!res.ok) throw new Error('Upload failed');
-
-          const { secure_url } = await res.json();
-          setImagePreview(secure_url);
-          toast({ title: 'Image Uploaded', description: 'The avatar has been updated.' });
-        } catch (error) {
-          console.error(error);
-          toast({ variant: 'destructive', title: 'Upload Failed' });
-        } finally {
-          setIsUploading(false);
-        }
-      };
-    }
+  const handleUploadSuccess = (result: any) => {
+    const secure_url = result.info.secure_url;
+    setImagePreview(secure_url);
+    toast({ title: 'Image Uploaded', description: 'The avatar has been updated.' });
+    setIsUploading(false);
   };
 
   async function onSubmit(values: TestimonialFormValues) {
@@ -179,23 +157,24 @@ export function TestimonialEditorSheet({
                       </div>
                     )}
                   </div>
-                  <Input
-                    type="file"
-                    ref={imageInputRef}
-                    className="hidden"
-                    onChange={handleImageFileChange}
-                    accept="image/png, image/jpeg, image/webp"
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="mt-2"
-                    onClick={() => imageInputRef.current?.click()}
+                  <CldUploadButton
+                    uploadPreset="nairobi_techcreative"
+                    onSuccess={handleUploadSuccess}
+                    onUploadAdded={() => setIsUploading(true)}
+                    onUploadError={(error) => {
+                      setIsUploading(false);
+                      toast({
+                        variant: 'destructive',
+                        title: 'Upload Failed',
+                        description: String(error.info),
+                      });
+                    }}
+                    className={cn(buttonVariants({ variant: 'outline' }), 'mt-2')}
                     disabled={isUploading}
                   >
                     <Upload className="mr-2 h-4 w-4" />
                     {isUploading ? 'Uploading...' : 'Upload Image'}
-                  </Button>
+                  </CldUploadButton>
               </FormItem>
 
               <FormField

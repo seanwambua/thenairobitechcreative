@@ -53,7 +53,7 @@ export function DashboardClient({
 
   const pathname = usePathname();
   
-  const founderInfo = placeholderImages.founder;
+  const founderInfo = placeholderImages.founderImage;
   const founderInitials = founderInfo.imageHint
     .split(' ')
     .map((n) => n[0])

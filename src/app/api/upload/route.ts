@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
 import { v2 as cloudinary } from 'cloudinary';
+import { NextResponse } from 'next/server';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -8,15 +8,18 @@ cloudinary.config({
 });
 
 export async function POST(request: Request) {
-  const { file } = await request.json();
+  const { file, signature, timestamp } = await request.json();
 
-  try {
-    const result = await cloudinary.uploader.upload(file, {
-      folder: 'nairobi-creative',
-    });
-    return NextResponse.json({ secure_url: result.secure_url });
-  } catch (error) {
-    console.error('Error uploading to Cloudinary:', error);
-    return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
+  const expectedSignature = cloudinary.utils.api_sign_request(
+    {
+      timestamp: timestamp,
+    },
+    process.env.CLOUDINARY_API_SECRET as string
+  );
+
+  if (signature !== expectedSignature) {
+    return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
   }
+
+  return NextResponse.json({ success: true });
 }

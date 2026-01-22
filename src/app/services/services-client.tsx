@@ -32,7 +32,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card';
-import { placeholderImages } from '@/lib/placeholder-images';
+import { getSettings } from '@/app/actions/settings';
 import { Separator } from '@/components/ui/separator';
 
 const iconMap: { [key: string]: LucideIcon } = {
@@ -47,14 +47,20 @@ const iconMap: { [key: string]: LucideIcon } = {
 };
 
 export function ServicesClient({ founderImage }: { founderImage: string | null }) {
+    const [founderName, setFounderName] = React.useState<string | null>(null);
     const cardVariants = {
         hidden: { opacity: 0, y: 30 },
         visible: { opacity: 1, y: 0 },
     };
 
-    const founderInfo = placeholderImages.founder;
-    const founderInitials = founderInfo.imageHint
-        .split(' ')
+    React.useEffect(() => {
+        getSettings(['founderName']).then(settings => {
+            setFounderName(settings.founderName);
+        });
+    }, []);
+
+    const founderInitials = founderName
+        ?.split(' ')
         .map((n) => n[0])
         .join('');
 
@@ -76,7 +82,7 @@ export function ServicesClient({ founderImage }: { founderImage: string | null }
                             <HoverCardTrigger asChild>
                                 <div className="group relative">
                                     <Avatar className="h-24 w-24 cursor-pointer transition-all duration-300 md:h-32 md:w-32">
-                                        <AvatarImage src={founderImage ?? undefined} alt={founderInfo.imageHint} />
+                                        <AvatarImage src={founderImage ?? undefined} alt={founderName ?? undefined} />
                                         <AvatarFallback>{founderInitials}</AvatarFallback>
                                     </Avatar>
                                     <div className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-background bg-primary text-primary-foreground shadow-lg transition-transform duration-300 group-hover:scale-125">
@@ -88,12 +94,12 @@ export function ServicesClient({ founderImage }: { founderImage: string | null }
                                 <div className="flex flex-col gap-4">
                                     <div className="flex justify-between space-x-4">
                                         <Avatar>
-                                            <AvatarImage src={founderImage ?? undefined} alt={founderInfo.imageHint} />
+                                            <AvatarImage src={founderImage ?? undefined} alt={founderName ?? undefined} />
                                             <AvatarFallback>{founderInitials}</AvatarFallback>
                                         </Avatar>
                                         <div className="space-y-1">
                                             <h4 className="text-sm font-semibold">A Message from the Founder</h4>
-                                            <p className="text-sm text-muted-foreground">{founderInfo.imageHint}</p>
+                                            <p className="text-sm text-muted-foreground">{founderName}</p>
                                         </div>
                                     </div>
                                     <Separator />
