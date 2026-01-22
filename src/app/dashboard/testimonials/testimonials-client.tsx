@@ -155,7 +155,7 @@ export function TestimonialsClient({ initialTestimonials }: { initialTestimonial
       </CardContent>
       <TestimonialEditorSheet
         isOpen={isEditorOpen}
-        setIsOpen={setIsOpen}
+        setIsOpen={setEditorOpen}
         testimonial={editingTestimonial}
         onSave={handleSave}
       />
