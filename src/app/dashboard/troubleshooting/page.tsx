@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { revalidatePath } from 'next/cache';
-import { db } from '@/lib/db';
+import prisma from '@/lib/prisma';
 import { seedDatabase } from '@/lib/db/seed';
 import { Badge } from '@/components/ui/badge';
 import { iconNames } from '@/lib/schemas';
@@ -49,7 +49,7 @@ async function runSystemChecks(): Promise<CheckResult[]> {
 
   // 1. Database Connection
   try {
-    await db.$queryRaw`SELECT 1`;
+    await prisma.$queryRaw`SELECT 1`;
     checks.push({
       name: 'Database Connection',
       status: 'ok',
@@ -71,7 +71,7 @@ async function runSystemChecks(): Promise<CheckResult[]> {
   const tables = ['post', 'project', 'testimonial', 'settings'] as const;
   for (const table of tables) {
     try {
-      const count = await db[table].count();
+      const count = await prisma[table].count();
       checks.push({
         name: `Table: ${table}`,
         status: 'ok',
@@ -91,7 +91,7 @@ async function runSystemChecks(): Promise<CheckResult[]> {
 
   // 3. Data Integrity Checks
   // Posts
-  const invalidPosts = await db.post.count({
+  const invalidPosts = await prisma.post.count({
     where: { OR: [{ title: '' }, { slug: '' }, { content: '' }] },
   });
   checks.push({
@@ -102,7 +102,7 @@ async function runSystemChecks(): Promise<CheckResult[]> {
   });
 
   // Projects
-  const allProjects = await db.project.findMany();
+  const allProjects = await prisma.project.findMany();
   const invalidProjects = allProjects.filter(p => !p.title || !p.description || !iconNames.includes(p.icon as any));
   checks.push({
     name: 'Project Data',
@@ -112,7 +112,7 @@ async function runSystemChecks(): Promise<CheckResult[]> {
   });
   
   // Testimonials
-  const invalidTestimonials = await db.testimonial.count({
+  const invalidTestimonials = await prisma.testimonial.count({
       where: { OR: [{ author: '' }, { quote: '' }] }
   });
   checks.push({
@@ -124,7 +124,7 @@ async function runSystemChecks(): Promise<CheckResult[]> {
 
   // Settings
   const requiredSettings = ['heroImage', 'founderImage'];
-  const settings = await db.settings.findMany({ where: { key: { in: requiredSettings } } });
+  const settings = await prisma.settings.findMany({ where: { key: { in: requiredSettings } } });
   const missingSettings = requiredSettings.filter(key => !settings.some(s => s.key === key && s.value));
    checks.push({
       name: 'Core Settings',

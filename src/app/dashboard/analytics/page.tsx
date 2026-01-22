@@ -10,12 +10,12 @@ import {
   NotebookText,
   Star,
 } from 'lucide-react';
-import { db } from '@/lib/db';
+import prisma from '@/lib/prisma';
 
 export default async function AnalyticsPage() {
-  const postCount = await db.post.count();
-  const projectCount = await db.project.count();
-  const testimonialCount = await db.testimonial.count();
+  const postCount = await prisma.post.count();
+  const projectCount = await prisma.project.count();
+  const testimonialCount = await prisma.testimonial.count();
 
   return (
     <div className="grid gap-6">
