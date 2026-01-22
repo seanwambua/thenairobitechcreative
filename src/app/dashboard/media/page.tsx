@@ -1,17 +1,20 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { CldUploadButton } from 'next-cloudinary';
 import { getSettings, updateSetting } from '@/app/actions/settings';
-import { ImageIcon, Image, UserCircle } from 'lucide-react';
+import { ImageIcon, UserCircle, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 export default function MediaPage() {
   const { toast } = useToast();
+  const router = useRouter();
   const [heroImage, setHeroImage] = useState<string | null>(null);
   const [logo, setLogo] = useState<string | null>(null);
   const [founderImage, setFounderImage] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState<string | null>(null);
 
   useEffect(() => {
     getSettings(['heroImage', 'logo', 'founderImage']).then(settings => {
@@ -22,6 +25,8 @@ export default function MediaPage() {
   }, []);
 
   const handleUpload = async (result: any, type: 'heroImage' | 'logo' | 'founderImage') => {
+    const uploadId = `${type}`;
+    setIsUploading(uploadId);
     const secureUrl = result.info.secure_url;
     try {
         await updateSetting(type, secureUrl);
@@ -32,6 +37,7 @@ export default function MediaPage() {
             title: 'Upload Successful',
             description: `The ${type} has been updated.`
         });
+        router.refresh();
     } catch (error) {
         console.error('Failed to update setting:', error);
         toast({
@@ -39,6 +45,8 @@ export default function MediaPage() {
             title: 'Upload Failed',
             description: 'There was a problem saving the image URL to the database.'
         });
+    } finally {
+        setIsUploading(null);
     }
   };
 
@@ -52,6 +60,7 @@ export default function MediaPage() {
             title: 'Image Reset',
             description: `The ${type} has been reset.`
         });
+        router.refresh();
     } catch (error) {
         console.error('Failed to reset setting:', error);
         toast({
@@ -69,7 +78,7 @@ export default function MediaPage() {
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Hero Image</h2>
           <div className="w-full h-64 rounded-lg bg-muted flex items-center justify-center">
-            {heroImage ? (
+            {isUploading === 'heroImage' ? <Loader2 className="w-12 h-12 animate-spin text-muted-foreground" /> : heroImage ? (
               <img src={heroImage} alt="Hero Image" className="w-full h-full object-cover rounded-lg" />
             ) : (
               <ImageIcon className="w-24 h-24 text-muted-foreground" />
@@ -79,17 +88,20 @@ export default function MediaPage() {
             <CldUploadButton
               uploadPreset="nairobi_techcreative"
               onSuccess={(result) => handleUpload(result, 'heroImage')}
-              className={cn(buttonVariants({ variant: 'default' }))}
+              onUploadAdded={() => setIsUploading('heroImage')}
+              onUploadError={() => setIsUploading(null)}
+              className={cn(buttonVariants({ variant: 'default' }), 'w-full')}
+              disabled={isUploading !== null}
             >
               Update
             </CldUploadButton>
-            <Button onClick={() => handleReset('heroImage')} variant="destructive">Reset</Button>
+            <Button onClick={() => handleReset('heroImage')} variant="destructive" disabled={isUploading !== null}>Reset</Button>
           </div>
         </div>
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Logo</h2>
           <div className="w-full h-64 rounded-lg bg-muted flex items-center justify-center">
-            {logo ? (
+            {isUploading === 'logo' ? <Loader2 className="w-12 h-12 animate-spin text-muted-foreground" /> : logo ? (
               <img src={logo} alt="Logo" className="w-full h-full object-contain p-4 rounded-lg" />
             ) : (
               <ImageIcon className="w-24 h-24 text-muted-foreground" />
@@ -99,17 +111,20 @@ export default function MediaPage() {
             <CldUploadButton
               uploadPreset="nairobi_techcreative"
               onSuccess={(result) => handleUpload(result, 'logo')}
-               className={cn(buttonVariants({ variant: 'default' }))}
+              onUploadAdded={() => setIsUploading('logo')}
+              onUploadError={() => setIsUploading(null)}
+               className={cn(buttonVariants({ variant: 'default' }), 'w-full')}
+               disabled={isUploading !== null}
             >
               Update
             </CldUploadButton>
-            <Button onClick={() => handleReset('logo')} variant="destructive">Reset</Button>
+            <Button onClick={() => handleReset('logo')} variant="destructive" disabled={isUploading !== null}>Reset</Button>
           </div>
         </div>
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Founder Image</h2>
           <div className="w-full h-64 rounded-lg bg-muted flex items-center justify-center">
-            {founderImage ? (
+            {isUploading === 'founderImage' ? <Loader2 className="w-12 h-12 animate-spin text-muted-foreground" /> : founderImage ? (
               <img src={founderImage} alt="Founder Image" className="w-full h-full object-cover rounded-lg" />
             ) : (
               <UserCircle className="w-24 h-24 text-muted-foreground" />
@@ -119,11 +134,14 @@ export default function MediaPage() {
             <CldUploadButton
               uploadPreset="nairobi_techcreative"
               onSuccess={(result) => handleUpload(result, 'founderImage')}
-               className={cn(buttonVariants({ variant: 'default' }))}
+              onUploadAdded={() => setIsUploading('founderImage')}
+              onUploadError={() => setIsUploading(null)}
+               className={cn(buttonVariants({ variant: 'default' }), 'w-full')}
+               disabled={isUploading !== null}
             >
               Update
             </CldUploadButton>
-            <Button onClick={() => handleReset('founderImage')} variant="destructive">Reset</Button>
+            <Button onClick={() => handleReset('founderImage')} variant="destructive" disabled={isUploading !== null}>Reset</Button>
           </div>
         </div>
       </div>

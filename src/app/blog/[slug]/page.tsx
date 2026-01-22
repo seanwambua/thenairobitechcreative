@@ -8,6 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { PostInteractions } from '@/components/post-interactions';
 import { DbUninitializedError } from '@/components/db-uninitialized-error';
 import { getPostBySlug } from '@/app/actions/posts';
+import { getSetting } from '@/app/actions/settings';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
 import type { Post } from '@/app/generated/prisma';
@@ -23,7 +24,10 @@ async function getPost(slug: string) {
 }
 
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  const { post, error } = await getPost(params.slug);
+  const [{ post, error }, logoUrl] = await Promise.all([
+    getPost(params.slug),
+    getSetting('logo')
+  ]);
 
   if (error) {
     if (error.message.includes('no such table')) {
@@ -31,7 +35,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
     }
     return (
         <div className="flex min-h-screen flex-col bg-background">
-            <Header />
+            <Header logoUrl={logoUrl} />
             <main className="flex-1 container py-20">
                 <Alert variant="destructive">
                     <Terminal className="h-4 w-4" />
@@ -41,7 +45,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                     </AlertDescription>
                 </Alert>
             </main>
-            <Footer />
+            <Footer logoUrl={logoUrl} />
         </div>
     );
   }
@@ -54,7 +58,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <Header />
+      <Header logoUrl={logoUrl} />
       <main className="flex-1">
         <article className="container mx-auto max-w-4xl px-4 py-12">
           <header className="mb-12 text-center">
@@ -114,7 +118,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           </section>
         </article>
       </main>
-      <Footer />
+      <Footer logoUrl={logoUrl} />
     </div>
   );
 }

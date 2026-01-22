@@ -11,12 +11,12 @@ export default async function PricingPage() {
 
         return (
             <div className="flex min-h-screen flex-col bg-background">
-                <Header />
+                <Header logoUrl={logoUrl} />
                 <main className="flex-1">
                     <PricingClient logoUrl={logoUrl} />
                     <Cta logoUrl={logoUrl} />
                 </main>
-                <Footer />
+                <Footer logoUrl={logoUrl} />
             </div>
         );
     } catch (error: any) {

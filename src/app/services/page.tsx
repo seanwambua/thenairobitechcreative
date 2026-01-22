@@ -15,12 +15,12 @@ export default async function ServicesPage() {
 
     return (
       <div className="flex min-h-screen flex-col bg-background">
-        <Header />
+        <Header logoUrl={logoUrl} />
         <main className="flex-1">
           <ServicesClient founderImage={founderImage ?? placeholderImages.founderImage.imageUrl} />
           <Cta logoUrl={logoUrl} />
         </main>
-        <Footer />
+        <Footer logoUrl={logoUrl} />
       </div>
     );
   } catch (error: any) {
