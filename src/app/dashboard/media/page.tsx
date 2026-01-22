@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { CldUploadButton } from 'next-cloudinary';
 import { getSettings, updateSetting } from '@/app/actions/settings';
 import { ImageIcon, Image, UserCircle } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
