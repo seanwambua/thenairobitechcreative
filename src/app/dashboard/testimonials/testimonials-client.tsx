@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { CardContent } from '@/components/ui/card';
 import {
@@ -43,6 +43,11 @@ export function TestimonialsClient({ initialTestimonials }: { initialTestimonial
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [testimonialToDelete, setTestimonialToDelete] = useState<Testimonial | null>(null);
   const { toast } = useToast();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleCreateNew = () => {
     setEditingTestimonial(null);
@@ -126,6 +131,7 @@ export function TestimonialsClient({ initialTestimonials }: { initialTestimonial
                     "{testimonial.quote}"
                   </TableCell>
                   <TableCell>
+                  {mounted ? (
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button aria-haspopup="true" size="icon" variant="ghost">
@@ -146,6 +152,9 @@ export function TestimonialsClient({ initialTestimonials }: { initialTestimonial
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
+                  ) : (
+                    <div className="h-10 w-10" />
+                  )}
                   </TableCell>
                 </TableRow>
               ))}
