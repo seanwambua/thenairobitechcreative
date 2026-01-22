@@ -3,7 +3,7 @@ import Link from 'next/link';
 import {Button} from '@/components/ui/button';
 import {Stamp} from '@/components/stamp';
 import {Menu, X} from 'lucide-react';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {cn} from '@/lib/utils';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { InquirySheet } from '../inquiry-sheet';
@@ -11,6 +11,11 @@ import { navItems } from '@/lib/data';
 
 export function HeaderUI({ logoUrl }: { logoUrl: string | null }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const visibleNavItems = navItems.filter(item => !item.hidden);
 
@@ -41,9 +46,13 @@ export function HeaderUI({ logoUrl }: { logoUrl: string | null }) {
         </nav>
         <div className="hidden items-center gap-2 md:flex">
           <ThemeToggle />
-          <InquirySheet logoUrl={logoUrl}>
+          {mounted ? (
+            <InquirySheet logoUrl={logoUrl}>
+              <Button>Get In Touch</Button>
+            </InquirySheet>
+          ) : (
             <Button>Get In Touch</Button>
-          </InquirySheet>
+          )}
         </div>
         <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle />
@@ -70,9 +79,13 @@ export function HeaderUI({ logoUrl }: { logoUrl: string | null }) {
                 {item.label}
               </Link>
             ))}
-             <InquirySheet logoUrl={logoUrl}>
+             {mounted ? (
+                <InquirySheet logoUrl={logoUrl}>
+                    <Button className="w-full">Get In Touch</Button>
+                </InquirySheet>
+              ) : (
                 <Button className="w-full">Get In Touch</Button>
-            </InquirySheet>
+              )}
           </nav>
         </div>
       )}
