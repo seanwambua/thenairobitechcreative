@@ -184,6 +184,7 @@ export function ProjectEditorSheet({
                   )}
                 </div>
                 <CldUploadButton
+                  type="button"
                   uploadPreset="nairobi_techcreative"
                   onSuccess={handleUploadSuccess}
                   onUpload={() => setIsUploading(true)}

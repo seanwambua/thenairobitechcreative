@@ -172,6 +172,7 @@ export function TestimonialEditorSheet({
                   )}
                 </div>
                 <CldUploadButton
+                  type="button"
                   uploadPreset="nairobi_techcreative"
                   onSuccess={handleUploadSuccess}
                   onUpload={() => setIsUploading(true)}
