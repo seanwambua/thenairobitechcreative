@@ -102,7 +102,7 @@ export function ServicesClient({
                     </Avatar>
                     <div className="space-y-1">
                       <h4 className="text-sm font-semibold">
-                        A Message from the Founder
+                        Meet the founder
                       </h4>
                       <p className="text-sm text-muted-foreground">
                         {founderName}
