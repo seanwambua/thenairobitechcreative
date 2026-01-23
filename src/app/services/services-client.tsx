@@ -27,7 +27,6 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card';
-import { getSettings } from '@/app/actions/settings';
 import { Separator } from '@/components/ui/separator';
 
 const iconMap: { [key: string]: LucideIcon } = {
@@ -43,20 +42,17 @@ const iconMap: { [key: string]: LucideIcon } = {
 
 export function ServicesClient({
   founderImage,
+  founderName,
+  founderMessage,
 }: {
   founderImage: string | null;
+  founderName: string | null;
+  founderMessage: string | null;
 }) {
-  const [founderName, setFounderName] = React.useState<string | null>(null);
   const cardVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0 },
   };
-
-  React.useEffect(() => {
-    getSettings(['founderName']).then((settings) => {
-      setFounderName(settings.founderName);
-    });
-  }, []);
 
   const founderInitials = founderName
     ?.split(' ')
@@ -84,6 +80,7 @@ export function ServicesClient({
                     <AvatarImage
                       src={founderImage ?? undefined}
                       alt={founderName ?? undefined}
+                      className="object-contain"
                     />
                     <AvatarFallback>{founderInitials}</AvatarFallback>
                   </Avatar>
@@ -99,6 +96,7 @@ export function ServicesClient({
                       <AvatarImage
                         src={founderImage ?? undefined}
                         alt={founderName ?? undefined}
+                        className="object-contain"
                       />
                       <AvatarFallback>{founderInitials}</AvatarFallback>
                     </Avatar>
@@ -113,13 +111,7 @@ export function ServicesClient({
                   </div>
                   <Separator />
                   <div className="text-sm text-muted-foreground">
-                    <p className="mb-2">
-                      "At The Nairobi Tech Creative, we believe in the power of
-                      African innovation to solve global problems. We are not
-                      just building software; we are crafting digital solutions
-                      that empower communities, drive growth, and create lasting
-                      impact."
-                    </p>
+                    <p className="mb-2">"{founderMessage}"</p>
                     <p className="mb-1 font-semibold text-foreground">
                       Our Mission
                     </p>

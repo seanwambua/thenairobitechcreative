@@ -41,7 +41,7 @@ export async function seedDatabase() {
       imageUrl: placeholderImages.enterpriseB.imageUrl,
       imageHint: 'A screenshot of the project',
       gridSpan: 'col-span-1',
-      icon: 'Code',
+      icon: 'Boxes',
     },
   });
 
@@ -61,6 +61,11 @@ export async function seedDatabase() {
       { key: 'logo', value: null },
       { key: 'founderImage', value: null },
       { key: 'founderName', value: 'Jalen Doe' },
+      {
+        key: 'founderMessage',
+        value:
+          'At The Nairobi Tech Creative, we believe in the power of African innovation to solve global problems. We are not just building software; we are crafting digital solutions that empower communities, drive growth, and create lasting impact.',
+      },
     ],
   });
 

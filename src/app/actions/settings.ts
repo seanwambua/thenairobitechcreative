@@ -40,3 +40,19 @@ export async function updateSetting(key: string, value: string | null) {
   revalidatePath('/', 'layout');
   revalidatePath('/dashboard', 'layout');
 }
+
+export async function updateSettings(data: Record<string, string | null>) {
+  const transactions = Object.entries(data).map(([key, value]) =>
+    prisma.settings.upsert({
+      where: { key },
+      update: { value },
+      create: { key, value: value ?? '' },
+    })
+  );
+
+  await prisma.$transaction(transactions);
+
+  revalidatePath('/', 'layout');
+  revalidatePath('/dashboard', 'layout');
+  revalidatePath('/services');
+}
