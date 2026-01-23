@@ -54,9 +54,11 @@ export function BentoPortfolio({ projects, logoUrl }: BentoPortfolioProps) {
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {projects.map((project, index) => {
         const Icon = icons[project.icon];
-        const hasProjectImage = !!project.imageUrl;
-        const imageSrc =
-          project.imageUrl || logoUrl || placeholderImages.logo.imageUrl;
+        const hasProjectImage =
+          !!project.imageUrl && !project.imageUrl.includes('placehold.co');
+        const imageSrc = hasProjectImage
+          ? project.imageUrl
+          : logoUrl || placeholderImages.logo.imageUrl;
         const imageClassName = hasProjectImage
           ? 'object-cover'
           : 'object-contain p-8';
