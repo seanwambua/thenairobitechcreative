@@ -91,7 +91,7 @@ export function ServicesClient({
               </HoverCardTrigger>
               <HoverCardContent className="w-80">
                 <div className="flex flex-col gap-4">
-                  <div className="flex justify-between space-x-4">
+                  <div className="flex flex-col items-center space-y-2">
                     <Avatar>
                       <AvatarImage
                         src={founderImage ?? undefined}
@@ -100,7 +100,7 @@ export function ServicesClient({
                       />
                       <AvatarFallback>{founderInitials}</AvatarFallback>
                     </Avatar>
-                    <div className="space-y-1">
+                    <div className="space-y-1 text-center">
                       <h4 className="text-sm font-semibold">
                         Meet the founder
                       </h4>
