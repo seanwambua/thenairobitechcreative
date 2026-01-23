@@ -31,7 +31,10 @@ import { placeholderImages } from '@/lib/placeholder-images';
 import { Upload, Loader2 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { TestimonialSchema } from '@/lib/schemas';
-import { createTestimonial, updateTestimonial } from '@/app/actions/testimonials';
+import {
+  createTestimonial,
+  updateTestimonial,
+} from '@/app/actions/testimonials';
 import { CldUploadButton } from 'next-cloudinary';
 import { cn } from '@/lib/utils';
 
@@ -93,16 +96,23 @@ export function TestimonialEditorSheet({
   const handleUploadSuccess = (result: any) => {
     const secure_url = result.info.secure_url;
     setImagePreview(secure_url);
-    toast({ title: 'Image Uploaded', description: 'The avatar has been updated.' });
+    toast({
+      title: 'Image Uploaded',
+      description: 'The avatar has been updated.',
+    });
     setIsUploading(false);
   };
 
   async function onSubmit(values: TestimonialFormValues) {
     setIsSaving(true);
     const testimonialData = {
-        ...values,
-        avatarUrl: imagePreview || (testimonial ? testimonial.avatarUrl : placeholderImages.testimonial1.imageUrl),
-        avatarHint: testimonial?.avatarHint || 'new user',
+      ...values,
+      avatarUrl:
+        imagePreview ||
+        (testimonial
+          ? testimonial.avatarUrl
+          : placeholderImages.testimonial1.imageUrl),
+      avatarHint: testimonial?.avatarHint || 'new user',
     };
 
     try {
@@ -111,7 +121,7 @@ export function TestimonialEditorSheet({
       } else {
         await createTestimonial(testimonialData);
       }
-      
+
       toast({
         title: `Testimonial ${testimonial ? 'Updated' : 'Created'}!`,
         description: `The testimonial from "${values.author}" has been successfully saved.`,
@@ -130,9 +140,11 @@ export function TestimonialEditorSheet({
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetContent className="w-full sm:max-w-2xl overflow-y-auto">
+      <SheetContent className="w-full overflow-y-auto sm:max-w-2xl">
         <SheetHeader>
-          <SheetTitle>{testimonial ? 'Edit Testimonial' : 'Create New Testimonial'}</SheetTitle>
+          <SheetTitle>
+            {testimonial ? 'Edit Testimonial' : 'Create New Testimonial'}
+          </SheetTitle>
           <SheetDescription>
             {testimonial
               ? 'Make changes to this testimonial.'
@@ -143,38 +155,40 @@ export function TestimonialEditorSheet({
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormItem className="flex flex-col items-center text-center">
-                  <FormLabel>Author Avatar</FormLabel>
-                  <div className="relative">
-                    <Avatar className="h-32 w-32">
-                      {imagePreview && <AvatarImage src={imagePreview} alt="Avatar preview" />}
-                      <AvatarFallback>
-                        {form.getValues('author')?.charAt(0) || '?'}
-                      </AvatarFallback>
-                    </Avatar>
-                    {isUploading && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full">
-                        <Loader2 className="h-8 w-8 animate-spin text-white" />
-                      </div>
+                <FormLabel>Author Avatar</FormLabel>
+                <div className="relative">
+                  <Avatar className="h-32 w-32">
+                    {imagePreview && (
+                      <AvatarImage src={imagePreview} alt="Avatar preview" />
                     )}
-                  </div>
-                  <CldUploadButton
-                    uploadPreset="nairobi_techcreative"
-                    onSuccess={handleUploadSuccess}
-                    onUpload={() => setIsUploading(true)}
-                    onError={(error) => {
-                      setIsUploading(false);
-                      toast({
-                        variant: 'destructive',
-                        title: 'Upload Failed',
-                        description: String((error as any).info),
-                      });
-                    }}
-                    className={cn(buttonVariants({ variant: 'outline' }), 'mt-2')}
-                    disabled={isUploading}
-                  >
-                    <Upload className="mr-2 h-4 w-4" />
-                    {isUploading ? 'Uploading...' : 'Upload Image'}
-                  </CldUploadButton>
+                    <AvatarFallback>
+                      {form.getValues('author')?.charAt(0) || '?'}
+                    </AvatarFallback>
+                  </Avatar>
+                  {isUploading && (
+                    <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50">
+                      <Loader2 className="h-8 w-8 animate-spin text-white" />
+                    </div>
+                  )}
+                </div>
+                <CldUploadButton
+                  uploadPreset="nairobi_techcreative"
+                  onSuccess={handleUploadSuccess}
+                  onUpload={() => setIsUploading(true)}
+                  onError={(error) => {
+                    setIsUploading(false);
+                    toast({
+                      variant: 'destructive',
+                      title: 'Upload Failed',
+                      description: String((error as any).info),
+                    });
+                  }}
+                  className={cn(buttonVariants({ variant: 'outline' }), 'mt-2')}
+                  disabled={isUploading}
+                >
+                  <Upload className="mr-2 h-4 w-4" />
+                  {isUploading ? 'Uploading...' : 'Upload Image'}
+                </CldUploadButton>
               </FormItem>
 
               <FormField
@@ -229,7 +243,9 @@ export function TestimonialEditorSheet({
                   </Button>
                 </SheetClose>
                 <Button type="submit" disabled={isUploading || isSaving}>
-                  {(isUploading || isSaving) ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  {isUploading || isSaving ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : null}
                   Save Testimonial
                 </Button>
               </SheetFooter>

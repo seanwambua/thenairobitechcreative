@@ -74,14 +74,28 @@ export function PostInteractions({
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-muted-foreground">Share:</span>
-          <Button variant="ghost" size="icon" onClick={() => handleShare('twitter')}>
+          <span className="text-sm font-medium text-muted-foreground">
+            Share:
+          </span>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => handleShare('twitter')}
+          >
             <Twitter className="h-5 w-5" />
           </Button>
-          <Button variant="ghost" size="icon" onClick={() => handleShare('linkedin')}>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => handleShare('linkedin')}
+          >
             <Linkedin className="h-5 w-5" />
           </Button>
-          <Button variant="ghost" size="icon" onClick={() => handleShare('link')}>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => handleShare('link')}
+          >
             <Link2 className="h-5 w-5" />
           </Button>
         </div>

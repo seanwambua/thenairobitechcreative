@@ -15,7 +15,9 @@ export default async function ContentPage() {
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
           <CardTitle>Blog Posts</CardTitle>
-          <CardDescription>Manage your articles and blog content.</CardDescription>
+          <CardDescription>
+            Manage your articles and blog content.
+          </CardDescription>
         </div>
         {/* The button to open the sheet will be in the client component */}
       </CardHeader>

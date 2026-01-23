@@ -3,7 +3,7 @@ import { placeholderImages } from '@/lib/placeholder-images';
 
 export async function seedDatabase() {
   console.log('Starting database seed...');
-  
+
   await prisma.post.deleteMany({});
   await prisma.project.deleteMany({});
   await prisma.testimonial.deleteMany({});
@@ -15,7 +15,7 @@ export async function seedDatabase() {
       email: 'example@example.com',
       name: 'Test User',
     },
-  })
+  });
 
   await prisma.post.create({
     data: {
@@ -31,7 +31,7 @@ export async function seedDatabase() {
       likes: 10,
       comments: '[]',
     },
-  })
+  });
 
   await prisma.project.create({
     data: {
@@ -43,7 +43,7 @@ export async function seedDatabase() {
       gridSpan: 'col-span-1',
       icon: 'Code',
     },
-  })
+  });
 
   await prisma.testimonial.create({
     data: {
@@ -53,16 +53,16 @@ export async function seedDatabase() {
       avatarUrl: placeholderImages.testimonial1Image.imageUrl,
       avatarHint: 'A happy customer',
     },
-  })
+  });
 
   await prisma.settings.createMany({
     data: [
       { key: 'heroImage', value: null },
       { key: 'logo', value: null },
       { key: 'founderImage', value: null },
-      { key: 'founderName', value: 'Jalen Doe' }
+      { key: 'founderName', value: 'Jalen Doe' },
     ],
-  })
+  });
 
-  console.log('Database seeded successfully.')
+  console.log('Database seeded successfully.');
 }

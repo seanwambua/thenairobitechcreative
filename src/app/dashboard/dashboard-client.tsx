@@ -57,22 +57,22 @@ export function DashboardClient({
   }, []);
 
   const pathname = usePathname();
-  
+
   const founderInfo = placeholderImages.founderImage;
   const founderInitials = founderInfo.imageHint
     .split(' ')
     .map((n) => n[0])
     .join('');
-  
+
   return (
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-full overflow-hidden flex items-center justify-center">
+            <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full">
               <Logo logoUrl={logoUrl} />
             </div>
-            <span className="hidden font-headline text-xl font-semibold lg:inline-block group-data-[collapsible=icon]:hidden">
+            <span className="hidden font-headline text-xl font-semibold group-data-[collapsible=icon]:hidden lg:inline-block">
               NTC
             </span>
             <span className="hidden font-headline text-xl font-semibold lg:inline-block">
@@ -106,7 +106,7 @@ export function DashboardClient({
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
-             <SidebarMenuItem>
+            <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
                 isActive={pathname.startsWith('/dashboard/media')}
@@ -172,10 +172,11 @@ export function DashboardClient({
           <div className="flex items-center justify-between group-data-[collapsible=icon]:justify-center">
             <div className="flex items-center gap-3 group-data-[collapsible=icon]:hidden">
               <Avatar className="h-10 w-10">
-                 <AvatarImage src={founderImage ?? undefined} alt={founderInfo.imageHint} />
-                 <AvatarFallback>
-                  {founderInitials}
-                 </AvatarFallback>
+                <AvatarImage
+                  src={founderImage ?? undefined}
+                  alt={founderInfo.imageHint}
+                />
+                <AvatarFallback>{founderInitials}</AvatarFallback>
               </Avatar>
               <div>
                 <p className="font-semibold">{founderInfo.imageHint}</p>
@@ -216,9 +217,7 @@ export function DashboardClient({
           </div>
           <ThemeToggle />
         </header>
-        <main className="flex-1 overflow-y-auto p-4 md:p-6">
-          {children}
-        </main>
+        <main className="flex-1 overflow-y-auto p-4 md:p-6">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

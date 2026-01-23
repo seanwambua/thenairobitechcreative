@@ -11,7 +11,10 @@ export function ProspectsBanner({ logoUrl }: { logoUrl: string | null }) {
 
   const bannerVariants = {
     hidden: { y: '100%' },
-    visible: { y: 0, transition: { type: 'spring', stiffness: 100, damping: 20, delay: 2 } },
+    visible: {
+      y: 0,
+      transition: { type: 'spring', stiffness: 100, damping: 20, delay: 2 },
+    },
     exit: { y: '100%', transition: { type: 'tween', duration: 0.3 } },
   };
 
@@ -43,8 +46,8 @@ export function ProspectsBanner({ logoUrl }: { logoUrl: string | null }) {
                   Now accepting 2026 projects
                 </h2>
                 <p className="mt-2 text-muted-foreground">
-                  Looking to step into the digital space? Lets connect and explore what best works
-                  for you
+                  Looking to step into the digital space? Lets connect and
+                  explore what best works for you
                 </p>
               </div>
               <div className="mt-6">

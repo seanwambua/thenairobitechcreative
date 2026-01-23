@@ -2,9 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  CardContent,
-} from '@/components/ui/card';
+import { CardContent } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -37,7 +35,11 @@ import { ProjectEditorSheet } from '@/components/project-editor-sheet';
 import type { Project } from '@/lib/data';
 import { deleteProject } from '@/app/actions/projects';
 
-export function ProjectsClient({ initialProjects }: { initialProjects: Project[] }) {
+export function ProjectsClient({
+  initialProjects,
+}: {
+  initialProjects: Project[];
+}) {
   const router = useRouter();
   const [isEditorOpen, setEditorOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
@@ -90,20 +92,24 @@ export function ProjectsClient({ initialProjects }: { initialProjects: Project[]
   return (
     <>
       <div className="flex justify-end p-6 pt-0">
-          <Button onClick={handleCreateNew}>
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Create New Project
-          </Button>
+        <Button onClick={handleCreateNew}>
+          <PlusCircle className="mr-2 h-4 w-4" />
+          Create New Project
+        </Button>
       </div>
       <CardContent>
         {initialProjects.length === 0 ? (
-          <div className="py-8 text-center text-muted-foreground">No projects found.</div>
+          <div className="py-8 text-center text-muted-foreground">
+            No projects found.
+          </div>
         ) : (
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Title</TableHead>
-                <TableHead className="hidden md:table-cell">Description</TableHead>
+                <TableHead className="hidden md:table-cell">
+                  Description
+                </TableHead>
                 <TableHead>
                   <span className="sr-only">Actions</span>
                 </TableHead>
@@ -119,7 +125,11 @@ export function ProjectsClient({ initialProjects }: { initialProjects: Project[]
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button aria-haspopup="true" size="icon" variant="ghost">
+                        <Button
+                          aria-haspopup="true"
+                          size="icon"
+                          variant="ghost"
+                        >
                           <MoreHorizontal className="h-4 w-4" />
                           <span className="sr-only">Toggle menu</span>
                         </Button>
@@ -155,13 +165,16 @@ export function ProjectsClient({ initialProjects }: { initialProjects: Project[]
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the project titled &quot;
+              This action cannot be undone. This will permanently delete the
+              project titled &quot;
               {projectToDelete?.title}&quot;.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteConfirm}>Continue</AlertDialogAction>
+            <AlertDialogAction onClick={handleDeleteConfirm}>
+              Continue
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

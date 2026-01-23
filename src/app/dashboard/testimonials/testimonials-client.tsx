@@ -36,12 +36,18 @@ import { TestimonialEditorSheet } from '@/components/testimonial-editor-sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { deleteTestimonial } from '@/app/actions/testimonials';
 
-export function TestimonialsClient({ initialTestimonials }: { initialTestimonials: Testimonial[] }) {
+export function TestimonialsClient({
+  initialTestimonials,
+}: {
+  initialTestimonials: Testimonial[];
+}) {
   const router = useRouter();
   const [isEditorOpen, setEditorOpen] = useState(false);
-  const [editingTestimonial, setEditingTestimonial] = useState<Testimonial | null>(null);
+  const [editingTestimonial, setEditingTestimonial] =
+    useState<Testimonial | null>(null);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [testimonialToDelete, setTestimonialToDelete] = useState<Testimonial | null>(null);
+  const [testimonialToDelete, setTestimonialToDelete] =
+    useState<Testimonial | null>(null);
   const { toast } = useToast();
   const [mounted, setMounted] = useState(false);
 
@@ -94,14 +100,16 @@ export function TestimonialsClient({ initialTestimonials }: { initialTestimonial
   return (
     <>
       <div className="flex justify-end p-6 pt-0">
-          <Button onClick={handleCreateNew}>
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Create New Testimonial
-          </Button>
-        </div>
+        <Button onClick={handleCreateNew}>
+          <PlusCircle className="mr-2 h-4 w-4" />
+          Create New Testimonial
+        </Button>
+      </div>
       <CardContent>
         {initialTestimonials.length === 0 ? (
-          <div className="py-8 text-center text-muted-foreground">No testimonials found.</div>
+          <div className="py-8 text-center text-muted-foreground">
+            No testimonials found.
+          </div>
         ) : (
           <Table>
             <TableHeader>
@@ -120,41 +128,54 @@ export function TestimonialsClient({ initialTestimonials }: { initialTestimonial
                   <TableCell className="font-medium">
                     <div className="flex items-center gap-3">
                       <Avatar className="h-10 w-10">
-                        <AvatarImage src={testimonial.avatarUrl} alt={testimonial.author} />
-                        <AvatarFallback>{testimonial.author.charAt(0)}</AvatarFallback>
+                        <AvatarImage
+                          src={testimonial.avatarUrl}
+                          alt={testimonial.author}
+                        />
+                        <AvatarFallback>
+                          {testimonial.author.charAt(0)}
+                        </AvatarFallback>
                       </Avatar>
                       {testimonial.author}
                     </div>
                   </TableCell>
-                  <TableCell className="hidden md:table-cell">{testimonial.title}</TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {testimonial.title}
+                  </TableCell>
                   <TableCell className="hidden max-w-sm truncate md:table-cell">
                     "{testimonial.quote}"
                   </TableCell>
                   <TableCell>
-                  {mounted ? (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button aria-haspopup="true" size="icon" variant="ghost">
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Toggle menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => handleEdit(testimonial)}>
-                          Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onClick={() => handleDeleteInitiate(testimonial)}
-                          className="text-destructive"
-                        >
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  ) : (
-                    <div className="h-10 w-10" />
-                  )}
+                    {mounted ? (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            aria-haspopup="true"
+                            size="icon"
+                            variant="ghost"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Toggle menu</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={() => handleEdit(testimonial)}
+                          >
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onClick={() => handleDeleteInitiate(testimonial)}
+                            className="text-destructive"
+                          >
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    ) : (
+                      <div className="h-10 w-10" />
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
@@ -173,13 +194,16 @@ export function TestimonialsClient({ initialTestimonials }: { initialTestimonial
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the testimonial from &quot;
+              This action cannot be undone. This will permanently delete the
+              testimonial from &quot;
               {testimonialToDelete?.author}&quot;.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteConfirm}>Continue</AlertDialogAction>
+            <AlertDialogAction onClick={handleDeleteConfirm}>
+              Continue
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

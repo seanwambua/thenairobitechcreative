@@ -1,4 +1,3 @@
-
 'use client';
 import {
   Card,
@@ -44,17 +43,37 @@ const chartData = [
 ];
 
 const recentProjects = [
-    { id: 1, name: "Project Alpha", client: "Acme Inc.", status: "In Progress" },
-    { id: 2, name: "Project Beta", client: "Stark Industries", status: "Completed" },
-    { id: 3, name: "Project Gamma", client: "Wayne Enterprises", status: "Pending" },
-    { id: 4, name: "Project Delta", client: "Ollivanders", status: "In Progress" },
+  { id: 1, name: 'Project Alpha', client: 'Acme Inc.', status: 'In Progress' },
+  {
+    id: 2,
+    name: 'Project Beta',
+    client: 'Stark Industries',
+    status: 'Completed',
+  },
+  {
+    id: 3,
+    name: 'Project Gamma',
+    client: 'Wayne Enterprises',
+    status: 'Pending',
+  },
+  {
+    id: 4,
+    name: 'Project Delta',
+    client: 'Ollivanders',
+    status: 'In Progress',
+  },
 ];
 
 export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <motion.div variants={cardVariants} initial="hidden" animate="visible" transition={{ delay: 0.1 }}>
+        <motion.div
+          variants={cardVariants}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: 0.1 }}
+        >
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
@@ -70,10 +89,17 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </motion.div>
-        <motion.div variants={cardVariants} initial="hidden" animate="visible" transition={{ delay: 0.2 }}>
+        <motion.div
+          variants={cardVariants}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: 0.2 }}
+        >
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Subscriptions</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Subscriptions
+              </CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -84,10 +110,17 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </motion.div>
-        <motion.div variants={cardVariants} initial="hidden" animate="visible" transition={{ delay: 0.3 }}>
+        <motion.div
+          variants={cardVariants}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: 0.3 }}
+        >
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">New Projects</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                New Projects
+              </CardTitle>
               <Briefcase className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -98,10 +131,17 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </motion.div>
-        <motion.div variants={cardVariants} initial="hidden" animate="visible" transition={{ delay: 0.4 }}>
+        <motion.div
+          variants={cardVariants}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: 0.4 }}
+        >
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Users</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Active Users
+              </CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -115,7 +155,13 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <motion.div className="lg:col-span-2" variants={cardVariants} initial="hidden" animate="visible" transition={{ delay: 0.5 }}>
+        <motion.div
+          className="lg:col-span-2"
+          variants={cardVariants}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: 0.5 }}
+        >
           <Card>
             <CardHeader>
               <CardTitle>Overview</CardTitle>
@@ -143,7 +189,12 @@ export default function DashboardPage() {
           </Card>
         </motion.div>
 
-        <motion.div variants={cardVariants} initial="hidden" animate="visible" transition={{ delay: 0.6 }}>
+        <motion.div
+          variants={cardVariants}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: 0.6 }}
+        >
           <Card>
             <CardHeader>
               <CardTitle>Recent Projects</CardTitle>
@@ -163,7 +214,9 @@ export default function DashboardPage() {
                 <TableBody>
                   {recentProjects.map((project) => (
                     <TableRow key={project.id}>
-                      <TableCell className="font-medium">{project.name}</TableCell>
+                      <TableCell className="font-medium">
+                        {project.name}
+                      </TableCell>
                       <TableCell>{project.client}</TableCell>
                       <TableCell>
                         <Badge
@@ -171,8 +224,8 @@ export default function DashboardPage() {
                             project.status === 'Completed'
                               ? 'default'
                               : project.status === 'In Progress'
-                              ? 'secondary'
-                              : 'outline'
+                                ? 'secondary'
+                                : 'outline'
                           }
                         >
                           {project.status}

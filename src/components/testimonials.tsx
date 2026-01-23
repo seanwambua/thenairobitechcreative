@@ -42,7 +42,8 @@ export function Testimonials({ testimonials }: TestimonialsProps) {
             Trusted by Innovators
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Hear from the leaders who have partnered with us to build the future.
+            Hear from the leaders who have partnered with us to build the
+            future.
           </p>
         </motion.div>
 
@@ -71,13 +72,17 @@ export function Testimonials({ testimonials }: TestimonialsProps) {
                               alt={testimonial.author}
                               data-ai-hint={testimonial.avatarHint}
                             />
-                            <AvatarFallback>{testimonial.author.charAt(0)}</AvatarFallback>
+                            <AvatarFallback>
+                              {testimonial.author.charAt(0)}
+                            </AvatarFallback>
                           </Avatar>
                           <div>
                             <p className="font-headline text-base font-semibold text-foreground">
                               {testimonial.author}
                             </p>
-                            <p className="text-sm text-muted-foreground">{testimonial.title}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {testimonial.title}
+                            </p>
                           </div>
                         </div>
                       </footer>

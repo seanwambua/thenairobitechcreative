@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -40,7 +39,9 @@ const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address.' }),
   company: z.string().optional(),
   service: z.string().optional(),
-  message: z.string().min(10, { message: 'Project details must be at least 10 characters.' }),
+  message: z
+    .string()
+    .min(10, { message: 'Project details must be at least 10 characters.' }),
 });
 
 interface InquirySheetProps {
@@ -67,7 +68,8 @@ export function InquirySheet({ children, logoUrl }: InquirySheetProps) {
     console.log(values);
     toast({
       title: 'Inquiry Sent!',
-      description: "Thanks for your interest. We'll review your project details and get back to you shortly.",
+      description:
+        "Thanks for your interest. We'll review your project details and get back to you shortly.",
     });
     form.reset();
     setOpen(false);
@@ -79,17 +81,22 @@ export function InquirySheet({ children, logoUrl }: InquirySheetProps) {
       <SheetContent className="h-full w-full overflow-y-auto sm:max-w-md">
         <div className="mx-auto max-w-2xl py-12">
           <SheetHeader className="text-center">
-            <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full overflow-hidden">
+            <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center overflow-hidden rounded-full">
               <Logo logoUrl={logoUrl} />
             </div>
-            <SheetTitle className="text-3xl font-bold">Project Inquiry</SheetTitle>
+            <SheetTitle className="text-3xl font-bold">
+              Project Inquiry
+            </SheetTitle>
             <SheetDescription>
               Tell us a bit about your project. We're excited to learn more.
             </SheetDescription>
           </SheetHeader>
           <div className="py-8">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
                 <FormField
                   control={form.control}
                   name="name"
@@ -110,7 +117,10 @@ export function InquirySheet({ children, logoUrl }: InquirySheetProps) {
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input placeholder="your.email@example.com" {...field} />
+                        <Input
+                          placeholder="your.email@example.com"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -135,7 +145,10 @@ export function InquirySheet({ children, logoUrl }: InquirySheetProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Service of Interest</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select a service" />
@@ -183,4 +196,3 @@ export function InquirySheet({ children, logoUrl }: InquirySheetProps) {
     </Sheet>
   );
 }
-    

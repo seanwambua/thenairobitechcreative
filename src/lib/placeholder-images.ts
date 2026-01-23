@@ -35,18 +35,18 @@ export const placeholderImages: Record<string, ImagePlaceholder> = {
     id: 'design',
     imageUrl: 'https://placehold.co/1920x1080',
     imageHint: 'Placeholder hero image for design',
-    description: 'Design Category'
+    description: 'Design Category',
   },
   finance: {
     id: 'finance',
     imageUrl: 'https://placehold.co/1920x1080',
     imageHint: 'Placeholder hero image for finance',
-    description: 'Finance Category'
+    description: 'Finance Category',
   },
   enterpriseB: {
     id: 'enterpriseB',
     imageUrl: 'https://placehold.co/1920x1080',
     imageHint: 'Placeholder hero image for enterprise B',
-    description: 'Enterprise B Category'
-  }
+    description: 'Enterprise B Category',
+  },
 };

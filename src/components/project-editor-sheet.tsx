@@ -48,7 +48,7 @@ const formSchema = ProjectSchema.pick({
   icon: true,
   gridSpan: true,
 }).extend({
-    keyFeatures: z.string().min(3, 'Please add at least one key feature.'),
+  keyFeatures: z.string().min(3, 'Please add at least one key feature.'),
 });
 
 type ProjectFormValues = z.infer<typeof formSchema>;
@@ -60,7 +60,12 @@ interface ProjectEditorSheetProps {
   onSave: () => void;
 }
 
-export function ProjectEditorSheet({ isOpen, setIsOpen, project, onSave }: ProjectEditorSheetProps) {
+export function ProjectEditorSheet({
+  isOpen,
+  setIsOpen,
+  project,
+  onSave,
+}: ProjectEditorSheetProps) {
   const { toast } = useToast();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -104,7 +109,10 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project, onSave }: Proje
   const handleUploadSuccess = (result: any) => {
     const secure_url = result.info.secure_url;
     setImagePreview(secure_url);
-    toast({ title: 'Image Uploaded', description: 'The project image has been updated.' });
+    toast({
+      title: 'Image Uploaded',
+      description: 'The project image has been updated.',
+    });
     setIsUploading(false);
   };
 
@@ -113,7 +121,9 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project, onSave }: Proje
     const projectData = {
       ...values,
       keyFeatures: values.keyFeatures.split(',').map((s) => s.trim()),
-      imageUrl: imagePreview || (project ? project.imageUrl : placeholderImages.enterpriseB.imageUrl),
+      imageUrl:
+        imagePreview ||
+        (project ? project.imageUrl : placeholderImages.enterpriseB.imageUrl),
       imageHint: project?.imageHint || 'abstract network',
     };
 
@@ -123,7 +133,7 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project, onSave }: Proje
       } else {
         await createProject(projectData);
       }
-      
+
       toast({
         title: `Project ${project ? 'Updated' : 'Created'}!`,
         description: `"${values.title}" has been successfully saved.`,
@@ -142,9 +152,11 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project, onSave }: Proje
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetContent className="w-full sm:max-w-3xl overflow-y-auto">
+      <SheetContent className="w-full overflow-y-auto sm:max-w-3xl">
         <SheetHeader>
-          <SheetTitle>{project ? 'Edit Project' : 'Create New Project'}</SheetTitle>
+          <SheetTitle>
+            {project ? 'Edit Project' : 'Create New Project'}
+          </SheetTitle>
           <SheetDescription>
             {project
               ? 'Make changes to your existing project.'
@@ -153,7 +165,10 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project, onSave }: Proje
         </SheetHeader>
         <div className="py-8">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="grid grid-cols-1 gap-8 md:grid-cols-3"
+            >
               {/* Image and Details Section */}
               <div className="space-y-6 md:col-span-1">
                 <FormItem>
@@ -185,7 +200,10 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project, onSave }: Proje
                         description: String((error as any).info),
                       });
                     }}
-                    className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}
+                    className={cn(
+                      buttonVariants({ variant: 'outline' }),
+                      'w-full'
+                    )}
                     disabled={isUploading}
                   >
                     <Upload className="mr-2 h-4 w-4" />
@@ -234,7 +252,10 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project, onSave }: Proje
                     <FormItem>
                       <FormLabel>Key Features</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter features, separated by commas" {...field} />
+                        <Input
+                          placeholder="Enter features, separated by commas"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -247,7 +268,10 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project, onSave }: Proje
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Icon</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select an icon" />
@@ -271,16 +295,25 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project, onSave }: Proje
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Grid Span</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select grid span" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="col-span-1 md:col-span-1">Small</SelectItem>
-                            <SelectItem value="col-span-1 md:col-span-2">Medium</SelectItem>
-                            <SelectItem value="col-span-1 md:col-span-3">Large</SelectItem>
+                            <SelectItem value="col-span-1 md:col-span-1">
+                              Small
+                            </SelectItem>
+                            <SelectItem value="col-span-1 md:col-span-2">
+                              Medium
+                            </SelectItem>
+                            <SelectItem value="col-span-1 md:col-span-3">
+                              Large
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -288,16 +321,18 @@ export function ProjectEditorSheet({ isOpen, setIsOpen, project, onSave }: Proje
                     )}
                   />
                 </div>
-                 <SheetFooter className="col-span-full mt-4">
-                    <SheetClose asChild>
+                <SheetFooter className="col-span-full mt-4">
+                  <SheetClose asChild>
                     <Button type="button" variant="outline">
-                        Cancel
+                      Cancel
                     </Button>
-                    </SheetClose>
-                    <Button type="submit" disabled={isUploading || isSaving}>
-                      {(isUploading || isSaving) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                      Save Project
-                    </Button>
+                  </SheetClose>
+                  <Button type="submit" disabled={isUploading || isSaving}>
+                    {(isUploading || isSaving) && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+                    Save Project
+                  </Button>
                 </SheetFooter>
               </div>
             </form>

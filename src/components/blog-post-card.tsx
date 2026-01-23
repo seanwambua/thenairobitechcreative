@@ -2,7 +2,13 @@
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import type { Post } from '@/lib/data';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
@@ -42,23 +48,27 @@ export function BlogPostCard({ post }: BlogPostCardProps) {
             <p className="text-muted-foreground">{post.description}</p>
           </CardContent>
           <CardFooter className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                  <Avatar className="h-10 w-10 border-2 border-primary">
-                      <AvatarImage src={post.authorAvatarUrl} alt={post.author} data-ai-hint={post.authorAvatarHint}/>
-                      <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                      <p className="text-sm font-semibold">{post.author}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {format(new Date(post.createdAt), 'MMM d, yyyy')}
-                      </p>
-                  </div>
+            <div className="flex items-center gap-3">
+              <Avatar className="h-10 w-10 border-2 border-primary">
+                <AvatarImage
+                  src={post.authorAvatarUrl}
+                  alt={post.author}
+                  data-ai-hint={post.authorAvatarHint}
+                />
+                <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="text-sm font-semibold">{post.author}</p>
+                <p className="text-xs text-muted-foreground">
+                  {format(new Date(post.createdAt), 'MMM d, yyyy')}
+                </p>
               </div>
-              <Button variant="ghost" size="icon" asChild>
-                  <div>
-                    <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
-                  </div>
-              </Button>
+            </div>
+            <Button variant="ghost" size="icon" asChild>
+              <div>
+                <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+              </div>
+            </Button>
           </CardFooter>
         </Card>
       </Link>

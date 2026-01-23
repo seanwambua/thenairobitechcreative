@@ -17,14 +17,18 @@ export default async function ServicesPage() {
       <div className="flex min-h-screen flex-col bg-background">
         <Header logoUrl={logoUrl} />
         <main className="flex-1">
-          <ServicesClient founderImage={founderImage ?? placeholderImages.founderImage.imageUrl} />
+          <ServicesClient
+            founderImage={
+              founderImage ?? placeholderImages.founderImage.imageUrl
+            }
+          />
           <Cta logoUrl={logoUrl} />
         </main>
         <Footer logoUrl={logoUrl} />
       </div>
     );
   } catch (error: any) {
-     if (error.message.includes('no such table')) {
+    if (error.message.includes('no such table')) {
       return <DbUninitializedError />;
     }
     throw error;

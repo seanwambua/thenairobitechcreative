@@ -1,14 +1,20 @@
 'use client';
-import {Button} from '@/components/ui/button';
-import {motion} from 'framer-motion';
-import {ChevronRight} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
+import { ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import { InquirySheet } from './inquiry-sheet';
 import { placeholderImages } from '@/lib/placeholder-images';
 
-export function Hero({heroImage, logoUrl}: {heroImage: string | null; logoUrl: string | null}) {
+export function Hero({
+  heroImage,
+  logoUrl,
+}: {
+  heroImage: string | null;
+  logoUrl: string | null;
+}) {
   const containerVariants = {
-    hidden: {opacity: 0},
+    hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
@@ -18,7 +24,7 @@ export function Hero({heroImage, logoUrl}: {heroImage: string | null; logoUrl: s
   };
 
   const textItemVariants = {
-    hidden: {opacity: 0, x: -20},
+    hidden: { opacity: 0, x: -20 },
     visible: {
       opacity: 1,
       x: 0,
@@ -27,9 +33,9 @@ export function Hero({heroImage, logoUrl}: {heroImage: string | null; logoUrl: s
       },
     },
   };
-  
+
   const imageItemVariants = {
-    hidden: {opacity: 0, x: 20},
+    hidden: { opacity: 0, x: 20 },
     visible: {
       opacity: 1,
       x: 0,
@@ -40,7 +46,7 @@ export function Hero({heroImage, logoUrl}: {heroImage: string | null; logoUrl: s
   };
 
   return (
-    <section className="flex w-full h-auto items-center bg-background">
+    <section className="flex h-auto w-full items-center bg-background">
       <motion.div
         className="container mx-auto grid grid-cols-1 items-center gap-12 px-4 py-24 md:grid-cols-2 lg:gap-20"
         variants={containerVariants}
@@ -61,8 +67,8 @@ export function Hero({heroImage, logoUrl}: {heroImage: string | null; logoUrl: s
             className="mt-6 max-w-[600px] text-lg text-muted-foreground md:text-xl"
             variants={textItemVariants}
           >
-            We build innovative digital products that empower businesses and communities across the
-            continent and beyond.
+            We build innovative digital products that empower businesses and
+            communities across the continent and beyond.
           </motion.p>
           <motion.div
             className="mt-8 flex flex-col justify-center gap-4 sm:flex-row"
@@ -70,28 +76,25 @@ export function Hero({heroImage, logoUrl}: {heroImage: string | null; logoUrl: s
           >
             <Button size="lg">Explore Our Work</Button>
             <InquirySheet logoUrl={logoUrl}>
-              <Button
-                size="lg"
-                variant="outline"
-              >
+              <Button size="lg" variant="outline">
                 Contact Us <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
             </InquirySheet>
           </motion.div>
         </div>
-        <motion.div 
-            className="relative hidden h-[600px] w-full md:block md:h-full"
-            variants={imageItemVariants}
+        <motion.div
+          className="relative hidden h-[600px] w-full md:block md:h-full"
+          variants={imageItemVariants}
         >
-            <Image 
-                src={heroImage ?? placeholderImages.hero.imageUrl} 
-                alt="Nairobi Tech Hub" 
-                fill
-                className="rounded-3xl object-cover shadow-2xl"
-                sizes="(max-width: 768px) 100vw, 50vw"
-                data-ai-hint="futuristic nairobi"
-                priority
-            />
+          <Image
+            src={heroImage ?? placeholderImages.hero.imageUrl}
+            alt="Nairobi Tech Hub"
+            fill
+            className="rounded-3xl object-cover shadow-2xl"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            data-ai-hint="futuristic nairobi"
+            priority
+          />
         </motion.div>
       </motion.div>
     </section>

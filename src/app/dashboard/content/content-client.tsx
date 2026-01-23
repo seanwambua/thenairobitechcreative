@@ -97,7 +97,9 @@ export function ContentClient({ initialPosts }: { initialPosts: Post[] }) {
       </div>
       <CardContent>
         {initialPosts.length === 0 ? (
-           <div className="py-8 text-center text-muted-foreground">No posts found.</div>
+          <div className="py-8 text-center text-muted-foreground">
+            No posts found.
+          </div>
         ) : (
           <Table>
             <TableHeader>
@@ -115,7 +117,9 @@ export function ContentClient({ initialPosts }: { initialPosts: Post[] }) {
               {initialPosts.map((post) => (
                 <TableRow key={post.id}>
                   <TableCell className="font-medium">{post.title}</TableCell>
-                  <TableCell className="hidden md:table-cell">{post.author}</TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {post.author}
+                  </TableCell>
                   <TableCell className="hidden md:table-cell">
                     {format(new Date(post.createdAt), 'MMM d, yyyy')}
                   </TableCell>
@@ -125,13 +129,19 @@ export function ContentClient({ initialPosts }: { initialPosts: Post[] }) {
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button aria-haspopup="true" size="icon" variant="ghost">
+                        <Button
+                          aria-haspopup="true"
+                          size="icon"
+                          variant="ghost"
+                        >
                           <MoreHorizontal className="h-4 w-4" />
                           <span className="sr-only">Toggle menu</span>
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => handleEdit(post)}>Edit</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleEdit(post)}>
+                          Edit
+                        </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                           onClick={() => handleDeleteInitiate(post)}
@@ -148,24 +158,27 @@ export function ContentClient({ initialPosts }: { initialPosts: Post[] }) {
           </Table>
         )}
       </CardContent>
-      <PostEditorSheet 
-        isOpen={isEditorOpen} 
-        setIsOpen={setEditorOpen} 
+      <PostEditorSheet
+        isOpen={isEditorOpen}
+        setIsOpen={setEditorOpen}
         post={editingPost}
         onSave={handleSave}
-       />
+      />
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the post titled &quot;
+              This action cannot be undone. This will permanently delete the
+              post titled &quot;
               {postToDelete?.title}&quot;.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteConfirm}>Continue</AlertDialogAction>
+            <AlertDialogAction onClick={handleDeleteConfirm}>
+              Continue
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

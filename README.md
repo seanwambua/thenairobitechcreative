@@ -4,14 +4,14 @@ This is a full-stack Next.js application that serves as a portfolio and Content 
 
 ## Tech Stack
 
--   **Framework:** [Next.js](https://nextjs.org/) (App Router)
--   **Database ORM:** [Prisma](https://www.prisma.io/)
--   **Database:** PostgreSQL
--   **Styling:** [Tailwind CSS](https://tailwindcss.com/)
--   **UI Components:** [ShadCN UI](https://ui.shadcn.com/)
--   **State Management:** [Zustand](https://github.com/pmndrs/zustand)
--   **Validation:** [Zod](https://zod.dev/)
--   **Server Logic:** Next.js Server Actions
+- **Framework:** [Next.js](https://nextjs.org/) (App Router)
+- **Database ORM:** [Prisma](https://www.prisma.io/)
+- **Database:** PostgreSQL
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **UI Components:** [ShadCN UI](https://ui.shadcn.com/)
+- **State Management:** [Zustand](https://github.com/pmndrs/zustand)
+- **Validation:** [Zod](https://zod.dev/)
+- **Server Logic:** Next.js Server Actions
 
 ## Project Structure
 
@@ -93,22 +93,24 @@ model User {
 Create a file at `src/lib/prisma.ts` and add the following code to instantiate a global Prisma client singleton.
 
 ```typescript
-import { PrismaClient } from '../app/generated/prisma/client'
-import { PrismaPg } from '@prisma/adapter-pg'
+import { PrismaClient } from '../app/generated/prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL!,
-})
+});
 
-const globalForPrisma = global as unknown as { prisma: PrismaClient }
+const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
-const prisma = globalForPrisma.prisma || new PrismaClient({
-  adapter,
-})
+const prisma =
+  globalForPrisma.prisma ||
+  new PrismaClient({
+    adapter,
+  });
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
-export default prisma
+export default prisma;
 ```
 
 ### 6. Update `package.json` Scripts
@@ -132,11 +134,11 @@ Add the `db:test` and `db:studio` scripts to your `package.json`.
 Create a file at `scripts/test-database.ts` to verify the database connection.
 
 ```typescript
-import 'dotenv/config'
-import prisma from '../src/lib/prisma'
+import 'dotenv/config';
+import prisma from '../src/lib/prisma';
 
 async function testDatabase() {
-  console.log('Testing database connection...')
+  console.log('Testing database connection...');
   try {
     const user = await prisma.user.findFirst();
     console.log('Successfully connected to database and fetched a user:', user);
@@ -180,6 +182,6 @@ The application will be available at [http://localhost:9002](http://localhost:90
 
 ## Useful Commands
 
--   `npm run db:seed`: Populates the database with initial data.
--   `npm run db:studio`: Opens Prisma Studio, a visual editor for your database.
--   `npx prisma migrate dev`: Creates and applies a new database migration.
+- `npm run db:seed`: Populates the database with initial data.
+- `npm run db:studio`: Opens Prisma Studio, a visual editor for your database.
+- `npx prisma migrate dev`: Creates and applies a new database migration.

@@ -14,46 +14,52 @@ import { Terminal } from 'lucide-react';
 import type { Post } from '@/app/generated/prisma';
 
 async function getPost(slug: string) {
-    try {
-        const post = await getPostBySlug(slug);
-        return { post, error: null };
-    } catch (error) {
-        console.error("Failed to fetch post:", error);
-        return { post: null, error: error as Error };
-    }
+  try {
+    const post = await getPostBySlug(slug);
+    return { post, error: null };
+  } catch (error) {
+    console.error('Failed to fetch post:', error);
+    return { post: null, error: error as Error };
+  }
 }
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+export default async function BlogPostPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const [{ post, error }, logoUrl] = await Promise.all([
     getPost(params.slug),
-    getSetting('logo')
+    getSetting('logo'),
   ]);
 
   if (error) {
     if (error.message.includes('no such table')) {
-        return <DbUninitializedError />;
+      return <DbUninitializedError />;
     }
     return (
-        <div className="flex min-h-screen flex-col bg-background">
-            <Header logoUrl={logoUrl} />
-            <main className="flex-1 container py-20">
-                <Alert variant="destructive">
-                    <Terminal className="h-4 w-4" />
-                    <AlertTitle>Error Loading Post</AlertTitle>
-                    <AlertDescription>
-                        There was a problem fetching this article. It may be temporarily unavailable or the link may be broken. Please try refreshing the page.
-                    </AlertDescription>
-                </Alert>
-            </main>
-            <Footer logoUrl={logoUrl} />
-        </div>
+      <div className="flex min-h-screen flex-col bg-background">
+        <Header logoUrl={logoUrl} />
+        <main className="container flex-1 py-20">
+          <Alert variant="destructive">
+            <Terminal className="h-4 w-4" />
+            <AlertTitle>Error Loading Post</AlertTitle>
+            <AlertDescription>
+              There was a problem fetching this article. It may be temporarily
+              unavailable or the link may be broken. Please try refreshing the
+              page.
+            </AlertDescription>
+          </Alert>
+        </main>
+        <Footer logoUrl={logoUrl} />
+      </div>
     );
   }
-  
+
   if (!post) {
     notFound();
   }
-  
+
   const commentsCount = 0;
 
   return (
@@ -76,7 +82,13 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
               </Avatar>
               <div>
                 <p className="font-semibold">{post.author}</p>
-                <p className="text-sm text-muted-foreground">{new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                <p className="text-sm text-muted-foreground">
+                  {new Date(post.createdAt).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })}
+                </p>
               </div>
             </div>
           </header>
@@ -93,8 +105,10 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             />
           </div>
 
-          <div className="prose prose-lg mx-auto max-w-none text-pretty text-foreground dark:prose-invert prose-p:leading-relaxed prose-headings:font-headline prose-headings:text-foreground">
-            <p className="lead text-xl text-muted-foreground">{post.description}</p>
+          <div className="prose prose-lg dark:prose-invert prose-p:leading-relaxed prose-headings:font-headline prose-headings:text-foreground mx-auto max-w-none text-pretty text-foreground">
+            <p className="lead text-xl text-muted-foreground">
+              {post.description}
+            </p>
             {post.content.split('\n\n').map((paragraph, index) => (
               <p key={index}>{paragraph}</p>
             ))}
@@ -102,7 +116,11 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
           <Separator className="my-12" />
 
-          <PostInteractions initialLikes={post.likes} commentsCount={commentsCount} postTitle={post.title} />
+          <PostInteractions
+            initialLikes={post.likes}
+            commentsCount={commentsCount}
+            postTitle={post.title}
+          />
 
           <section className="mt-12">
             <h2 className="font-headline text-3xl font-bold">Comments</h2>
@@ -110,8 +128,8 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
               <CardContent className="p-6 text-center">
                 <h3 className="text-lg font-semibold">Comments Coming Soon</h3>
                 <p className="mt-2 text-muted-foreground">
-                  We're working on a new commenting system. User authentication will be required.
-                  Please check back later!
+                  We're working on a new commenting system. User authentication
+                  will be required. Please check back later!
                 </p>
               </CardContent>
             </Card>

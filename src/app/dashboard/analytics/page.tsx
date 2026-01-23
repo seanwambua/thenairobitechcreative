@@ -5,11 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import {
-  Briefcase,
-  NotebookText,
-  Star,
-} from 'lucide-react';
+import { Briefcase, NotebookText, Star } from 'lucide-react';
 import prisma from '@/lib/prisma';
 
 export default async function AnalyticsPage() {

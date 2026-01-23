@@ -64,29 +64,37 @@ export function BentoPortfolio({ projects }: BentoPortfolioProps) {
             <Card className="flex h-full flex-col overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-primary/20">
               <div className="relative h-48 w-full">
                 <Image
-                    src={project.imageUrl}
-                    alt={project.title}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    data-ai-hint={project.imageHint}
-                  />
+                  src={project.imageUrl}
+                  alt={project.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  data-ai-hint={project.imageHint}
+                />
               </div>
               <CardHeader className="flex-row items-start gap-4">
-                 {Icon && <Icon className="h-10 w-10 text-primary flex-shrink-0" />}
-                 <CardTitle className="font-headline text-2xl font-semibold text-foreground">{project.title}</CardTitle>
+                {Icon && (
+                  <Icon className="h-10 w-10 flex-shrink-0 text-primary" />
+                )}
+                <CardTitle className="font-headline text-2xl font-semibold text-foreground">
+                  {project.title}
+                </CardTitle>
               </CardHeader>
               <CardContent className="flex flex-1 flex-col justify-between">
-                <p className="mb-4 text-muted-foreground">{project.description}</p>
+                <p className="mb-4 text-muted-foreground">
+                  {project.description}
+                </p>
                 <div className="flex flex-wrap gap-2">
                   {project.keyFeatures.map((feature) => (
-                    <Badge key={feature} variant="secondary">{feature}</Badge>
+                    <Badge key={feature} variant="secondary">
+                      {feature}
+                    </Badge>
                   ))}
                 </div>
               </CardContent>
             </Card>
           </motion.div>
-        )
+        );
       })}
     </div>
   );
