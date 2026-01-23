@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/accordion';
 import { getProjects } from '@/app/actions/projects';
 import { getTestimonials } from '@/app/actions/testimonials';
-import { getSettings } from '@/app/actions/settings';
+import { getSetting } from '@/app/actions/settings';
 import { DbUninitializedError } from '@/components/db-uninitialized-error';
 import { placeholderImages } from '@/lib/placeholder-images';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -42,7 +42,7 @@ export default async function Home() {
       await Promise.allSettled([
         getProjects(),
         getTestimonials(),
-        getSettings(['heroImage', 'logo']),
+        getSetting('heroImage'),
       ]);
   } catch (e: any) {
     // This will catch db connection errors etc.
@@ -59,17 +59,15 @@ export default async function Home() {
 
   const heroImage =
     settingsResult.status === 'fulfilled'
-      ? (settingsResult.value.heroImage ?? placeholderImages.hero.imageUrl)
+      ? (settingsResult.value ?? placeholderImages.hero.imageUrl)
       : placeholderImages.hero.imageUrl;
-  const logoUrl =
-    settingsResult.status === 'fulfilled' ? settingsResult.value.logo : null;
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <Header logoUrl={logoUrl} />
+      <Header />
       <main className="flex-1">
-        <Hero heroImage={heroImage} logoUrl={logoUrl} />
-        <ProspectsBanner logoUrl={logoUrl} />
+        <Hero heroImage={heroImage} />
+        <ProspectsBanner />
 
         <section id="portfolio" className="py-20 lg:py-32">
           <div className="container mx-auto px-4">
@@ -137,9 +135,9 @@ export default async function Home() {
           </div>
         </section>
 
-        <Cta logoUrl={logoUrl} />
+        <Cta />
       </main>
-      <Footer logoUrl={logoUrl} />
+      <Footer />
     </div>
   );
 }

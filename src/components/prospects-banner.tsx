@@ -4,10 +4,14 @@ import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, X } from 'lucide-react';
 import { InquirySheet } from './inquiry-sheet';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export function ProspectsBanner({ logoUrl }: { logoUrl: string | null }) {
+export function ProspectsBanner() {
   const [isVisible, setIsVisible] = useState(true);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const bannerVariants = {
     hidden: { y: '100%' },
@@ -51,11 +55,17 @@ export function ProspectsBanner({ logoUrl }: { logoUrl: string | null }) {
                 </p>
               </div>
               <div className="mt-6">
-                <InquirySheet logoUrl={logoUrl}>
+                {mounted ? (
+                  <InquirySheet>
+                    <Button size="lg" className="flex-shrink-0">
+                      Inquire Now <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                  </InquirySheet>
+                ) : (
                   <Button size="lg" className="flex-shrink-0">
                     Inquire Now <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
-                </InquirySheet>
+                )}
               </div>
             </div>
           </div>

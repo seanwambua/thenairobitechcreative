@@ -5,14 +5,14 @@ import { ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import { InquirySheet } from './inquiry-sheet';
 import { placeholderImages } from '@/lib/placeholder-images';
+import { useState, useEffect } from 'react';
 
-export function Hero({
-  heroImage,
-  logoUrl,
-}: {
-  heroImage: string | null;
-  logoUrl: string | null;
-}) {
+export function Hero({ heroImage }: { heroImage: string | null }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -75,11 +75,17 @@ export function Hero({
             variants={textItemVariants}
           >
             <Button size="lg">Explore Our Work</Button>
-            <InquirySheet logoUrl={logoUrl}>
+            {mounted ? (
+              <InquirySheet>
+                <Button size="lg" variant="outline">
+                  Contact Us <ChevronRight className="ml-2 h-4 w-4" />
+                </Button>
+              </InquirySheet>
+            ) : (
               <Button size="lg" variant="outline">
                 Contact Us <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
-            </InquirySheet>
+            )}
           </motion.div>
         </div>
         <motion.div

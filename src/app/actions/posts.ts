@@ -7,21 +7,23 @@ import type { Post } from '@/app/generated/prisma';
 import { placeholderImages } from '@/lib/placeholder-images';
 import { z } from 'zod';
 
-export async function getPosts() {
+export async function getPosts(): Promise<Post[]> {
   const results = await prisma.post.findMany({
     orderBy: { createdAt: 'desc' },
   });
   return results;
 }
 
-export async function getPostBySlug(slug: string) {
+export async function getPostBySlug(slug: string): Promise<Post | null> {
   const result = await prisma.post.findUnique({
     where: { slug },
   });
   return result;
 }
 
-export async function createPost(data: z.infer<typeof PostInputSchema>) {
+export async function createPost(
+  data: z.infer<typeof PostInputSchema>
+): Promise<Post> {
   const validatedData = PostInputSchema.parse(data);
 
   const newPost = await prisma.post.create({
@@ -46,7 +48,7 @@ export async function createPost(data: z.infer<typeof PostInputSchema>) {
   return newPost;
 }
 
-export async function updatePost(post: Post) {
+export async function updatePost(post: Post): Promise<Post> {
   const validatedData = PostSchema.parse(post);
   const { id, title } = validatedData;
 
@@ -68,7 +70,7 @@ export async function updatePost(post: Post) {
   return updatedPost;
 }
 
-export async function deletePost(postId: number) {
+export async function deletePost(postId: number): Promise<void> {
   const post = await prisma.post.findUnique({ where: { id: postId } });
   if (post) {
     await prisma.post.delete({ where: { id: postId } });

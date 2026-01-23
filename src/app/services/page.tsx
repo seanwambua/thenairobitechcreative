@@ -8,23 +8,20 @@ import { placeholderImages } from '@/lib/placeholder-images';
 
 export default async function ServicesPage() {
   try {
-    const [founderImage, logoUrl] = await Promise.all([
-      getSetting('founderImage'),
-      getSetting('logo'),
-    ]);
+    const founderImage = await getSetting('founderImage');
 
     return (
       <div className="flex min-h-screen flex-col bg-background">
-        <Header logoUrl={logoUrl} />
+        <Header />
         <main className="flex-1">
           <ServicesClient
             founderImage={
               founderImage ?? placeholderImages.founderImage.imageUrl
             }
           />
-          <Cta logoUrl={logoUrl} />
+          <Cta />
         </main>
-        <Footer logoUrl={logoUrl} />
+        <Footer />
       </div>
     );
   } catch (error: any) {

@@ -1,11 +1,11 @@
 import type { IconName } from './schemas';
 import type {
   Project as PrismaProject,
-  Post,
+  Post as PrismaPost,
   Testimonial as PrismaTestimonial,
-} from '@prisma/client';
+} from '@/app/generated/prisma';
 
-export type { Post };
+export type Post = PrismaPost;
 
 export type Testimonial = PrismaTestimonial;
 

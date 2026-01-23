@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight, Terminal } from 'lucide-react';
 import Link from 'next/link';
 import { getPosts } from '@/app/actions/posts';
-import type { Post } from '@prisma/client';
+import type { Post } from '@/app/generated/prisma';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { DbUninitializedError } from '@/components/db-uninitialized-error';
@@ -31,21 +31,29 @@ function BlogSkeleton() {
   );
 }
 
-export function BlogClient() {
-  const [posts, setPosts] = useState<Post[] | null>(null);
-  const [error, setError] = useState<Error | null>(null);
+export function BlogClient({
+  initialPosts,
+  initialError,
+}: {
+  initialPosts: Post[] | null;
+  initialError: Error | null;
+}) {
+  const [posts, setPosts] = useState<Post[] | null>(initialPosts);
+  const [error, setError] = useState<Error | null>(initialError);
 
   useEffect(() => {
-    getPosts()
-      .then(setPosts)
-      .catch((e) => {
-        console.error('Failed to fetch posts:', e);
-        setError(e);
-      });
-  }, []);
+    if (!initialPosts && !initialError) {
+      getPosts()
+        .then(setPosts)
+        .catch((e) => {
+          console.error('Failed to fetch posts:', e);
+          setError(e);
+        });
+    }
+  }, [initialPosts, initialError]);
 
   if (error) {
-    if (error.message.includes('no such table')) {
+    if (error instanceof DbUninitializedError) {
       return (
         <main className="flex-1">
           <DbUninitializedError />

@@ -3,8 +3,14 @@ import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { InquirySheet } from './inquiry-sheet';
+import { useState, useEffect } from 'react';
 
-export function Cta({ logoUrl }: { logoUrl: string | null }) {
+export function Cta() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <section id="contact" className="py-20 lg:py-24">
       <div className="container mx-auto px-4">
@@ -24,7 +30,17 @@ export function Cta({ logoUrl }: { logoUrl: string | null }) {
               We're ready to turn your vision into a global success story.
             </p>
             <div className="mt-8">
-              <InquirySheet logoUrl={logoUrl}>
+              {mounted ? (
+                <InquirySheet>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-white bg-transparent text-white hover:bg-white hover:text-primary"
+                  >
+                    Start a Conversation <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </InquirySheet>
+              ) : (
                 <Button
                   size="lg"
                   variant="outline"
@@ -32,7 +48,7 @@ export function Cta({ logoUrl }: { logoUrl: string | null }) {
                 >
                   Start a Conversation <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
-              </InquirySheet>
+              )}
             </div>
           </div>
         </motion.div>

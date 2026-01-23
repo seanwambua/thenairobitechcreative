@@ -1,24 +1,34 @@
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { getSetting } from '@/app/actions/settings';
 import { BlogClient } from './blog-client';
 import { DbUninitializedError } from '@/components/db-uninitialized-error';
+import { getPosts } from '@/app/actions/posts';
+import type { Post } from '@/app/generated/prisma';
 
-export default async function BlogPage() {
+async function getInitialPosts(): Promise<{ posts: Post[]; error: null } | { posts: null; error: Error }> {
   try {
-    const logoUrl = await getSetting('logo');
-
-    return (
-      <div className="flex min-h-screen flex-col bg-background">
-        <Header logoUrl={logoUrl} />
-        <BlogClient />
-        <Footer logoUrl={logoUrl} />
-      </div>
-    );
+    const posts = await getPosts();
+    return { posts, error: null };
   } catch (error: any) {
     if (error.message.includes('no such table')) {
-      return <DbUninitializedError />;
+      return { posts: null, error: new DbUninitializedError() as Error };
     }
-    throw error;
+    return { posts: null, error: error as Error };
   }
+}
+
+export default async function BlogPage() {
+  const { posts, error } = await getInitialPosts();
+
+  if (error instanceof DbUninitializedError) {
+    return <DbUninitializedError />;
+  }
+
+  return (
+    <div className="flex min-h-screen flex-col bg-background">
+      <Header />
+      <BlogClient initialPosts={posts} initialError={error} />
+      <Footer />
+    </div>
+  );
 }

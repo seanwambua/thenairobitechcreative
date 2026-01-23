@@ -1,6 +1,7 @@
-'use client';
+import { getSetting } from '@/app/actions/settings';
 import { FooterUI } from './footer-ui';
 
-export function Footer({ logoUrl }: { logoUrl: string | null }) {
+export async function Footer() {
+  const logoUrl = await getSetting('logo');
   return <FooterUI logoUrl={logoUrl} />;
 }
