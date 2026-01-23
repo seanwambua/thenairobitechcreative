@@ -12,6 +12,7 @@ export default async function ServicesPage() {
       'founderImage',
       'founderName',
       'founderMessage',
+      'logo',
     ]);
 
     return (
@@ -25,7 +26,7 @@ export default async function ServicesPage() {
             founderName={settings.founderName}
             founderMessage={settings.founderMessage}
           />
-          <Cta />
+          <Cta logoUrl={settings.logo} />
         </main>
         <Footer />
       </div>

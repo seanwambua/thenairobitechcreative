@@ -27,7 +27,7 @@ export default async function BlogPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
-      <BlogClient initialPosts={posts} initialError={error} />
+      <BlogClient posts={posts} error={error} />
       <Footer />
     </div>
   );

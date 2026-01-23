@@ -15,7 +15,7 @@ export default async function PricingPage() {
         <Header />
         <main className="flex-1">
           <PricingClient logoUrl={logoUrl} />
-          <Cta />
+          <Cta logoUrl={logoUrl} />
         </main>
         <Footer />
       </div>

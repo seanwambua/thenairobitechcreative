@@ -142,7 +142,7 @@ export default async function Home() {
           </div>
         </section>
 
-        <Cta />
+        <Cta logoUrl={logoUrl} />
       </main>
       <Footer />
     </div>

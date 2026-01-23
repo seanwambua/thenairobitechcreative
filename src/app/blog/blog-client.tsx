@@ -1,11 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { BlogPostCard } from '@/components/blog-post-card';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight, Terminal } from 'lucide-react';
 import Link from 'next/link';
-import { getPosts } from '@/app/actions/posts';
 import type { Post } from '@/app/generated/prisma';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -32,26 +30,12 @@ function BlogSkeleton() {
 }
 
 export function BlogClient({
-  initialPosts,
-  initialError,
+  posts,
+  error,
 }: {
-  initialPosts: Post[] | null;
-  initialError: Error | null;
+  posts: Post[] | null;
+  error: Error | null;
 }) {
-  const [posts, setPosts] = useState<Post[] | null>(initialPosts);
-  const [error, setError] = useState<Error | null>(initialError);
-
-  useEffect(() => {
-    if (!initialPosts && !initialError) {
-      getPosts()
-        .then(setPosts)
-        .catch((e) => {
-          console.error('Failed to fetch posts:', e);
-          setError(e);
-        });
-    }
-  }, [initialPosts, initialError]);
-
   if (error) {
     if (error instanceof DbUninitializedError) {
       return (
