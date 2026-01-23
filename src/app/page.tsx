@@ -77,7 +77,7 @@ export default async function Home() {
           <div className="container mx-auto px-4">
             <div className="mx-auto mb-16 max-w-3xl text-center">
               <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-                2025 Innovation Suite
+                Innovation Suite
               </h2>
               <p className="mt-4 text-lg text-zinc-500">
                 Showcasing our next generation of African-built digital
