@@ -11,6 +11,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarInset,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import {
   Briefcase,
@@ -48,7 +49,7 @@ import {
   MenubarTrigger,
 } from '@/components/ui/menubar';
 
-export function DashboardClient({
+function DashboardClientLayout({
   children,
   logoUrl,
   founderImage,
@@ -57,12 +58,19 @@ export function DashboardClient({
   logoUrl: string | null;
   founderImage: string | null;
 }) {
+  const { setOpenMobile, isMobile } = useSidebar();
   const [mounted, setMounted] = React.useState(false);
   const router = useRouter();
 
   React.useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleLinkClick = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
 
   const pathname = usePathname();
 
@@ -73,7 +81,7 @@ export function DashboardClient({
     .join('');
 
   return (
-    <SidebarProvider>
+    <>
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-3">
@@ -95,6 +103,7 @@ export function DashboardClient({
                 asChild
                 isActive={pathname === '/dashboard'}
                 tooltip="Dashboard"
+                onClick={handleLinkClick}
               >
                 <Link href="/dashboard">
                   <LayoutGrid />
@@ -107,6 +116,7 @@ export function DashboardClient({
                 asChild
                 isActive={pathname.startsWith('/dashboard/content')}
                 tooltip="Content"
+                onClick={handleLinkClick}
               >
                 <Link href="/dashboard/content">
                   <NotebookText />
@@ -119,6 +129,7 @@ export function DashboardClient({
                 asChild
                 isActive={pathname.startsWith('/dashboard/media')}
                 tooltip="Media"
+                onClick={handleLinkClick}
               >
                 <Link href="/dashboard/media">
                   <ImageIcon />
@@ -131,6 +142,7 @@ export function DashboardClient({
                 asChild
                 isActive={pathname.startsWith('/dashboard/projects')}
                 tooltip="Projects"
+                onClick={handleLinkClick}
               >
                 <Link href="/dashboard/projects">
                   <Briefcase />
@@ -143,6 +155,7 @@ export function DashboardClient({
                 asChild
                 isActive={pathname.startsWith('/dashboard/testimonials')}
                 tooltip="Testimonials"
+                onClick={handleLinkClick}
               >
                 <Link href="/dashboard/testimonials">
                   <Star />
@@ -155,6 +168,7 @@ export function DashboardClient({
                 asChild
                 isActive={pathname.startsWith('/dashboard/analytics')}
                 tooltip="Analytics"
+                onClick={handleLinkClick}
               >
                 <Link href="/dashboard/analytics">
                   <LineChart />
@@ -167,6 +181,7 @@ export function DashboardClient({
                 asChild
                 isActive={pathname.startsWith('/dashboard/settings')}
                 tooltip="Settings"
+                onClick={handleLinkClick}
               >
                 <Link href="/dashboard/settings">
                   <Settings />
@@ -179,6 +194,7 @@ export function DashboardClient({
                 asChild
                 isActive={pathname.startsWith('/dashboard/troubleshooting')}
                 tooltip="Troubleshooting"
+                onClick={handleLinkClick}
               >
                 <Link href="/dashboard/troubleshooting">
                   <Wrench />
@@ -267,6 +283,24 @@ export function DashboardClient({
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-6">{children}</main>
       </SidebarInset>
+    </>
+  );
+}
+
+export function DashboardClient({
+  children,
+  logoUrl,
+  founderImage,
+}: {
+  children: React.ReactNode;
+  logoUrl: string | null;
+  founderImage: string | null;
+}) {
+  return (
+    <SidebarProvider>
+      <DashboardClientLayout logoUrl={logoUrl} founderImage={founderImage}>
+        {children}
+      </DashboardClientLayout>
     </SidebarProvider>
   );
 }

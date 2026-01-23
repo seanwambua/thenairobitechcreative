@@ -24,6 +24,12 @@
     --input: 0 0% 89.8%;
     --ring: 48 96% 53%; /* Yellow */
     --radius: 0.5rem;
+    --sidebar: 0 0% 98%;
+    --sidebar-foreground: 0 0% 9%;
+    --sidebar-border: 0 0% 89.8%;
+    --sidebar-accent: 0 0% 96.1%;
+    --sidebar-accent-foreground: 0 0% 9%;
+    --sidebar-ring: 48 96% 53%;
   }
 
   .dark {
@@ -46,6 +52,12 @@
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
     --ring: 48 96% 53%; /* Yellow */
+    --sidebar: 240 5.9% 10%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 14.9%;
+    --sidebar-accent: 0 0% 14.9%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-ring: 48 96% 53%;
   }
 }
 
