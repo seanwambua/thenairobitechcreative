@@ -24,6 +24,7 @@ import {
   type LucideProps,
 } from 'lucide-react';
 import type { ComponentType } from 'react';
+import { placeholderImages } from '@/lib/placeholder-images';
 
 const icons: Record<IconName, ComponentType<LucideProps>> = {
   Boxes,
@@ -45,13 +46,20 @@ const icons: Record<IconName, ComponentType<LucideProps>> = {
 
 interface BentoPortfolioProps {
   projects: Project[];
+  logoUrl: string | null;
 }
 
-export function BentoPortfolio({ projects }: BentoPortfolioProps) {
+export function BentoPortfolio({ projects, logoUrl }: BentoPortfolioProps) {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {projects.map((project, index) => {
         const Icon = icons[project.icon];
+        const hasProjectImage = !!project.imageUrl;
+        const imageSrc =
+          project.imageUrl || logoUrl || placeholderImages.logo.imageUrl;
+        const imageClassName = hasProjectImage
+          ? 'object-cover'
+          : 'object-contain p-8';
         return (
           <motion.div
             key={project.id}
@@ -62,14 +70,16 @@ export function BentoPortfolio({ projects }: BentoPortfolioProps) {
             transition={{ duration: 0.5, delay: index * 0.1 }}
           >
             <Card className="flex h-full flex-col overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-primary/20">
-              <div className="relative h-48 w-full">
+              <div className="relative h-48 w-full bg-muted">
                 <Image
-                  src={project.imageUrl}
+                  src={imageSrc}
                   alt={project.title}
                   fill
-                  className="object-cover"
+                  className={imageClassName}
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  data-ai-hint={project.imageHint}
+                  data-ai-hint={
+                    hasProjectImage ? project.imageHint : 'logo'
+                  }
                 />
               </div>
               <CardHeader className="flex-row items-start gap-4">
