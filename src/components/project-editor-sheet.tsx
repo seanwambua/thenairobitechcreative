@@ -78,7 +78,7 @@ export function ProjectEditorSheet({
       description: '',
       keyFeatures: '',
       icon: 'Boxes',
-      gridSpan: 'col-span-1 md:col-span-1',
+      gridSpan: 'col-span-1 lg:col-span-1',
     },
   });
 
@@ -99,7 +99,7 @@ export function ProjectEditorSheet({
           description: '',
           keyFeatures: '',
           icon: 'Boxes',
-          gridSpan: 'col-span-1 md:col-span-1',
+          gridSpan: 'col-span-1 lg:col-span-1',
         });
         setImagePreview(placeholderImages.enterpriseB.imageUrl);
       }
@@ -305,13 +305,13 @@ export function ProjectEditorSheet({
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="col-span-1 md:col-span-1">
+                            <SelectItem value="col-span-1 lg:col-span-1">
                               Small
                             </SelectItem>
-                            <SelectItem value="col-span-1 md:col-span-2">
+                            <SelectItem value="col-span-1 lg:col-span-2">
                               Medium
                             </SelectItem>
-                            <SelectItem value="col-span-1 md:col-span-3">
+                            <SelectItem value="col-span-1 lg:col-span-3">
                               Large
                             </SelectItem>
                           </SelectContent>
