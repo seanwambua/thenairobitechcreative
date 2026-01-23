@@ -88,7 +88,7 @@ function DashboardClientLayout({
             <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full">
               <Logo logoUrl={logoUrl} />
             </div>
-            <span className="hidden font-headline text-xl font-semibold group-data-[collapsible=icon]:hidden lg:inline-block">
+            <span className="hidden font-headline text-xl font-semibold group-data-[collapsible=icon]:hidden md:inline-block">
               NTC
             </span>
             <span className="hidden font-headline text-xl font-semibold lg:inline-block">

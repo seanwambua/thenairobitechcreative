@@ -59,7 +59,7 @@ export function Hero({
         initial="hidden"
         animate="visible"
       >
-        <div className="flex flex-col items-start text-left">
+        <div className="flex flex-col items-start text-left ml-8">
           <motion.h1
             className="font-headline text-5xl font-extrabold tracking-tighter text-foreground sm:text-6xl md:text-7xl"
             variants={textItemVariants}

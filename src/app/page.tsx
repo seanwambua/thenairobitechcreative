@@ -77,14 +77,14 @@ export default async function Home() {
           <div className="container mx-auto px-4">
             <div className="mx-auto mb-16 max-w-3xl text-center">
               <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-                Innovation Suite
+                Innovation Showcase
               </h2>
               <p className="mt-4 text-lg text-zinc-500">
-                Showcasing our next generation of African-built digital
-                solutions designed to tackle global challenges.
+                Showcasing our next generation of digital
+                solutions.
               </p>
             </div>
-            <div>
+            <div className="p-10 sm:p-4 md:p-6">
               {projectsResult.status === 'fulfilled' ? (
                 <BentoPortfolio
                   projects={projectsResult.value}
