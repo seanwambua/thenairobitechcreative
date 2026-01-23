@@ -23,11 +23,12 @@ async function getPost(slug: string) {
   }
 }
 
-export default async function BlogPostPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export default async function BlogPostPage(
+  props: {
+    params: Promise<{ slug: string }>;
+  }
+) {
+  const params = await props.params;
   const [{ post, error }, logoUrl] = await Promise.all([
     getPost(params.slug),
     getSetting('logo'),

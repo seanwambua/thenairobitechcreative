@@ -4,11 +4,15 @@ import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { InquirySheet } from './inquiry-sheet';
 import { useState, useEffect } from 'react';
+import { getSetting } from '../app/actions/settings';
 
 export function Cta() {
   const [mounted, setMounted] = useState(false);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+
   useEffect(() => {
     setMounted(true);
+    getSetting('logo').then(setLogoUrl);
   }, []);
 
   return (
@@ -31,7 +35,7 @@ export function Cta() {
             </p>
             <div className="mt-8">
               {mounted ? (
-                <InquirySheet>
+                <InquirySheet logoUrl={logoUrl}>
                   <Button
                     size="lg"
                     variant="outline"

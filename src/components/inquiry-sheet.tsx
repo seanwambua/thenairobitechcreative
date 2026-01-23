@@ -33,7 +33,6 @@ import {
 } from '@/components/ui/select';
 import { services } from '@/lib/data';
 import { Logo } from './logo';
-import { useSidebar } from './ui/sidebar';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -47,12 +46,12 @@ const formSchema = z.object({
 
 interface InquirySheetProps {
   children: React.ReactNode;
+  logoUrl: string | null;
 }
 
-export function InquirySheet({ children }: InquirySheetProps) {
+export function InquirySheet({ children, logoUrl }: InquirySheetProps) {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
-  const { logoUrl } = useSidebar?.() ?? { logoUrl: null };
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

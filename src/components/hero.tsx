@@ -7,7 +7,13 @@ import { InquirySheet } from './inquiry-sheet';
 import { placeholderImages } from '@/lib/placeholder-images';
 import { useState, useEffect } from 'react';
 
-export function Hero({ heroImage }: { heroImage: string | null }) {
+export function Hero({
+  heroImage,
+  logoUrl,
+}: {
+  heroImage: string | null;
+  logoUrl: string | null;
+}) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);
@@ -76,7 +82,7 @@ export function Hero({ heroImage }: { heroImage: string | null }) {
           >
             <Button size="lg">Explore Our Work</Button>
             {mounted ? (
-              <InquirySheet>
+              <InquirySheet logoUrl={logoUrl}>
                 <Button size="lg" variant="outline">
                   Contact Us <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>

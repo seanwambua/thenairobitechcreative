@@ -35,14 +35,15 @@ function DataError({ sectionName }: { sectionName: string }) {
 }
 
 export default async function Home() {
-  let projectsResult, testimonialsResult, settingsResult;
+  let projectsResult, testimonialsResult, settingsResult, logoUrlResult;
 
   try {
-    [projectsResult, testimonialsResult, settingsResult] =
+    [projectsResult, testimonialsResult, settingsResult, logoUrlResult] =
       await Promise.allSettled([
         getProjects(),
         getTestimonials(),
         getSetting('heroImage'),
+        getSetting('logo'),
       ]);
   } catch (e: any) {
     // This will catch db connection errors etc.
@@ -62,11 +63,14 @@ export default async function Home() {
       ? (settingsResult.value ?? placeholderImages.hero.imageUrl)
       : placeholderImages.hero.imageUrl;
 
+  const logoUrl =
+    logoUrlResult.status === 'fulfilled' ? logoUrlResult.value : null;
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1">
-        <Hero heroImage={heroImage} />
+        <Hero heroImage={heroImage} logoUrl={logoUrl} />
         <ProspectsBanner />
 
         <section id="portfolio" className="py-20 lg:py-32">
@@ -113,7 +117,7 @@ export default async function Home() {
               <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
                 Frequently Asked Questions
               </h2>
-              <p className="mt-4 text-lg text-muted-foreground">
+              <p className="mt-4 text-muted-foreground">
                 Have questions? We've got answers. If you can't find what you're
                 looking for, feel free to contact us.
               </p>
