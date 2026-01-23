@@ -313,12 +313,11 @@ export function ProjectEditorSheet({
                   )}
                 />
               </div>
-              <div className="pb-12" />
             </form>
           </Form>
         </div>
 
-        <SheetFooter className="absolute bottom-0 left-0 right-0 border-t bg-background p-6">
+        <SheetFooter className="border-t bg-background p-6">
           <SheetClose asChild>
             <Button type="button" variant="outline">
               Cancel
