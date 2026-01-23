@@ -59,9 +59,7 @@ export function BentoPortfolio({ projects, logoUrl }: BentoPortfolioProps) {
         const imageSrc = hasProjectImage
           ? project.imageUrl
           : logoUrl || placeholderImages.logo.imageUrl;
-        const imageClassName = hasProjectImage
-          ? 'object-cover'
-          : 'object-contain p-8';
+        const imageClassName = 'object-cover';
         return (
           <motion.div
             key={project.id}
