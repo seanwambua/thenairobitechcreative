@@ -23,9 +23,10 @@ import {
   Image as ImageIcon,
   Star,
   Wrench,
+  PlusCircle,
 } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -39,7 +40,13 @@ import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { placeholderImages } from '@/lib/placeholder-images';
 import { Logo } from '@/components/logo';
-import { DbUninitializedError } from '@/components/db-uninitialized-error';
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarTrigger,
+} from '@/components/ui/menubar';
 
 export function DashboardClient({
   children,
@@ -51,6 +58,7 @@ export function DashboardClient({
   founderImage: string | null;
 }) {
   const [mounted, setMounted] = React.useState(false);
+  const router = useRouter();
 
   React.useEffect(() => {
     setMounted(true);
@@ -229,7 +237,33 @@ export function DashboardClient({
             <SidebarTrigger />
             <h1 className="text-lg font-semibold md:text-xl">Dashboard</h1>
           </div>
-          <ThemeToggle />
+          <div className="flex items-center gap-2">
+            <Menubar>
+              <MenubarMenu>
+                <MenubarTrigger>
+                  <PlusCircle className="mr-2 h-4 w-4" /> New
+                </MenubarTrigger>
+                <MenubarContent>
+                  <MenubarItem
+                    onClick={() => router.push('/dashboard/content')}
+                  >
+                    Post
+                  </MenubarItem>
+                  <MenubarItem
+                    onClick={() => router.push('/dashboard/projects')}
+                  >
+                    Project
+                  </MenubarItem>
+                  <MenubarItem
+                    onClick={() => router.push('/dashboard/testimonials')}
+                  >
+                    Testimonial
+                  </MenubarItem>
+                </MenubarContent>
+              </MenubarMenu>
+            </Menubar>
+            <ThemeToggle />
+          </div>
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-6">{children}</main>
       </SidebarInset>

@@ -152,8 +152,8 @@ export function ProjectEditorSheet({
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetContent className="w-full overflow-y-auto sm:max-w-3xl">
-        <SheetHeader>
+      <SheetContent className="flex w-full flex-col gap-0 sm:max-w-2xl">
+        <SheetHeader className="p-6">
           <SheetTitle>
             {project ? 'Edit Project' : 'Create New Project'}
           </SheetTitle>
@@ -163,181 +163,178 @@ export function ProjectEditorSheet({
               : 'Fill out the details for your new portfolio project.'}
           </SheetDescription>
         </SheetHeader>
-        <div className="py-8">
+        <div className="flex-1 overflow-y-auto p-6">
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="grid grid-cols-1 gap-8 md:grid-cols-3"
-            >
-              {/* Image and Details Section */}
-              <div className="space-y-6 md:col-span-1">
-                <FormItem>
-                  <FormLabel>Project Image</FormLabel>
-                  <div className="relative aspect-video w-full overflow-hidden rounded-md">
-                    {imagePreview && (
-                      <Image
-                        src={imagePreview}
-                        alt="Project preview"
-                        fill
-                        className="object-cover"
-                      />
-                    )}
-                    {isUploading && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                        <Loader2 className="h-8 w-8 animate-spin text-white" />
-                      </div>
-                    )}
-                  </div>
-                  <CldUploadButton
-                    uploadPreset="nairobi_techcreative"
-                    onSuccess={handleUploadSuccess}
-                    onUpload={() => setIsUploading(true)}
-                    onError={(error) => {
-                      setIsUploading(false);
-                      toast({
-                        variant: 'destructive',
-                        title: 'Upload Failed',
-                        description: String((error as any).info),
-                      });
-                    }}
-                    className={cn(
-                      buttonVariants({ variant: 'outline' }),
-                      'w-full'
-                    )}
-                    disabled={isUploading}
-                  >
-                    <Upload className="mr-2 h-4 w-4" />
-                    {isUploading ? 'Uploading...' : 'Upload Image'}
-                  </CldUploadButton>
-                </FormItem>
-              </div>
-
-              {/* Form Fields Section */}
-              <div className="space-y-6 md:col-span-2">
-                <FormField
-                  control={form.control}
-                  name="title"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Title</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter project title" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormItem>
+                <FormLabel>Project Image</FormLabel>
+                <div className="relative aspect-video w-full overflow-hidden rounded-md">
+                  {imagePreview && (
+                    <Image
+                      src={imagePreview}
+                      alt="Project preview"
+                      fill
+                      className="object-cover"
+                    />
                   )}
-                />
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Description</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Enter a short summary of the project"
-                          className="resize-none"
-                          rows={3}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                  {isUploading && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                      <Loader2 className="h-8 w-8 animate-spin text-white" />
+                    </div>
                   )}
-                />
-                <FormField
-                  control={form.control}
-                  name="keyFeatures"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Key Features</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Enter features, separated by commas"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="icon"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Icon</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select an icon" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {iconNames.map((iconName) => (
-                              <SelectItem key={iconName} value={iconName}>
-                                {iconName}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="gridSpan"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Grid Span</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select grid span" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="col-span-1 lg:col-span-1">
-                              Small
-                            </SelectItem>
-                            <SelectItem value="col-span-1 lg:col-span-2">
-                              Medium
-                            </SelectItem>
-                            <SelectItem value="col-span-1 lg:col-span-3">
-                              Large
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                 </div>
-                <SheetFooter className="col-span-full mt-4">
-                  <SheetClose asChild>
-                    <Button type="button" variant="outline">
-                      Cancel
-                    </Button>
-                  </SheetClose>
-                  <Button type="submit" disabled={isUploading || isSaving}>
-                    {(isUploading || isSaving) && (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    )}
-                    Save Project
-                  </Button>
-                </SheetFooter>
+                <CldUploadButton
+                  uploadPreset="nairobi_techcreative"
+                  onSuccess={handleUploadSuccess}
+                  onUpload={() => setIsUploading(true)}
+                  onError={(error) => {
+                    setIsUploading(false);
+                    toast({
+                      variant: 'destructive',
+                      title: 'Upload Failed',
+                      description: String((error as any).info),
+                    });
+                  }}
+                  className={cn(
+                    buttonVariants({ variant: 'outline' }),
+                    'w-full'
+                  )}
+                  disabled={isUploading}
+                >
+                  <Upload className="mr-2 h-4 w-4" />
+                  {isUploading ? 'Uploading...' : 'Upload Image'}
+                </CldUploadButton>
+              </FormItem>
+
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Title</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter project title" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Enter a short summary of the project"
+                        className="resize-none"
+                        rows={3}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="keyFeatures"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Key Features</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter features, separated by commas"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="icon"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Icon</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select an icon" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {iconNames.map((iconName) => (
+                            <SelectItem key={iconName} value={iconName}>
+                              {iconName}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="gridSpan"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Grid Span</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select grid span" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="col-span-1 lg:col-span-1">
+                            Small
+                          </SelectItem>
+                          <SelectItem value="col-span-1 lg:col-span-2">
+                            Medium
+                          </SelectItem>
+                          <SelectItem value="col-span-1 lg:col-span-3">
+                            Large
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
+              <div className="pb-12" />
             </form>
           </Form>
         </div>
+
+        <SheetFooter className="absolute bottom-0 left-0 right-0 border-t bg-background p-6">
+          <SheetClose asChild>
+            <Button type="button" variant="outline">
+              Cancel
+            </Button>
+          </SheetClose>
+          <Button
+            type="submit"
+            disabled={isUploading || isSaving}
+            onClick={form.handleSubmit(onSubmit)}
+          >
+            {(isUploading || isSaving) && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            )}
+            Save Project
+          </Button>
+        </SheetFooter>
       </SheetContent>
     </Sheet>
   );
