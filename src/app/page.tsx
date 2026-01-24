@@ -77,14 +77,14 @@ export default async function Home() {
           <div className="container mx-auto px-4">
             <div className="mx-auto mb-16 max-w-3xl text-center">
               <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-                Innovation Showcase
+              Latest Innovation Suite
               </h2>
               <p className="mt-4 text-lg text-zinc-500">
                 Showcasing our next generation of digital
                 solutions.
               </p>
             </div>
-            <div className="p-10 sm:p-4 md:p-6">
+            <div className="sm:p-4 md:p-6">
               {projectsResult.status === 'fulfilled' ? (
                 <BentoPortfolio
                   projects={projectsResult.value}
@@ -100,19 +100,7 @@ export default async function Home() {
         {testimonialsResult.status === 'fulfilled' &&
         testimonialsResult.value.length > 0 ? (
           <TestimonialsComponent testimonials={testimonialsResult.value} />
-        ) : (
-          <section id="testimonials" className="bg-background py-20 lg:py-32">
-            <div className="container">
-              {testimonialsResult.status === 'rejected' ? (
-                <DataError sectionName="Testimonials" />
-              ) : (
-                <div className="text-center text-muted-foreground">
-                  No testimonials to display.
-                </div>
-              )}
-            </div>
-          </section>
-        )}
+        ) : (<></>)}
 
         <section id="faq" className="border-t bg-background py-20 lg:py-32">
           <div className="container mx-auto px-4">

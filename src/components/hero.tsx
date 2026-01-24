@@ -54,7 +54,7 @@ export function Hero({
   return (
     <section className="flex h-auto w-full items-center bg-background">
       <motion.div
-        className="container mx-auto grid grid-cols-1 items-center gap-12 px-4 py-24 md:grid-cols-2 lg:gap-20"
+        className="container mx-auto grid grid-cols-1 items-center justify-evenly gap-12 px-4 py-24 md:grid-cols-2 lg:gap-20"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
