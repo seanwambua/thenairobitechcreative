@@ -16,9 +16,6 @@ export async function getPosts(): Promise<Post[]> {
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | null> {
-  if (!slug) {
-    return null;
-  }
   const result = await prisma.post.findUnique({
     where: { slug },
   });

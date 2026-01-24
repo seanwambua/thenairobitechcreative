@@ -25,8 +25,12 @@ async function getPost(slug: string) {
 export default async function BlogPostPage({
   params,
 }: {
-  params: { slug: string };
+  params: { slug?: string };
 }) {
+  if (!params.slug) {
+    notFound();
+  }
+
   const { post, error } = await getPost(params.slug);
 
   if (error) {
