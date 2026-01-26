@@ -14,8 +14,9 @@ async function getPageData(
   slug?: string
 ): Promise<{ post: Post | null; logoUrl: string | null; error: Error | null }> {
   try {
+    const postPromise = slug ? getPostBySlug(slug) : Promise.resolve(null);
     const [post, logoUrl] = await Promise.all([
-      getPostBySlug(slug),
+      postPromise,
       getSetting('logo'),
     ]);
     return { post, logoUrl, error: null };
