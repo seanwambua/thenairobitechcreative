@@ -68,7 +68,7 @@ export default async function Home() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <Header />
+      <Header logoUrl={logoUrl} />
       <main className="flex-1">
         <Hero heroImage={heroImage} logoUrl={logoUrl} />
         <ProspectsBanner />

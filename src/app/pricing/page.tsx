@@ -12,7 +12,7 @@ export default async function PricingPage() {
     const logoUrl = await getSetting('logo');
     return (
       <div className="flex min-h-screen flex-col bg-background">
-        <Header />
+        <Header logoUrl={logoUrl} />
         <main className="flex-1">
           <PricingClient logoUrl={logoUrl} />
           <Cta logoUrl={logoUrl} />

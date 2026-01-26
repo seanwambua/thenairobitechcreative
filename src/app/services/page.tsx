@@ -17,7 +17,7 @@ export default async function ServicesPage() {
 
     return (
       <div className="flex min-h-screen flex-col bg-background">
-        <Header />
+        <Header logoUrl={settings.logo} />
         <main className="flex-1">
           <ServicesClient
             founderImage={
