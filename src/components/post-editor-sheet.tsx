@@ -54,7 +54,7 @@ export function PostEditorSheet({
       title: '',
       description: '',
       content: '',
-      author: 'Jalen Doe', // Default author
+      author: 'Admin User', // Default author
     },
   });
 
@@ -72,7 +72,7 @@ export function PostEditorSheet({
           title: '',
           description: '',
           content: '',
-          author: 'Jalen Doe',
+          author: 'Admin User',
         });
       }
     }

@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { PostInteractions } from '@/components/post-interactions';
 import { DbUninitializedError } from '@/components/db-uninitialized-error';
-import { getPostBySlug } from '@/app/actions/posts';
+import { getPostBySlug, getPosts } from '@/app/actions/posts';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
 import type { Post } from '@/app/generated/prisma';
@@ -117,9 +117,8 @@ export default async function BlogPostPage({
           <Separator className="my-12" />
 
           <PostInteractions
-            initialLikes={post.likes}
+            post={post}
             commentsCount={commentsCount}
-            postTitle={post.title}
           />
 
           <section className="mt-12">

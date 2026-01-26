@@ -12,8 +12,8 @@ export async function seedDatabase() {
 
   await prisma.user.create({
     data: {
-      email: 'example@example.com',
-      name: 'Test User',
+      email: 'admin@example.com',
+      name: 'Admin User',
     },
   });
 
@@ -25,7 +25,7 @@ export async function seedDatabase() {
       content: 'This is the content of my first post.',
       imageUrl: placeholderImages.blog1Image.imageUrl,
       imageHint: placeholderImages.blog1Image.imageHint,
-      author: 'Test User',
+      author: 'Admin User',
       authorAvatarUrl: placeholderImages.testimonial1Image.imageUrl,
       authorAvatarHint: placeholderImages.testimonial1Image.imageHint,
       likes: 10,
@@ -48,7 +48,7 @@ export async function seedDatabase() {
   await prisma.testimonial.create({
     data: {
       quote: 'This is a great product!',
-      author: 'Happy Customer',
+      author: 'Valued Partner',
       title: 'CEO of a company',
       avatarUrl: placeholderImages.testimonial1Image.imageUrl,
       avatarHint: 'A happy customer',
@@ -60,7 +60,7 @@ export async function seedDatabase() {
       { key: 'heroImage', value: null },
       { key: 'logo', value: null },
       { key: 'founderImage', value: null },
-      { key: 'founderName', value: 'Jalen Doe' },
+      { key: 'founderName', value: 'Admin User' },
       {
         key: 'founderMessage',
         value:

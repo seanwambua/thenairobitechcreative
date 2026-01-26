@@ -90,3 +90,22 @@ export async function deletePost(postId: number): Promise<void> {
     revalidatePath(`/blog/${post.slug}`);
   }
 }
+
+export async function likePost(postId: number): Promise<Post> {
+  const post = await prisma.post.findUnique({ where: { id: postId } });
+  if (!post) {
+    throw new Error('Post not found');
+  }
+
+  const updatedPost = await prisma.post.update({
+    where: { id: postId },
+    data: {
+      likes: {
+        increment: 1,
+      },
+    },
+  });
+
+  revalidatePath(`/blog/${post.slug}`);
+  return updatedPost;
+}
