@@ -3,13 +3,12 @@ import { getPostBySlug } from '@/app/actions/posts';
 import { DbUninitializedError } from '@/components/db-uninitialized-error';
 import { BlogPostClient } from './blog-post-client';
 import type { Post } from '@/app/generated/prisma';
+import { Header } from '@/components/layout/header';
+import { Footer } from '@/components/layout/footer';
 
 async function getPost(
   slug?: string
 ): Promise<{ post: Post | null; error: Error | null }> {
-  if (!slug) {
-    notFound();
-  }
   try {
     const post = await getPostBySlug(slug);
     return { post, error: null };
@@ -32,5 +31,11 @@ export default async function BlogPostPage({
 
   const { post, error } = await getPost(params.slug);
 
-  return <BlogPostClient post={post} error={error} />;
+  return (
+    <div className="flex min-h-screen flex-col bg-background">
+      <Header />
+      <BlogPostClient post={post} error={error} />
+      <Footer />
+    </div>
+  );
 }
