@@ -6,7 +6,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { PostInteractions } from '@/components/post-interactions';
-import { DbUninitializedError } from '@/components/db-uninitialized-error';
+import { DbUninitializedError as DbUninitializedErrorComponent } from '@/components/db-uninitialized-error';
+import { DbUninitializedError } from '@/lib/errors';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Terminal, ArrowLeft } from 'lucide-react';
@@ -23,7 +24,7 @@ export function BlogPostClient({
     if (error instanceof DbUninitializedError) {
       return (
         <main className="flex-1">
-          <DbUninitializedError />
+          <DbUninitializedErrorComponent />
         </main>
       );
     }

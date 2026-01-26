@@ -7,7 +7,8 @@ import Link from 'next/link';
 import type { Post } from '@/app/generated/prisma';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
-import { DbUninitializedError } from '@/components/db-uninitialized-error';
+import { DbUninitializedError as DbUninitializedErrorComponent } from '@/components/db-uninitialized-error';
+import { DbUninitializedError } from '@/lib/errors';
 
 function BlogSkeleton() {
   return (
@@ -40,7 +41,7 @@ export function BlogClient({
     if (error instanceof DbUninitializedError) {
       return (
         <main className="flex-1">
-          <DbUninitializedError />
+          <DbUninitializedErrorComponent />
         </main>
       );
     }
