@@ -13,7 +13,7 @@ interface BlogClientProps {
 export function BlogClient({ posts, error }: BlogClientProps) {
   if (error) {
     return (
-      <main className="container flex-1 py-20 text-center">
+      <div className="container flex-1 py-20 text-center">
         <Alert variant="destructive" className="mx-auto max-w-lg text-left">
           <Terminal className="h-4 w-4" />
           <AlertTitle>Error Loading Blog</AlertTitle>
@@ -22,24 +22,24 @@ export function BlogClient({ posts, error }: BlogClientProps) {
             unavailable.
           </AlertDescription>
         </Alert>
-      </main>
+      </div>
     );
   }
 
   if (!posts || posts.length === 0) {
     return (
-      <main className="container flex-1 py-20 text-center">
+      <div className="container flex-1 py-20 text-center">
         <h2 className="text-2xl font-semibold">No Posts Found</h2>
         <p className="mt-2 text-muted-foreground">
           There are no blog posts to display at the moment. Please check back
           later.
         </p>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="flex-1">
+    <>
       <section className="py-20 lg:py-32">
         <div className="container mx-auto px-4">
           <div className="mx-auto mb-16 max-w-3xl text-center">
@@ -59,6 +59,6 @@ export function BlogClient({ posts, error }: BlogClientProps) {
           </div>
         </div>
       </section>
-    </main>
+    </>
   );
 }
