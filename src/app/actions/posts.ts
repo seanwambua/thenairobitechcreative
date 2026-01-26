@@ -25,20 +25,40 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
   return result;
 }
 
+// Helper function to generate a URL-friendly slug
+function generateSlug(title: string): string {
+  return String(title || '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '') // remove non-word chars, but keep spaces and hyphens
+    .replace(/[\s_-]+/g, '-') // collapse whitespace and underscores to a single hyphen
+    .replace(/^-+|-+$/g, ''); // trim leading/trailing hyphens
+}
+
+// Helper function to ensure slug is unique
+async function generateUniqueSlug(title: string): Promise<string> {
+  const baseSlug = generateSlug(title);
+  let uniqueSlug = baseSlug;
+  let counter = 1;
+
+  // Check if the slug already exists and append a number if it does
+  while (await prisma.post.findUnique({ where: { slug: uniqueSlug } })) {
+    uniqueSlug = `${baseSlug}-${counter}`;
+    counter++;
+  }
+  return uniqueSlug;
+}
+
 export async function createPost(
   data: z.infer<typeof PostInputSchema>
 ): Promise<Post> {
   const validatedData = PostInputSchema.parse(data);
+  const uniqueSlug = await generateUniqueSlug(validatedData.title);
 
   const newPost = await prisma.post.create({
     data: {
       ...validatedData,
-      slug: String(validatedData.title || '')
-        .toLowerCase()
-        .trim()
-        .replace(/[^\w\s-]/g, '') // remove non-word chars, but keep spaces and hyphens
-        .replace(/[\s_-]+/g, '-') // collapse whitespace and underscores to a single hyphen
-        .replace(/^-+|-+$/g, ''), // trim leading/trailing hyphens
+      slug: uniqueSlug,
       imageUrl: placeholderImages.blog1Image.imageUrl,
       imageHint: placeholderImages.blog1Image.imageHint,
       authorAvatarUrl: placeholderImages.testimonial1Image.imageUrl,
