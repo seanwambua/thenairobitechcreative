@@ -1,6 +1,4 @@
 'use server';
-import { Header } from '@/components/layout/header';
-import { Footer } from '@/components/layout/footer';
 import { Hero } from '@/components/hero';
 import { ProspectsBanner } from '@/components/prospects-banner';
 import { BentoPortfolio } from '@/components/bento-portfolio';
@@ -67,72 +65,69 @@ export default async function Home() {
     logoUrlResult.status === 'fulfilled' ? logoUrlResult.value : null;
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <Header logoUrl={logoUrl} />
-      <main className="flex-1">
-        <Hero heroImage={heroImage} logoUrl={logoUrl} />
-        <ProspectsBanner />
+    <>
+      <Hero heroImage={heroImage} logoUrl={logoUrl} />
+      <ProspectsBanner />
 
-        <section id="portfolio" className="py-20 lg:py-32">
-          <div className="container mx-auto px-4">
-            <div className="mx-auto mb-16 max-w-3xl text-center">
-              <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+      <section id="portfolio" className="py-20 lg:py-32">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto mb-16 max-w-3xl text-center">
+            <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
               Latest Innovation Suite
-              </h2>
-              <p className="mt-4 text-lg text-zinc-500">
-                Showcasing our next generation of digital
-                solutions.
-              </p>
-            </div>
-            <div className="sm:p-4 md:p-6">
-              {projectsResult.status === 'fulfilled' ? (
-                <BentoPortfolio
-                  projects={projectsResult.value}
-                  logoUrl={logoUrl}
-                />
-              ) : (
-                <DataError sectionName="Portfolio" />
-              )}
-            </div>
+            </h2>
+            <p className="mt-4 text-lg text-zinc-500">
+              Showcasing our next generation of digital solutions.
+            </p>
           </div>
-        </section>
-
-        {testimonialsResult.status === 'fulfilled' &&
-        testimonialsResult.value.length > 0 ? (
-          <TestimonialsComponent testimonials={testimonialsResult.value} />
-        ) : (<></>)}
-
-        <section id="faq" className="border-t bg-background py-20 lg:py-32">
-          <div className="container mx-auto px-4">
-            <div className="mx-auto mb-16 max-w-3xl text-center">
-              <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-                Frequently Asked Questions
-              </h2>
-              <p className="mt-4 text-muted-foreground">
-                Have questions? We've got answers. If you can't find what you're
-                looking for, feel free to contact us.
-              </p>
-            </div>
-            <div className="mx-auto max-w-3xl">
-              <Accordion type="single" collapsible className="w-full">
-                {faqs.map((faq) => (
-                  <AccordionItem key={faq.id} value={`item-${faq.id}`}>
-                    <AccordionTrigger className="text-left font-semibold hover:no-underline">
-                      {faq.question}
-                    </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground">
-                      {faq.answer}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </div>
+          <div className="sm:p-4 md:p-6">
+            {projectsResult.status === 'fulfilled' ? (
+              <BentoPortfolio
+                projects={projectsResult.value}
+                logoUrl={logoUrl}
+              />
+            ) : (
+              <DataError sectionName="Portfolio" />
+            )}
           </div>
-        </section>
+        </div>
+      </section>
 
-        <Cta logoUrl={logoUrl} />
-      </main>
-      <Footer />
-    </div>
+      {testimonialsResult.status === 'fulfilled' &&
+      testimonialsResult.value.length > 0 ? (
+        <TestimonialsComponent testimonials={testimonialsResult.value} />
+      ) : (
+        <></>
+      )}
+
+      <section id="faq" className="border-t bg-background py-20 lg:py-32">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto mb-16 max-w-3xl text-center">
+            <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+              Frequently Asked Questions
+            </h2>
+            <p className="mt-4 text-muted-foreground">
+              Have questions? We've got answers. If you can't find what you're
+              looking for, feel free to contact us.
+            </p>
+          </div>
+          <div className="mx-auto max-w-3xl">
+            <Accordion type="single" collapsible className="w-full">
+              {faqs.map((faq) => (
+                <AccordionItem key={faq.id} value={`item-${faq.id}`}>
+                  <AccordionTrigger className="text-left font-semibold hover:no-underline">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </div>
+      </section>
+
+      <Cta logoUrl={logoUrl} />
+    </>
   );
 }

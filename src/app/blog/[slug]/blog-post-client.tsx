@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -14,10 +15,10 @@ import { Terminal, ArrowLeft } from 'lucide-react';
 import type { Post } from '@/app/generated/prisma';
 
 export function BlogPostClient({
-  post,
+  postData,
   error,
 }: {
-  post: Post | null;
+  postData: Post | null;
   error: Error | null;
 }) {
   if (error) {
@@ -52,7 +53,7 @@ export function BlogPostClient({
   }
 
   // Handle case where post is not found or slug was invalid.
-  if (!post) {
+  if (!postData) {
     return (
       <main className="container flex-1 py-20 text-center">
         <Alert variant="destructive" className="mx-auto max-w-lg text-left">
@@ -81,21 +82,21 @@ export function BlogPostClient({
       <article className="container mx-auto max-w-4xl px-4 py-12">
         <header className="mb-12 text-center">
           <h1 className="font-headline text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl">
-            {post.title}
+            {postData.title}
           </h1>
           <div className="mt-6 flex items-center justify-center gap-4">
             <Avatar className="h-12 w-12 border-2 border-primary">
               <AvatarImage
-                src={post.authorAvatarUrl}
-                alt={post.author}
-                data-ai-hint={post.authorAvatarHint}
+                src={postData.authorAvatarUrl}
+                alt={postData.author}
+                data-ai-hint={postData.authorAvatarHint}
               />
-              <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
+              <AvatarFallback>{postData.author.charAt(0)}</AvatarFallback>
             </Avatar>
             <div>
-              <p className="font-semibold">{post.author}</p>
+              <p className="font-semibold">{postData.author}</p>
               <p className="text-sm text-muted-foreground">
-                {new Date(post.createdAt).toLocaleDateString('en-US', {
+                {new Date(postData.createdAt).toLocaleDateString('en-US', {
                   month: 'short',
                   day: 'numeric',
                   year: 'numeric',
@@ -107,28 +108,28 @@ export function BlogPostClient({
 
         <div className="relative mb-12 h-[600px] w-full overflow-hidden rounded-2xl shadow-lg">
           <Image
-            src={post.imageUrl}
-            alt={post.title}
+            src={postData.imageUrl}
+            alt={postData.title}
             fill
             className="object-cover"
             sizes="(max-width: 768px) 100vw, 50vw"
-            data-ai-hint={post.imageHint}
+            data-ai-hint={postData.imageHint}
             priority
           />
         </div>
 
         <div className="prose prose-lg dark:prose-invert prose-p:leading-relaxed prose-headings:font-headline prose-headings:text-foreground mx-auto max-w-none text-pretty text-foreground">
           <p className="lead text-xl text-muted-foreground">
-            {post.description}
+            {postData.description}
           </p>
-          {post.content.split('\n\n').map((paragraph, index) => (
+          {postData.content.split('\n\n').map((paragraph, index) => (
             <p key={index}>{paragraph}</p>
           ))}
         </div>
 
         <Separator className="my-12" />
 
-        <PostInteractions post={post} commentsCount={commentsCount} />
+        <PostInteractions post={postData} commentsCount={commentsCount} />
 
         <section className="mt-12">
           <h2 className="font-headline text-3xl font-bold">Comments</h2>

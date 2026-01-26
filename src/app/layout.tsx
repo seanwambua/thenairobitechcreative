@@ -5,6 +5,9 @@ import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import { Providers } from '@/components/providers';
 import { auth } from '@/auth';
+import { Header } from '@/components/layout/header';
+import { Footer } from '@/components/layout/footer';
+import { getSetting } from './actions/settings';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -23,6 +26,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
+  const logoUrl = await getSetting('logo');
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn('font-body antialiased', poppins.variable)}>
@@ -33,7 +37,11 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <div className="flex min-h-screen flex-col bg-background">
+            <Header logoUrl={logoUrl} />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
           <Toaster />
         </Providers>
       </body>
