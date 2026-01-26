@@ -6,6 +6,7 @@ import type {
 } from '@/app/generated/prisma';
 
 export type Post = PrismaPost;
+export type PostSummary = Omit<Post, 'content'>;
 
 export type Testimonial = PrismaTestimonial;
 

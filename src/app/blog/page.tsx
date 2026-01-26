@@ -1,15 +1,15 @@
 import { BlogClient } from './blog-client';
 import { DbUninitializedError as DbUninitializedErrorComponent } from '@/components/db-uninitialized-error';
-import { getPosts } from '@/app/actions/posts';
-import type { Post } from '@/app/generated/prisma';
+import { getPostSummaries } from '@/app/actions/posts';
+import type { PostSummary } from '@/lib/data';
 import { DbUninitializedError } from '@/lib/errors';
 
 async function getPageData(): Promise<{
-  posts: Post[] | null;
+  posts: PostSummary[] | null;
   error: Error | null;
 }> {
   try {
-    const posts = await getPosts();
+    const posts = await getPostSummaries();
     return { posts, error: null };
   } catch (error: any) {
     if (error.message.includes('no such table')) {

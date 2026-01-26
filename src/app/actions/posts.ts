@@ -4,7 +4,7 @@
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { PostSchema, PostInputSchema } from '@/lib/schemas';
-import type { Post } from '@/app/generated/prisma';
+import type { Post, PostSummary } from '@/lib/data';
 import { placeholderImages } from '@/lib/placeholder-images';
 import { z } from 'zod';
 
@@ -15,10 +15,28 @@ export async function getPosts(): Promise<Post[]> {
   return results;
 }
 
+export async function getPostSummaries(): Promise<PostSummary[]> {
+  return prisma.post.findMany({
+    select: {
+      id: true,
+      slug: true,
+      title: true,
+      description: true,
+      imageUrl: true,
+      imageHint: true,
+      author: true,
+      authorAvatarUrl: true,
+      authorAvatarHint: true,
+      likes: true,
+      comments: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+}
+
 export async function getPostBySlug(slug: string): Promise<Post | null> {
-  if (!slug) {
-    return null;
-  }
   const result = await prisma.post.findUnique({
     where: { slug },
   });

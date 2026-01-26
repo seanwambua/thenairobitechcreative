@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import type { Post } from '@/lib/data';
+import type { PostSummary } from '@/lib/data';
 import {
   Card,
   CardContent,
@@ -16,7 +16,7 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 
 interface BlogPostCardProps {
-  post: Post;
+  post: PostSummary;
 }
 
 export function BlogPostCard({ post }: BlogPostCardProps) {
