@@ -1,4 +1,3 @@
-import { notFound } from 'next/navigation';
 import { getPostBySlug } from '@/app/actions/posts';
 import { DbUninitializedError } from '@/lib/errors';
 import { BlogPostClient } from './blog-post-client';
@@ -8,11 +7,10 @@ import { DbUninitializedError as DbUninitializedErrorComponent } from '@/compone
 export const dynamic = 'force-dynamic';
 
 async function getPageData(
-  slug?: string
+  slug: string
 ): Promise<{ post: Post | null; error: Error | null }> {
   try {
-    const postPromise = slug ? getPostBySlug(slug) : Promise.resolve(null);
-    const post = await postPromise;
+    const post = await getPostBySlug(slug);
     return { post, error: null };
   } catch (error: any) {
     if (error.message.includes('no such table')) {
@@ -25,12 +23,8 @@ async function getPageData(
 export default async function BlogPostPage({
   params,
 }: {
-  params: { slug?: string };
+  params: { slug: string };
 }) {
-  if (!params.slug) {
-    notFound();
-  }
-
   const { post, error } = await getPageData(params.slug);
 
   if (error instanceof DbUninitializedError) {
