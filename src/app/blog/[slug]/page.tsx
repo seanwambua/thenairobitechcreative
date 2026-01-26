@@ -12,13 +12,17 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
 import type { Post } from '@/app/generated/prisma';
 
-async function getPost(slug: string) {
+export async function generateStaticParams() {
   try {
-    const post = await getPostBySlug(slug);
-    return { post, error: null };
+    const posts = await getPosts();
+    return posts.map((post) => ({
+      slug: post.slug,
+    }));
   } catch (error) {
-    console.error('Failed to fetch post:', error);
-    return { post: null, error: error as Error };
+    // In case of a database error during build, return an empty array.
+    // The pages will be generated on-demand at runtime.
+    console.error('Failed to generate static params for blog posts:', error);
+    return [];
   }
 }
 
@@ -31,9 +35,10 @@ export default async function BlogPostPage({
     notFound();
   }
 
-  const { post, error } = await getPost(params.slug);
-
-  if (error) {
+  let post: Post | null = null;
+  try {
+    post = await getPostBySlug(params.slug);
+  } catch (error: any) {
     if (error.message.includes('no such table')) {
       return <DbUninitializedError />;
     }
