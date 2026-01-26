@@ -39,7 +39,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { placeholderImages } from '@/lib/placeholder-images';
 import { Logo } from '@/components/logo';
 import {
   Menubar,
@@ -48,19 +47,19 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from '@/components/ui/menubar';
+import { useSession, signOut } from 'next-auth/react';
 
 function DashboardClientLayout({
   children,
   logoUrl,
-  founderImage,
 }: {
   children: React.ReactNode;
   logoUrl: string | null;
-  founderImage: string | null;
 }) {
   const { setOpenMobile, isMobile } = useSidebar();
   const [mounted, setMounted] = React.useState(false);
   const router = useRouter();
+  const { data: session } = useSession();
 
   React.useEffect(() => {
     setMounted(true);
@@ -73,12 +72,6 @@ function DashboardClientLayout({
   };
 
   const pathname = usePathname();
-
-  const founderInfo = placeholderImages.founderImage;
-  const founderInitials = founderInfo.imageHint
-    .split(' ')
-    .map((n) => n[0])
-    .join('');
 
   return (
     <>
@@ -209,14 +202,18 @@ function DashboardClientLayout({
             <div className="flex items-center gap-3 group-data-[collapsible=icon]:hidden">
               <Avatar className="h-10 w-10">
                 <AvatarImage
-                  src={founderImage ?? undefined}
-                  alt={founderInfo.imageHint}
+                  src={session?.user?.image ?? undefined}
+                  alt={session?.user?.name ?? undefined}
                 />
-                <AvatarFallback>{founderInitials}</AvatarFallback>
+                <AvatarFallback>
+                  {session?.user?.name?.charAt(0)}
+                </AvatarFallback>
               </Avatar>
               <div>
-                <p className="font-semibold">{founderInfo.imageHint}</p>
-                <p className="text-sm text-muted-foreground">Admin</p>
+                <p className="font-semibold">{session?.user?.name}</p>
+                <p className="text-sm text-muted-foreground">
+                  {session?.user?.email}
+                </p>
               </div>
             </div>
             {mounted ? (
@@ -235,7 +232,7 @@ function DashboardClientLayout({
                       <span>Settings</span>
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => signOut()}>
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                   </DropdownMenuItem>
@@ -290,15 +287,13 @@ function DashboardClientLayout({
 export function DashboardClient({
   children,
   logoUrl,
-  founderImage,
 }: {
   children: React.ReactNode;
   logoUrl: string | null;
-  founderImage: string | null;
 }) {
   return (
     <SidebarProvider>
-      <DashboardClientLayout logoUrl={logoUrl} founderImage={founderImage}>
+      <DashboardClientLayout logoUrl={logoUrl}>
         {children}
       </DashboardClientLayout>
     </SidebarProvider>

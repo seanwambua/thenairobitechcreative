@@ -2,14 +2,25 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Stamp } from '@/components/stamp';
-import { Menu, X } from 'lucide-react';
+import { LogOut, Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { InquirySheet } from '../inquiry-sheet';
 import { navItems } from '@/lib/data';
+import { useSession, signIn, signOut } from 'next-auth/react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export function HeaderUI({ logoUrl }: { logoUrl: string | null }) {
+  const { data: session, status } = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -46,12 +57,35 @@ export function HeaderUI({ logoUrl }: { logoUrl: string | null }) {
         </nav>
         <div className="hidden items-center gap-2 md:flex">
           <ThemeToggle />
-          {mounted ? (
-            <InquirySheet logoUrl={logoUrl}>
-              <Button>Get In Touch</Button>
-            </InquirySheet>
+          {status === 'authenticated' ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="relative h-8 w-8 rounded-full"
+                >
+                  <Avatar className="h-9 w-9">
+                    <AvatarImage
+                      src={session.user?.image ?? undefined}
+                      alt={session.user?.name ?? undefined}
+                    />
+                    <AvatarFallback>
+                      {session.user?.name?.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => signOut()}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
-            <Button>Get In Touch</Button>
+            <Button onClick={() => signIn('google')}>Sign In</Button>
           )}
         </div>
         <div className="flex items-center gap-2 md:hidden">
