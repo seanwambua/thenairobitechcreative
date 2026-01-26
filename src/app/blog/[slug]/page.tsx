@@ -1,5 +1,7 @@
+
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -7,24 +9,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { PostInteractions } from '@/components/post-interactions';
 import { DbUninitializedError } from '@/components/db-uninitialized-error';
-import { getPostBySlug, getPosts } from '@/app/actions/posts';
+import { getPostBySlug } from '@/app/actions/posts';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Terminal } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Terminal, ArrowLeft } from 'lucide-react';
 import type { Post } from '@/app/generated/prisma';
 
-export async function generateStaticParams() {
-  try {
-    const posts = await getPosts();
-    return posts.map((post) => ({
-      slug: post.slug,
-    }));
-  } catch (error) {
-    // In case of a database error during build, return an empty array.
-    // The pages will be generated on-demand at runtime.
-    console.error('Failed to generate static params for blog posts:', error);
-    return [];
-  }
-}
+// By removing generateStaticParams, all blog post pages will be dynamically rendered.
+// This is more resilient if the database is not available at build time.
 
 export default async function BlogPostPage({
   params,
@@ -36,33 +28,47 @@ export default async function BlogPostPage({
   }
 
   let post: Post | null = null;
+  let errorLoading = false;
   try {
     post = await getPostBySlug(params.slug);
   } catch (error: any) {
     if (error.message.includes('no such table')) {
       return <DbUninitializedError />;
     }
+    // Set a flag to indicate that loading failed, but don't return here yet.
+    // This allows us to render the page with a more specific error message.
+    errorLoading = true;
+  }
+
+  // Handle case where post is not found or there was an error fetching it.
+  if (!post) {
     return (
       <div className="flex min-h-screen flex-col bg-background">
         <Header />
-        <main className="container flex-1 py-20">
-          <Alert variant="destructive">
+        <main className="container flex-1 py-20 text-center">
+          <Alert variant="destructive" className="mx-auto max-w-lg text-left">
             <Terminal className="h-4 w-4" />
-            <AlertTitle>Error Loading Post</AlertTitle>
+            <AlertTitle>
+              {errorLoading ? 'Error Loading Post' : 'Post Not Found'}
+            </AlertTitle>
             <AlertDescription>
-              There was a problem fetching this article. It may be temporarily
-              unavailable or the link may be broken. Please try refreshing the
-              page.
+              {errorLoading
+                ? 'There was a problem fetching this article. It may be temporarily unavailable.'
+                : "The article you are looking for does not exist or has been moved."}
             </AlertDescription>
           </Alert>
+          <div className="mt-8">
+            <Button asChild>
+              <Link href="/blog">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Blog
+              </Link>
+            </Button>
+          </div>
         </main>
         <Footer />
       </div>
     );
-  }
-
-  if (!post) {
-    notFound();
   }
 
   const commentsCount = 0;
