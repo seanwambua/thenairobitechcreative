@@ -15,32 +15,60 @@ import { Button } from '@/components/ui/button';
 import { Terminal, ArrowLeft } from 'lucide-react';
 import type { Post } from '@/app/generated/prisma';
 
-// By removing generateStaticParams, all blog post pages will be dynamically rendered.
-// This is more resilient if the database is not available at build time.
+async function getPost(slug?: string): Promise<{ post: Post | null, error: Error | null }> {
+  if (!slug) {
+    return { post: null, error: new Error('Slug is required and was not provided.') };
+  }
+  try {
+    const post = await getPostBySlug(slug);
+    return { post, error: null };
+  } catch (error: any) {
+    if (error.message.includes('no such table')) {
+      return { post: null, error: new DbUninitializedError() as Error };
+    }
+    return { post: null, error: error as Error };
+  }
+}
+
 
 export default async function BlogPostPage({
   params,
 }: {
   params: { slug?: string };
 }) {
-  if (!params.slug) {
-    notFound();
-  }
+  const { post, error } = await getPost(params.slug);
 
-  let post: Post | null = null;
-  let errorLoading = false;
-  try {
-    post = await getPostBySlug(params.slug);
-  } catch (error: any) {
-    if (error.message.includes('no such table')) {
+  if (error) {
+    if (error instanceof DbUninitializedError) {
       return <DbUninitializedError />;
     }
-    // Set a flag to indicate that loading failed, but don't return here yet.
-    // This allows us to render the page with a more specific error message.
-    errorLoading = true;
+    // Generic error for other data fetching issues
+    return (
+        <div className="flex min-h-screen flex-col bg-background">
+          <Header />
+          <main className="container flex-1 py-20 text-center">
+            <Alert variant="destructive" className="mx-auto max-w-lg text-left">
+              <Terminal className="h-4 w-4" />
+              <AlertTitle>Error Loading Post</AlertTitle>
+              <AlertDescription>
+                There was a problem fetching this article. It may be temporarily unavailable.
+              </AlertDescription>
+            </Alert>
+            <div className="mt-8">
+              <Button asChild>
+                <Link href="/blog">
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back to Blog
+                </Link>
+              </Button>
+            </div>
+          </main>
+          <Footer />
+        </div>
+    );
   }
 
-  // Handle case where post is not found or there was an error fetching it.
+  // Handle case where post is not found or slug was invalid.
   if (!post) {
     return (
       <div className="flex min-h-screen flex-col bg-background">
@@ -48,13 +76,9 @@ export default async function BlogPostPage({
         <main className="container flex-1 py-20 text-center">
           <Alert variant="destructive" className="mx-auto max-w-lg text-left">
             <Terminal className="h-4 w-4" />
-            <AlertTitle>
-              {errorLoading ? 'Error Loading Post' : 'Post Not Found'}
-            </AlertTitle>
+            <AlertTitle>Post Not Found</AlertTitle>
             <AlertDescription>
-              {errorLoading
-                ? 'There was a problem fetching this article. It may be temporarily unavailable.'
-                : "The article you are looking for does not exist or has been moved."}
+              The article you are looking for does not exist or has been moved.
             </AlertDescription>
           </Alert>
           <div className="mt-8">
