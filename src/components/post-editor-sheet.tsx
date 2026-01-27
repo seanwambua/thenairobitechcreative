@@ -143,7 +143,7 @@ export function PostEditorSheet({
   }
 
   return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+    <Sheet open={isOpen} onOpenChange={setIsOpen} modal={false}>
       <SheetContent className="w-full overflow-y-auto sm:max-w-2xl">
         <SheetHeader>
           <SheetTitle>{post ? 'Edit Post' : 'Create New Post'}</SheetTitle>

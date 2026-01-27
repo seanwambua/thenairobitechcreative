@@ -151,7 +151,7 @@ export function ProjectEditorSheet({
   }
 
   return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+    <Sheet open={isOpen} onOpenChange={setIsOpen} modal={false}>
       <SheetContent className="flex w-full flex-col gap-0 sm:max-w-2xl">
         <SheetHeader className="p-6">
           <SheetTitle>
