@@ -33,7 +33,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { placeholderImages } from '@/lib/placeholder-images';
+import placeholderImages from '@/app/lib/placeholder-images.json';
 import { type Project } from '@/lib/data';
 import { Upload, Loader2 } from 'lucide-react';
 import { ProjectSchema, iconNames } from '@/lib/schemas';
