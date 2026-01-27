@@ -25,7 +25,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import type { Post } from '@prisma/client';
+import type { Post } from '@/app/generated/prisma';
 import { Loader2 } from 'lucide-react';
 import { PostInputSchema } from '@/lib/schemas';
 import { createPost, updatePost } from '@/app/actions/posts';

@@ -29,7 +29,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import type { Testimonial } from '@prisma/client';
+import type { Testimonial } from '@/app/generated/prisma';
 import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { TestimonialEditorSheet } from '@/components/testimonial-editor-sheet';

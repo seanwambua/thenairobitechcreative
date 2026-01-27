@@ -26,7 +26,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import type { Testimonial } from '@prisma/client';
+import type { Testimonial } from '@/app/generated/prisma';
 import { placeholderImages } from '@/lib/placeholder-images';
 import { Upload, Loader2 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
@@ -131,7 +131,9 @@ export function TestimonialEditorSheet({
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: `Failed to ${testimonial ? 'update' : 'create'} testimonial.`,
+        description: `Failed to ${
+          testimonial ? 'update' : 'create'
+        } testimonial.`,
       });
     } finally {
       setIsSaving(false);
@@ -184,7 +186,10 @@ export function TestimonialEditorSheet({
                       description: String((error as any).info),
                     });
                   }}
-                  className={cn(buttonVariants({ variant: 'outline' }), 'mt-2')}
+                  className={cn(
+                    buttonVariants({ variant: 'outline' }),
+                    'mt-2'
+                  )}
                   disabled={isUploading}
                 >
                   <Upload className="mr-2 h-4 w-4" />
@@ -243,10 +248,14 @@ export function TestimonialEditorSheet({
                     Cancel
                   </Button>
                 </SheetClose>
-                <Button type="submit" disabled={isUploading || isSaving}>
-                  {isUploading || isSaving ? (
+                <Button
+                  type="submit"
+                  disabled={isUploading || isSaving}
+                  onClick={form.handleSubmit(onSubmit)}
+                >
+                  {(isUploading || isSaving) && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : null}
+                  )}
                   Save Testimonial
                 </Button>
               </SheetFooter>

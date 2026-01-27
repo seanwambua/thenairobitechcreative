@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Upload, X, Loader2 } from 'lucide-react';
-import type { Post } from '@prisma/client';
+import type { Post } from '@/app/generated/prisma';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
 import { placeholderImages } from '@/lib/placeholder-images';
@@ -91,13 +91,13 @@ export function PostImageManager({
     let message = '';
 
     if (imageType === 'cover') {
-      updatedPostData.imageUrl = placeholderImages.blog1.imageUrl;
-      updatedPostData.imageHint = placeholderImages.blog1.imageHint;
+      updatedPostData.imageUrl = placeholderImages.blog1Image.imageUrl;
+      updatedPostData.imageHint = placeholderImages.blog1Image.imageHint;
       message = 'Cover image';
     } else {
-      updatedPostData.authorAvatarUrl = placeholderImages.testimonial1.imageUrl;
+      updatedPostData.authorAvatarUrl = placeholderImages.testimonial1Image.imageUrl;
       updatedPostData.authorAvatarHint =
-        placeholderImages.testimonial1.imageHint;
+        placeholderImages.testimonial1Image.imageHint;
       message = 'Author avatar';
     }
 
