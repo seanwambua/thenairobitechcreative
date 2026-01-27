@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
+import Image from 'next/image';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -26,9 +27,13 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import type { Post } from '@/app/generated/prisma';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Upload } from 'lucide-react';
 import { PostInputSchema } from '@/lib/schemas';
 import { createPost, updatePost } from '@/app/actions/posts';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { CldUploadButton } from 'next-cloudinary';
+import { cn } from '@/lib/utils';
+import { placeholderImages } from '@/lib/placeholder-images';
 
 type PostFormValues = z.infer<typeof PostInputSchema>;
 
@@ -45,8 +50,13 @@ export function PostEditorSheet({
   post,
   onSave,
 }: PostEditorSheetProps) {
-  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+  const [coverImagePreview, setCoverImagePreview] = useState<string | null>(
+    null
+  );
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState<string | null>(null);
 
   const form = useForm<PostFormValues>({
     resolver: zodResolver(PostInputSchema),
@@ -54,7 +64,7 @@ export function PostEditorSheet({
       title: '',
       description: '',
       content: '',
-      author: 'Admin User', // Default author
+      author: 'Admin User',
     },
   });
 
@@ -67,6 +77,8 @@ export function PostEditorSheet({
           content: post.content,
           author: post.author,
         });
+        setCoverImagePreview(post.imageUrl);
+        setAvatarPreview(post.authorAvatarUrl);
       } else {
         form.reset({
           title: '',
@@ -74,9 +86,28 @@ export function PostEditorSheet({
           content: '',
           author: 'Admin User',
         });
+        setCoverImagePreview(placeholderImages.blog1Image.imageUrl);
+        setAvatarPreview(placeholderImages.testimonial1Image.imageUrl);
       }
     }
   }, [post, form, isOpen]);
+
+  const handleUploadSuccess = (
+    result: any,
+    type: 'cover' | 'avatar'
+  ) => {
+    const secure_url = result.info.secure_url;
+    if (type === 'cover') {
+      setCoverImagePreview(secure_url);
+    } else {
+      setAvatarPreview(secure_url);
+    }
+    toast({
+      title: 'Image Uploaded',
+      description: `The ${type} image has been updated.`,
+    });
+    setIsUploading(null);
+  };
 
   async function onSubmit(values: PostFormValues) {
     setIsLoading(true);
@@ -85,10 +116,16 @@ export function PostEditorSheet({
         const updatedPostData = {
           ...post,
           ...values,
+          imageUrl: coverImagePreview!,
+          authorAvatarUrl: avatarPreview!,
         };
         await updatePost(updatedPostData);
       } else {
-        await createPost(values);
+        await createPost({
+          ...values,
+          imageUrl: coverImagePreview!,
+          authorAvatarUrl: avatarPreview!,
+        });
       }
 
       toast({
@@ -121,6 +158,80 @@ export function PostEditorSheet({
         <div className="py-8">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <FormItem>
+                  <FormLabel>Cover Image</FormLabel>
+                  <div className="relative aspect-video w-full overflow-hidden rounded-md">
+                    {coverImagePreview && (
+                      <Image
+                        src={coverImagePreview}
+                        alt="Cover image preview"
+                        fill
+                        className="object-cover"
+                      />
+                    )}
+                    {isUploading === 'cover' && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                        <Loader2 className="h-8 w-8 animate-spin text-white" />
+                      </div>
+                    )}
+                  </div>
+                  <CldUploadButton
+                    uploadPreset="nairobi_techcreative"
+                    onSuccess={(result: any) =>
+                      handleUploadSuccess(result, 'cover')
+                    }
+                    onUpload={() => setIsUploading('cover')}
+                    onError={() => setIsUploading(null)}
+                    className={cn(
+                      buttonVariants({ variant: 'outline' }),
+                      'w-full'
+                    )}
+                    disabled={isUploading !== null}
+                  >
+                    <Upload className="mr-2 h-4 w-4" />
+                    {isUploading === 'cover' ? 'Uploading...' : 'Upload Cover'}
+                  </CldUploadButton>
+                </FormItem>
+                <FormItem className="flex flex-col items-center">
+                  <FormLabel>Author Avatar</FormLabel>
+                  <div className="relative">
+                    <Avatar className="h-32 w-32">
+                      {avatarPreview && (
+                        <AvatarImage
+                          src={avatarPreview}
+                          alt="Avatar preview"
+                        />
+                      )}
+                      <AvatarFallback>
+                        {form.getValues('author')?.charAt(0) || '?'}
+                      </AvatarFallback>
+                    </Avatar>
+                    {isUploading === 'avatar' && (
+                      <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50">
+                        <Loader2 className="h-8 w-8 animate-spin text-white" />
+                      </div>
+                    )}
+                  </div>
+                  <CldUploadButton
+                    uploadPreset="nairobi_techcreative"
+                    onSuccess={(result: any) =>
+                      handleUploadSuccess(result, 'avatar')
+                    }
+                    onUpload={() => setIsUploading('avatar')}
+                    onError={() => setIsUploading(null)}
+                    className={cn(
+                      buttonVariants({ variant: 'outline' }),
+                      'mt-2'
+                    )}
+                    disabled={isUploading !== null}
+                  >
+                    <Upload className="mr-2 h-4 w-4" />
+                    {isUploading === 'avatar' ? 'Uploading...' : 'Upload Avatar'}
+                  </CldUploadButton>
+                </FormItem>
+              </div>
+
               <FormField
                 control={form.control}
                 name="title"
@@ -188,7 +299,7 @@ export function PostEditorSheet({
                     Cancel
                   </Button>
                 </SheetClose>
-                <Button type="submit" disabled={isLoading}>
+                <Button type="submit" disabled={isLoading || isUploading !== null}>
                   {isLoading && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}

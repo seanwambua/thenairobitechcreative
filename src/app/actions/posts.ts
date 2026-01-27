@@ -76,10 +76,17 @@ export async function createPost(
   const newPost = await prisma.post.create({
     data: {
       ...validatedData,
+      title: validatedData.title,
+      description: validatedData.description,
+      content: validatedData.content,
+      author: validatedData.author,
       slug: uniqueSlug,
-      imageUrl: placeholderImages.blog1Image.imageUrl,
+      imageUrl:
+        validatedData.imageUrl ?? placeholderImages.blog1Image.imageUrl,
       imageHint: placeholderImages.blog1Image.imageHint,
-      authorAvatarUrl: placeholderImages.testimonial1Image.imageUrl,
+      authorAvatarUrl:
+        validatedData.authorAvatarUrl ??
+        placeholderImages.testimonial1Image.imageUrl,
       authorAvatarHint: placeholderImages.testimonial1Image.imageHint,
       likes: 0,
       comments: '',

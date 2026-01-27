@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { CldUploadButton } from 'next-cloudinary';
 import { updateSetting } from '@/app/actions/settings';
-import { ImageIcon, UserCircle, Loader2 } from 'lucide-react';
+import { ImageIcon, UserCircle, Loader2, Upload } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -118,10 +118,18 @@ export function MediaClient({
               onSuccess={(result) => handleUpload(result, 'heroImage')}
               onUpload={() => setIsUploading('heroImage')}
               onError={() => setIsUploading(null)}
-              className={cn(buttonVariants({ variant: 'default' }), 'w-full')}
-              disabled={isUploading !== null}
+              className={cn(
+                buttonVariants({ variant: 'default' }),
+                'w-full',
+                isUploading !== null && 'cursor-not-allowed opacity-50'
+              )}
             >
-              Update
+              {isUploading === 'heroImage' ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Upload className="mr-2 h-4 w-4" />
+              )}
+              {isUploading === 'heroImage' ? 'Uploading...' : 'Update'}
             </CldUploadButton>
             <Button
               onClick={() => handleReset('heroImage')}
@@ -154,10 +162,18 @@ export function MediaClient({
               onSuccess={(result) => handleUpload(result, 'logo')}
               onUpload={() => setIsUploading('logo')}
               onError={() => setIsUploading(null)}
-              className={cn(buttonVariants({ variant: 'default' }), 'w-full')}
-              disabled={isUploading !== null}
+              className={cn(
+                buttonVariants({ variant: 'default' }),
+                'w-full',
+                isUploading !== null && 'cursor-not-allowed opacity-50'
+              )}
             >
-              Update
+              {isUploading === 'logo' ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Upload className="mr-2 h-4 w-4" />
+              )}
+              {isUploading === 'logo' ? 'Uploading...' : 'Update'}
             </CldUploadButton>
             <Button
               onClick={() => handleReset('logo')}
@@ -190,10 +206,18 @@ export function MediaClient({
               onSuccess={(result) => handleUpload(result, 'founderImage')}
               onUpload={() => setIsUploading('founderImage')}
               onError={() => setIsUploading(null)}
-              className={cn(buttonVariants({ variant: 'default' }), 'w-full')}
-              disabled={isUploading !== null}
+              className={cn(
+                buttonVariants({ variant: 'default' }),
+                'w-full',
+                isUploading !== null && 'cursor-not-allowed opacity-50'
+              )}
             >
-              Update
+              {isUploading === 'founderImage' ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Upload className="mr-2 h-4 w-4" />
+              )}
+              {isUploading === 'founderImage' ? 'Uploading...' : 'Update'}
             </CldUploadButton>
             <Button
               onClick={() => handleReset('founderImage')}

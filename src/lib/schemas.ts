@@ -71,6 +71,8 @@ export const PostInputSchema = z.object({
     .min(10, 'Description must be at least 10 characters.'),
   content: z.string().min(20, 'Content must be at least 20 characters.'),
   author: z.string().min(2, 'Author name must be at least 2 characters.'),
+  imageUrl: z.string().url().optional(),
+  authorAvatarUrl: z.string().url().optional(),
 });
 
 // Schema for validating the full Post object, often after retrieval from the DB.
