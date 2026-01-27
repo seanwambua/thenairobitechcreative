@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import { InquirySheet } from './inquiry-sheet';
-import { placeholderImages } from '@/lib/placeholder-images';
+import placeholderImages from '@/app/lib/placeholder-images.json';
 
 export function Hero({
   heroImage,

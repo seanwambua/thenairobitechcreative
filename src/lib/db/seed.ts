@@ -1,5 +1,5 @@
 import prisma from '@/lib/prisma';
-import { placeholderImages } from '@/lib/placeholder-images';
+import placeholderImages from '@/app/lib/placeholder-images.json';
 
 export async function seedDatabase() {
   console.log('Starting database seed...');

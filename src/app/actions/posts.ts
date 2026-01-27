@@ -4,7 +4,7 @@ import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { PostSchema, PostInputSchema } from '@/lib/schemas';
 import type { Post, PostSummary } from '@/lib/data';
-import { placeholderImages } from '@/lib/placeholder-images';
+import placeholderImages from '@/app/lib/placeholder-images.json';
 import { z } from 'zod';
 
 export async function getPosts(): Promise<Post[]> {

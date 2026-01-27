@@ -24,7 +24,7 @@ import {
   type LucideProps,
 } from 'lucide-react';
 import type { ComponentType } from 'react';
-import { placeholderImages } from '@/lib/placeholder-images';
+import placeholderImages from '@/app/lib/placeholder-images.json';
 
 const icons: Record<IconName, ComponentType<LucideProps>> = {
   Boxes,

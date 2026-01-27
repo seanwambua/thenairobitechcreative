@@ -15,7 +15,7 @@ import { getProjects } from '@/app/actions/projects';
 import { getTestimonials } from '@/app/actions/testimonials';
 import { getSetting } from '@/app/actions/settings';
 import { DbUninitializedError } from '@/components/db-uninitialized-error';
-import { placeholderImages } from '@/lib/placeholder-images';
+import placeholderImages from '@/app/lib/placeholder-images.json';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
 
@@ -103,8 +103,8 @@ export default async function Home() {
               Frequently Asked Questions
             </h2>
             <p className="mt-4 text-muted-foreground">
-              Have questions? We&apos;ve got answers. If you can&apos;t find
-              what you&apos;re looking for, feel free to contact us.
+              Have questions? We have got answers. If you can&apos;t find what
+              you&apos;re looking for, feel free to contact us.
             </p>
           </div>
           <div className="mx-auto max-w-3xl">

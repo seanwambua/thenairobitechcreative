@@ -9,7 +9,7 @@ import { Upload, X, Loader2 } from 'lucide-react';
 import type { Post } from '@/app/generated/prisma';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
-import { placeholderImages } from '@/lib/placeholder-images';
+import placeholderImages from '@/app/lib/placeholder-images.json';
 import { updatePost } from '@/app/actions/posts';
 
 interface PostImageManagerProps {

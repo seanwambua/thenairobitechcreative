@@ -32,7 +32,7 @@ import { createPost, updatePost } from '@/app/actions/posts';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { CldUploadButton } from 'next-cloudinary';
 import { cn } from '@/lib/utils';
-import { placeholderImages } from '@/lib/placeholder-images';
+import placeholderImages from '@/app/lib/placeholder-images.json';
 import RichTextEditor from './rich-text-editor';
 import { Textarea } from '@/components/ui/textarea';
 
