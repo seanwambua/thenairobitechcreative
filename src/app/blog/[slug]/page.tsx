@@ -3,6 +3,7 @@ import { DbUninitializedError } from '@/lib/errors';
 import { BlogPostClient } from './blog-post-client';
 import type { Post } from '@/app/generated/prisma';
 import { DbUninitializedError as DbUninitializedErrorComponent } from '@/components/db-uninitialized-error';
+import { notFound } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,5 +32,13 @@ export default async function BlogPostPage({
     return <DbUninitializedErrorComponent />;
   }
 
-  return <BlogPostClient postData={post} error={error} />;
+  if (error) {
+    return <BlogPostClient postData={null} error={error} />;
+  }
+
+  if (!post) {
+    notFound();
+  }
+
+  return <BlogPostClient postData={post} error={null} />;
 }
