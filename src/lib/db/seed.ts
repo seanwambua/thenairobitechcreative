@@ -36,16 +36,59 @@ export async function seedDatabase() {
     },
   });
 
-  await prisma.project.create({
-    data: {
-      title: 'My First Project',
-      description: 'This is the description of my first project.',
-      keyFeatures: 'Feature 1,Feature 2,Feature 3',
-      imageUrl: placeholderImages.enterpriseB.imageUrl,
-      imageHint: 'A screenshot of the project',
-      gridSpan: 'col-span-1',
-      icon: 'Boxes',
-    },
+  await prisma.project.createMany({
+    data: [
+      {
+        title: 'QuantumLeap CRM',
+        description:
+          'AI-powered CRM for predictive analytics and customer insights.',
+        keyFeatures: 'AI Insights,Predictive Analytics,Custom Dashboards',
+        imageUrl: placeholderImages.project1.imageUrl,
+        imageHint: 'data analytics dashboard',
+        gridSpan: 'sm:col-span-2 lg:col-span-2',
+        icon: 'Boxes',
+      },
+      {
+        title: 'StellarGuard',
+        description: 'Decentralized security for modern apps using blockchain.',
+        keyFeatures: 'Decentralized Security,Blockchain,Threat Intelligence',
+        imageUrl: placeholderImages.project2.imageUrl,
+        imageHint: 'blockchain security',
+        gridSpan: 'col-span-1',
+        icon: 'ShieldCheck',
+      },
+      {
+        title: 'InnovateU',
+        description:
+          'An e-learning platform that fosters innovation through collaborative projects and mentorship from industry leaders.',
+        keyFeatures: 'E-learning,Collaboration,Mentorship',
+        imageUrl: placeholderImages.project3.imageUrl,
+        imageHint: 'e-learning platform',
+        gridSpan: 'col-span-1',
+        icon: 'BookOpen',
+      },
+      {
+        title: 'EcoTrack',
+        description:
+          'A mobile app that helps users track and reduce their carbon footprint through smart recommendations and community challenges.',
+        keyFeatures:
+          'Carbon Tracking,Smart Recommendations,Community Challenges',
+        imageUrl: placeholderImages.project4.imageUrl,
+        imageHint: 'eco friendly app',
+        gridSpan: 'col-span-1',
+        icon: 'Globe',
+      },
+      {
+        title: 'FinWiz',
+        description:
+          'A personal finance management app that leverages AI to provide personalized budgeting advice and investment opportunities.',
+        keyFeatures: 'AI Budgeting,Investment Tracking,Financial Planning',
+        imageUrl: placeholderImages.project5.imageUrl,
+        imageHint: 'finance app',
+        gridSpan: 'col-span-1 sm:col-span-2 lg:col-span-2',
+        icon: 'LineChart',
+      },
+    ],
   });
 
   await prisma.testimonial.create({

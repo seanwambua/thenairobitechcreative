@@ -102,7 +102,7 @@ export function BlogPostClient({
         />
       </div>
 
-      <div className="prose prose-lg dark:prose-invert prose-p:leading-relaxed prose-headings:font-headline prose-headings:text-foreground mx-auto max-w-none text-pretty text-foreground">
+      <div className="prose prose-lg mx-auto max-w-none text-pretty text-foreground dark:prose-invert prose-headings:font-headline prose-headings:text-foreground prose-p:leading-relaxed">
         <p className="lead text-xl text-muted-foreground">
           {postData.description}
         </p>

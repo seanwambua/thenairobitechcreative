@@ -20,8 +20,9 @@ export function Cta({ logoUrl }: { logoUrl: string | null }) {
               Have a project in mind?
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-lg text-primary-foreground/80">
-              Let&apos;s build the next generation of digital solutions together.
-              We&apos;re ready to turn your vision into a global success story.
+              Let&apos;s build the next generation of digital solutions
+              together. We&apos;re ready to turn your vision into a global
+              success story.
             </p>
             <div className="mt-8">
               <InquirySheet logoUrl={logoUrl}>

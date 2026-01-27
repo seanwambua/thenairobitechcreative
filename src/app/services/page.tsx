@@ -12,7 +12,10 @@ type Settings = {
   logo: string | null;
 };
 
-async function getPageData(): Promise<{ settings: Settings | null; error: Error | null }> {
+async function getPageData(): Promise<{
+  settings: Settings | null;
+  error: Error | null;
+}> {
   try {
     const settings = await getSettings([
       'founderImage',

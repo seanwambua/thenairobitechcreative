@@ -68,8 +68,7 @@ export function InquirySheet({ children, logoUrl }: InquirySheetProps) {
     console.log(values);
     toast({
       title: 'Inquiry Sent!',
-      description:
-        "Thanks for your interest. We'll get back to you shortly.",
+      description: "Thanks for your interest. We'll get back to you shortly.",
     });
     form.reset();
     setOpen(false);
@@ -88,7 +87,8 @@ export function InquirySheet({ children, logoUrl }: InquirySheetProps) {
               Project Inquiry
             </SheetTitle>
             <SheetDescription>
-              Tell us a bit about your project. We&apos;re excited to learn more.
+              Tell us a bit about your project. We&apos;re excited to learn
+              more.
             </SheetDescription>
           </SheetHeader>
           <div className="py-8">

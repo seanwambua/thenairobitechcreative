@@ -186,10 +186,7 @@ export function TestimonialEditorSheet({
                       description: String((error as any).info),
                     });
                   }}
-                  className={cn(
-                    buttonVariants({ variant: 'outline' }),
-                    'mt-2'
-                  )}
+                  className={cn(buttonVariants({ variant: 'outline' }), 'mt-2')}
                   disabled={isUploading}
                 >
                   <Upload className="mr-2 h-4 w-4" />

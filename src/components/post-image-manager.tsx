@@ -95,7 +95,8 @@ export function PostImageManager({
       updatedPostData.imageHint = placeholderImages.blog1Image.imageHint;
       message = 'Cover image';
     } else {
-      updatedPostData.authorAvatarUrl = placeholderImages.testimonial1Image.imageUrl;
+      updatedPostData.authorAvatarUrl =
+        placeholderImages.testimonial1Image.imageUrl;
       updatedPostData.authorAvatarHint =
         placeholderImages.testimonial1Image.imageHint;
       message = 'Author avatar';

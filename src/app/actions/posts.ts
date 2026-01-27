@@ -1,4 +1,3 @@
-
 'use server';
 
 import prisma from '@/lib/prisma';
@@ -81,8 +80,7 @@ export async function createPost(
       content: validatedData.content,
       author: validatedData.author,
       slug: uniqueSlug,
-      imageUrl:
-        validatedData.imageUrl ?? placeholderImages.blog1Image.imageUrl,
+      imageUrl: validatedData.imageUrl ?? placeholderImages.blog1Image.imageUrl,
       imageHint: placeholderImages.blog1Image.imageHint,
       authorAvatarUrl:
         validatedData.authorAvatarUrl ??

@@ -23,9 +23,7 @@ import { useRouter } from 'next/navigation';
 
 const settingsSchema = z.object({
   founderName: z.string().min(2, 'Name must be at least 2 characters.'),
-  founderMessage: z
-    .string()
-    .min(10, 'Message must be at least 10 characters.'),
+  founderMessage: z.string().min(10, 'Message must be at least 10 characters.'),
 });
 
 type SettingsFormValues = z.infer<typeof settingsSchema>;

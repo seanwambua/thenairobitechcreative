@@ -84,7 +84,9 @@ const RichTextEditor = ({
         <Toggle
           size="sm"
           pressed={editor.isActive('bulletList')}
-          onPressedChange={() => editor.chain().focus().toggleBulletList().run()}
+          onPressedChange={() =>
+            editor.chain().focus().toggleBulletList().run()
+          }
         >
           <List className="h-4 w-4" />
         </Toggle>

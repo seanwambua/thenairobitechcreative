@@ -8,22 +8,22 @@ export type ImagePlaceholder = {
 export const placeholderImages: Record<string, ImagePlaceholder> = {
   blog1Image: {
     id: 'blog1',
-    imageUrl: 'https://placehold.co/1200x630',
+    imageUrl: 'https://picsum.photos/seed/blog1/1200/630',
     imageHint: 'Placeholder blog post image',
   },
   testimonial1Image: {
     id: 'testimonial1',
-    imageUrl: 'https://placehold.co/40x40',
+    imageUrl: 'https://picsum.photos/seed/avatar1/40/40',
     imageHint: 'Placeholder testimonial author avatar',
   },
   founderImage: {
     id: 'founder',
-    imageUrl: 'https://placehold.co/400x400',
+    imageUrl: 'https://picsum.photos/seed/founder/400/400',
     imageHint: 'Placeholder founder image',
   },
   hero: {
     id: 'hero',
-    imageUrl: 'https://placehold.co/1920x1080',
+    imageUrl: 'https://picsum.photos/seed/hero/1920/1080',
     imageHint: 'Placeholder hero image',
   },
   logo: {
@@ -31,22 +31,29 @@ export const placeholderImages: Record<string, ImagePlaceholder> = {
     imageUrl: 'https://placehold.co/100x40',
     imageHint: 'Placeholder logo',
   },
-  design: {
-    id: 'design',
-    imageUrl: 'https://placehold.co/1920x1080',
-    imageHint: 'Placeholder hero image for design',
-    description: 'Design Category',
+  project1: {
+    id: 'project1',
+    imageUrl: 'https://picsum.photos/seed/project1/800/600',
+    imageHint: 'data analytics dashboard',
   },
-  finance: {
-    id: 'finance',
-    imageUrl: 'https://placehold.co/1920x1080',
-    imageHint: 'Placeholder hero image for finance',
-    description: 'Finance Category',
+  project2: {
+    id: 'project2',
+    imageUrl: 'https://picsum.photos/seed/project2/800/600',
+    imageHint: 'blockchain security',
   },
-  enterpriseB: {
-    id: 'enterpriseB',
-    imageUrl: 'https://placehold.co/1920x1080',
-    imageHint: 'Placeholder hero image for enterprise B',
-    description: 'Enterprise B Category',
+  project3: {
+    id: 'project3',
+    imageUrl: 'https://picsum.photos/seed/project3/800/600',
+    imageHint: 'e-learning platform',
+  },
+  project4: {
+    id: 'project4',
+    imageUrl: 'https://picsum.photos/seed/project4/800/600',
+    imageHint: 'eco friendly app',
+  },
+  project5: {
+    id: 'project5',
+    imageUrl: 'https://picsum.photos/seed/project5/800/600',
+    imageHint: 'finance app',
   },
 };

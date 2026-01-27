@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 
 /**
  * Data fetching helper with explicit error catching.
- * This prevents the server from crashing and allows us to show 
+ * This prevents the server from crashing and allows us to show
  * specific UI for database configuration issues.
  */
 async function getPageData(
@@ -17,10 +17,10 @@ async function getPageData(
 ): Promise<{ post: Post | null; error: Error | null }> {
   try {
     const post = await getPostBySlug(slug);
-    
+
     // QA Debug: If this logs 'null', your database doesn't have a post with this slug
     console.log(`[QA Blog Search] Slug: "${slug}" | Found: ${!!post}`);
-    
+
     return { post, error: null };
   } catch (error: any) {
     console.error('[QA Database Error]:', error);
@@ -29,7 +29,7 @@ async function getPageData(
     if (error.message?.includes('no such table') || error.code === 'P2021') {
       return { post: null, error: new DbUninitializedError() };
     }
-    
+
     return { post: null, error: error as Error };
   }
 }
@@ -39,7 +39,7 @@ interface PageProps {
 }
 
 export default async function BlogPostPage({ params }: PageProps) {
-  // 1. In Next.js 15, params MUST be awaited. 
+  // 1. In Next.js 15, params MUST be awaited.
   // If not awaited, slug will be undefined, causing a 404.
   const { slug } = await params;
 

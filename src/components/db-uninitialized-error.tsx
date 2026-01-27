@@ -31,8 +31,8 @@ export function DbUninitializedError() {
             <AlertTitle>Run Initialization Command</AlertTitle>
             <AlertDescription>
               <p className="mb-2 text-muted-foreground">
-                In your project&apos;s terminal, run the following command to set up
-                the database:
+                In your project&apos;s terminal, run the following command to
+                set up the database:
               </p>
               <pre className="mt-2 rounded-md bg-muted p-3 font-mono text-sm">
                 <code>npm run reinitialize</code>

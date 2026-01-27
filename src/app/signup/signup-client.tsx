@@ -24,7 +24,9 @@ import Link from 'next/link';
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
   email: z.string().email({ message: 'Please enter a valid email address.' }),
-  password: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
+  password: z
+    .string()
+    .min(6, { message: 'Password must be at least 6 characters.' }),
 });
 
 export function SignupClient() {
@@ -89,17 +91,14 @@ export function SignupClient() {
         <div className="grid gap-6">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-               <FormField
+              <FormField
                 control={form.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Your Name"
-                        {...field}
-                      />
+                      <Input placeholder="Your Name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -129,16 +128,18 @@ export function SignupClient() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="********" {...field} />
+                      <Input
+                        type="password"
+                        placeholder="********"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading && (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                )}
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Create Account
               </Button>
             </form>

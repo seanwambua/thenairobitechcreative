@@ -93,10 +93,7 @@ export function PostEditorSheet({
     }
   }, [post, form, isOpen]);
 
-  const handleUploadSuccess = (
-    result: any,
-    type: 'cover' | 'avatar'
-  ) => {
+  const handleUploadSuccess = (result: any, type: 'cover' | 'avatar') => {
     const secure_url = result.info.secure_url;
     if (type === 'cover') {
       setCoverImagePreview(secure_url);
@@ -199,10 +196,7 @@ export function PostEditorSheet({
                   <div className="relative">
                     <Avatar className="h-32 w-32">
                       {avatarPreview && (
-                        <AvatarImage
-                          src={avatarPreview}
-                          alt="Avatar preview"
-                        />
+                        <AvatarImage src={avatarPreview} alt="Avatar preview" />
                       )}
                       <AvatarFallback>
                         {form.getValues('author')?.charAt(0) || '?'}

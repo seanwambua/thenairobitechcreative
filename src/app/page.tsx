@@ -81,10 +81,7 @@ export default async function Home() {
           </div>
           <div className="sm:p-4 md:p-6">
             {projectsResult.status === 'fulfilled' ? (
-              <BentoPortfolio
-                projects={projectsResult.value}
-                logoUrl={logoUrl}
-              />
+              <BentoPortfolio projects={projectsResult.value} />
             ) : (
               <DataError sectionName="Portfolio" />
             )}
