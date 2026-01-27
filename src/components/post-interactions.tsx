@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useOptimistic } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Heart, MessageCircle, Twitter, Linkedin, Link2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -17,22 +17,28 @@ export function PostInteractions({
   commentsCount,
 }: PostInteractionsProps) {
   const { toast } = useToast();
-  const [optimisticLikes, addOptimisticLike] = useOptimistic(
-    post.likes,
-    (state) => state + 1
-  );
+  const [likes, setLikes] = useState(post.likes);
+  const [isLiking, setIsLiking] = useState(false);
 
   const handleLike = async () => {
-    addOptimisticLike(1);
+    if (isLiking) return;
+    setIsLiking(true);
+    setLikes((prevLikes) => prevLikes + 1); // Optimistic update
+
     try {
+      // The server action will revalidate the path, and the parent
+      // component will receive the updated post data, re-rendering this component.
       await likePost(post.id);
     } catch (error) {
+      // If the server action fails, revert the optimistic update
+      setLikes((prevLikes) => prevLikes - 1);
       toast({
         variant: 'destructive',
         title: 'Error',
         description: 'Failed to like post.',
       });
-      // Revert optimistic update on error if needed, though revalidation will handle it.
+    } finally {
+      setIsLiking(false);
     }
   };
 
@@ -71,9 +77,10 @@ export function PostInteractions({
               size="lg"
               className="flex items-center gap-2"
               type="submit"
+              disabled={isLiking}
             >
               <Heart className={`h-5 w-5`} />
-              <span>{optimisticLikes}</span>
+              <span>{likes}</span>
             </Button>
           </form>
           <div className="flex items-center gap-2 text-muted-foreground">

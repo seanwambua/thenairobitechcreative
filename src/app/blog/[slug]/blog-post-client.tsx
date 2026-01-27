@@ -21,7 +21,7 @@ export function BlogPostClient({
   if (error) {
     // Generic error for other data fetching issues
     return (
-      <div className="container flex-1 py-20 text-center">
+      <article className="container flex-1 py-20 text-center">
         <Alert variant="destructive" className="mx-auto max-w-lg text-left">
           <Terminal className="h-4 w-4" />
           <AlertTitle>Error Loading Post</AlertTitle>
@@ -38,34 +38,29 @@ export function BlogPostClient({
             </Link>
           </Button>
         </div>
-      </div>
+      </article>
     );
   }
 
   // Handle case where post is not found or slug was invalid.
   if (!postData) {
-    return (
-      <div className="container flex-1 py-20 text-center">
-        <Alert variant="destructive" className="mx-auto max-w-lg text-left">
-          <Terminal className="h-4 w-4" />
-          <AlertTitle>Post Not Found</AlertTitle>
-          <AlertDescription>
-            The article you are looking for does not exist or has been moved.
-          </AlertDescription>
-        </Alert>
-        <div className="mt-8">
-          <Button asChild>
-            <Link href="/blog">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Blog
-            </Link>
-          </Button>
-        </div>
-      </div>
-    );
+    return null; // The page will show a 404 from notFound()
   }
 
-  const commentsCount = 0;
+  // Safely parse comments and get the count.
+  let commentsCount = 0;
+  try {
+    if (postData.comments && postData.comments.trim().startsWith('[')) {
+      const commentsArray = JSON.parse(postData.comments);
+      if (Array.isArray(commentsArray)) {
+        commentsCount = commentsArray.length;
+      }
+    }
+  } catch (e) {
+    // If parsing fails, commentsCount remains 0.
+    // This handles cases where the string is not valid JSON.
+    console.error('Could not parse comments:', e);
+  }
 
   return (
     <article className="container mx-auto max-w-4xl px-4 py-12">
