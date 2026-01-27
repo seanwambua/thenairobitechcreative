@@ -106,9 +106,12 @@ export function BlogPostClient({
         <p className="lead text-xl text-muted-foreground">
           {postData.description}
         </p>
-        {postData.content.split('\n\n').map((paragraph, index) => (
-          <p key={index}>{paragraph}</p>
-        ))}
+        {postData.content
+          .split('\n\n')
+          .filter((p) => p.trim() !== '')
+          .map((paragraph, index) => (
+            <p key={index}>{paragraph}</p>
+          ))}
       </div>
 
       <Separator className="my-12" />

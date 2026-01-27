@@ -185,9 +185,9 @@ export function PostEditorSheet({
                     onError={() => setIsUploading(null)}
                     className={cn(
                       buttonVariants({ variant: 'outline' }),
-                      'w-full'
+                      'w-full',
+                      isUploading !== null && 'cursor-not-allowed opacity-50'
                     )}
-                    disabled={isUploading !== null}
                   >
                     <Upload className="mr-2 h-4 w-4" />
                     {isUploading === 'cover' ? 'Uploading...' : 'Upload Cover'}
@@ -219,15 +219,24 @@ export function PostEditorSheet({
                       handleUploadSuccess(result, 'avatar')
                     }
                     onUpload={() => setIsUploading('avatar')}
-                    onError={() => setIsUploading(null)}
+                    onError={(error) => {
+                      setIsUploading(false);
+                      toast({
+                        variant: 'destructive',
+                        title: 'Upload Failed',
+                        description: String((error as any).info),
+                      });
+                    }}
                     className={cn(
                       buttonVariants({ variant: 'outline' }),
-                      'mt-2'
+                      'mt-2',
+                      isUploading !== null && 'cursor-not-allowed opacity-50'
                     )}
-                    disabled={isUploading !== null}
                   >
                     <Upload className="mr-2 h-4 w-4" />
-                    {isUploading === 'avatar' ? 'Uploading...' : 'Upload Avatar'}
+                    {isUploading === 'avatar'
+                      ? 'Uploading...'
+                      : 'Upload Avatar'}
                   </CldUploadButton>
                 </FormItem>
               </div>
@@ -299,8 +308,12 @@ export function PostEditorSheet({
                     Cancel
                   </Button>
                 </SheetClose>
-                <Button type="submit" disabled={isLoading || isUploading !== null}>
-                  {isLoading && (
+                <Button
+                  type="submit"
+                  disabled={isLoading || isUploading !== null}
+                  onClick={form.handleSubmit(onSubmit)}
+                >
+                  {(isLoading || isUploading) && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
                   Save Post
