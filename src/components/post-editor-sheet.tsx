@@ -24,7 +24,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import type { Post } from '@/app/generated/prisma';
 import { Loader2, Upload } from 'lucide-react';
@@ -34,6 +33,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { CldUploadButton } from 'next-cloudinary';
 import { cn } from '@/lib/utils';
 import { placeholderImages } from '@/lib/placeholder-images';
+import RichTextEditor from './rich-text-editor';
 
 type PostFormValues = z.infer<typeof PostInputSchema>;
 
@@ -278,11 +278,9 @@ export function PostEditorSheet({
                   <FormItem>
                     <FormLabel>Content</FormLabel>
                     <FormControl>
-                      <Textarea
-                        placeholder="Write your blog post content here. Use double line breaks for paragraphs."
-                        className="resize-y"
-                        rows={15}
-                        {...field}
+                      <RichTextEditor
+                        value={field.value}
+                        onChange={field.onChange}
                       />
                     </FormControl>
                     <FormMessage />
