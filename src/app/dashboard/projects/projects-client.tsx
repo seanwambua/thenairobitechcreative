@@ -31,7 +31,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { ProjectEditorSheet } from '@/components/project-editor-sheet';
+import { ProjectEditorDialog } from '@/components/project-editor-sheet';
 import type { Project } from '@/lib/data';
 import { deleteProject } from '@/app/actions/projects';
 
@@ -154,7 +154,7 @@ export function ProjectsClient({
           </Table>
         )}
       </CardContent>
-      <ProjectEditorSheet
+      <ProjectEditorDialog
         isOpen={isEditorOpen}
         setIsOpen={setEditorOpen}
         project={editingProject}
