@@ -34,6 +34,7 @@ import { CldUploadButton } from 'next-cloudinary';
 import { cn } from '@/lib/utils';
 import { placeholderImages } from '@/lib/placeholder-images';
 import RichTextEditor from './rich-text-editor';
+import { Textarea } from '@/components/ui/textarea';
 
 type PostFormValues = z.infer<typeof PostInputSchema>;
 
