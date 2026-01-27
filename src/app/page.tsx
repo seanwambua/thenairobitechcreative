@@ -66,8 +66,7 @@ export default async function Home() {
 
   return (
     <>
-      <Hero heroImage={heroImage} logoUrl={logoUrl} />
-      <ProspectsBanner />
+      <ProspectsBanner logoUrl={logoUrl} />
 
       <section id="portfolio" className="py-20 lg:py-32">
         <div className="container mx-auto px-4">
@@ -106,7 +105,7 @@ export default async function Home() {
               Frequently Asked Questions
             </h2>
             <p className="mt-4 text-muted-foreground">
-              Have questions? We've got answers. If you can't find what you're
+              Have questions? We&apos;ve got answers. If you can&apos;t find what you&apos;re
               looking for, feel free to contact us.
             </p>
           </div>

@@ -62,7 +62,7 @@ export function Testimonials({ testimonials }: TestimonialsProps) {
                     <CardContent className="flex flex-1 flex-col p-6 md:p-8">
                       <Quote className="h-8 w-8 text-primary" />
                       <blockquote className="mt-4 flex-1 font-body text-base italic text-foreground">
-                        "{testimonial.quote}"
+                        &quot;{testimonial.quote}&quot;
                       </blockquote>
                       <footer className="mt-6">
                         <div className="flex items-center gap-4">

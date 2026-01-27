@@ -1,24 +1,32 @@
 import { Cta } from '@/components/cta';
 import { PricingClient } from './pricing-client';
-import { DbUninitializedError } from '@/components/db-uninitialized-error';
+import { DbUninitializedError as DbUninitializedErrorComponent } from '@/components/db-uninitialized-error';
 import { getSetting } from '@/app/actions/settings';
+import { DbUninitializedError } from '@/lib/errors';
 
-export default async function PricingPage() {
-  // The DbUninitializedError is a safeguard.
-  // In a real app, you might want a more robust health check.
+async function getPageData() {
   try {
     const logoUrl = await getSetting('logo');
-    return (
-      <>
-        <PricingClient logoUrl={logoUrl} />
-        <Cta logoUrl={logoUrl} />
-      </>
-    );
+    return { logoUrl, error: null };
   } catch (error: any) {
     if (error.message.includes('no such table')) {
-      return <DbUninitializedError />;
+      return { logoUrl: null, error: new DbUninitializedError() };
     }
-    // Re-throw other errors to be handled by Next.js error boundary
     throw error;
   }
+}
+
+export default async function PricingPage() {
+  const { logoUrl, error } = await getPageData();
+
+  if (error instanceof DbUninitializedError) {
+    return <DbUninitializedErrorComponent />;
+  }
+
+  return (
+    <>
+      <PricingClient logoUrl={logoUrl} />
+      <Cta logoUrl={logoUrl} />
+    </>
+  );
 }

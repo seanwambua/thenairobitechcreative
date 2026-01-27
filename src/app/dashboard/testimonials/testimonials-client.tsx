@@ -143,7 +143,7 @@ export function TestimonialsClient({
                     {testimonial.title}
                   </TableCell>
                   <TableCell className="hidden max-w-sm truncate md:table-cell">
-                    "{testimonial.quote}"
+                    &quot;{testimonial.quote}&quot;
                   </TableCell>
                   <TableCell>
                     {mounted ? (

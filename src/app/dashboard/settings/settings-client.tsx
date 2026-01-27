@@ -76,7 +76,7 @@ export function SettingsClient({ initialSettings }: SettingsClientProps) {
             name="founderName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Founder's Name</FormLabel>
+                <FormLabel>Founder&apos;s Name</FormLabel>
                 <FormControl>
                   <Input placeholder="Enter founder's name" {...field} />
                 </FormControl>
@@ -89,7 +89,7 @@ export function SettingsClient({ initialSettings }: SettingsClientProps) {
             name="founderMessage"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Founder's Message</FormLabel>
+                <FormLabel>Founder&apos;s Message</FormLabel>
                 <FormControl>
                   <Textarea
                     placeholder="Enter the founder's message"

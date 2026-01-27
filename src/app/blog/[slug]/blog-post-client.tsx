@@ -126,7 +126,7 @@ export function BlogPostClient({
           <CardContent className="p-6 text-center">
             <h3 className="text-lg font-semibold">Comments Coming Soon</h3>
             <p className="mt-2 text-muted-foreground">
-              We're working on a new commenting system. User authentication
+              We&apos;re working on a new commenting system. User authentication
               will be required. Please check back later!
             </p>
           </CardContent>

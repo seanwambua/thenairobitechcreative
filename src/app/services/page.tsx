@@ -1,10 +1,18 @@
 import { Cta } from '@/components/cta';
 import { ServicesClient } from './services-client';
 import { getSettings } from '@/app/actions/settings';
-import { DbUninitializedError } from '@/components/db-uninitialized-error';
+import { DbUninitializedError as DbUninitializedErrorComponent } from '@/components/db-uninitialized-error';
 import { placeholderImages } from '@/lib/placeholder-images';
+import { DbUninitializedError } from '@/lib/errors';
 
-export default async function ServicesPage() {
+type Settings = {
+  founderImage: string | null;
+  founderName: string | null;
+  founderMessage: string | null;
+  logo: string | null;
+};
+
+async function getPageData(): Promise<{ settings: Settings | null; error: Error | null }> {
   try {
     const settings = await getSettings([
       'founderImage',
@@ -12,23 +20,32 @@ export default async function ServicesPage() {
       'founderMessage',
       'logo',
     ]);
-
-    return (
-      <>
-        <ServicesClient
-          founderImage={
-            settings.founderImage ?? placeholderImages.founderImage.imageUrl
-          }
-          founderName={settings.founderName}
-          founderMessage={settings.founderMessage}
-        />
-        <Cta logoUrl={settings.logo} />
-      </>
-    );
+    return { settings, error: null };
   } catch (error: any) {
     if (error.message.includes('no such table')) {
-      return <DbUninitializedError />;
+      return { settings: null, error: new DbUninitializedError() };
     }
     throw error;
   }
+}
+
+export default async function ServicesPage() {
+  const { settings, error } = await getPageData();
+
+  if (error instanceof DbUninitializedError) {
+    return <DbUninitializedErrorComponent />;
+  }
+
+  return (
+    <>
+      <ServicesClient
+        founderImage={
+          settings?.founderImage ?? placeholderImages.founderImage.imageUrl
+        }
+        founderName={settings?.founderName ?? null}
+        founderMessage={settings?.founderMessage ?? null}
+      />
+      <Cta logoUrl={settings?.logo ?? null} />
+    </>
+  );
 }

@@ -293,7 +293,7 @@ export default async function TroubleshootingPage() {
                 Database Actions
               </CardTitle>
               <CardDescription className="text-destructive/80">
-                Manage the state of your application's database. These are
+                Manage the state of your application&apos;s database. These are
                 powerful actions intended for development and testing.
               </CardDescription>
             </CardHeader>

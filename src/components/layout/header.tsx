@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Stamp } from '@/components/stamp';
 import { LogOut, Menu, X } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { InquirySheet } from '../inquiry-sheet';
@@ -22,11 +22,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 export function Header({ logoUrl }: { logoUrl: string | null }) {
   const { data: session, status } = useSession();
   const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const visibleNavItems = navItems.filter((item) => !item.hidden);
 
@@ -117,13 +112,9 @@ export function Header({ logoUrl }: { logoUrl: string | null }) {
                 {item.label}
               </Link>
             ))}
-            {mounted ? (
-              <InquirySheet logoUrl={logoUrl}>
-                <Button className="w-full">Get In Touch</Button>
-              </InquirySheet>
-            ) : (
+            <InquirySheet logoUrl={logoUrl}>
               <Button className="w-full">Get In Touch</Button>
-            )}
+            </InquirySheet>
           </nav>
         </div>
       )}

@@ -111,7 +111,7 @@ export function ServicesClient({
                   </div>
                   <Separator />
                   <div className="text-sm text-muted-foreground">
-                    <p className="mb-2">"{founderMessage}"</p>
+                    <p className="mb-2">&quot;{founderMessage}&quot;</p>
                     <p className="mb-1 font-semibold text-foreground">
                       Our Mission
                     </p>
