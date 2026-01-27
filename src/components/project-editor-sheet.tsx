@@ -184,6 +184,12 @@ export function ProjectEditorSheet({
                   )}
                 </div>
                 <CldUploadButton
+                  options={{
+                    sources: ['local', 'url', 'unsplash'],
+                    styles: {
+                      zIndex: 99999,
+                    },
+                  }}
                   type="button"
                   uploadPreset="nairobi_techcreative"
                   onSuccess={handleUploadSuccess}

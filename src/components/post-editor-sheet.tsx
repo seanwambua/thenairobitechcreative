@@ -175,6 +175,12 @@ export function PostEditorSheet({
                     )}
                   </div>
                   <CldUploadButton
+                    options={{
+                      sources: ['local', 'url', 'unsplash'],
+                      styles: {
+                        zIndex: 99999,
+                      },
+                    }}
                     uploadPreset="nairobi_techcreative"
                     onSuccess={(result: any) =>
                       handleUploadSuccess(result, 'cover')
@@ -209,6 +215,12 @@ export function PostEditorSheet({
                     )}
                   </div>
                   <CldUploadButton
+                    options={{
+                      sources: ['local', 'url', 'unsplash'],
+                      styles: {
+                        zIndex: 99999,
+                      },
+                    }}
                     uploadPreset="nairobi_techcreative"
                     onSuccess={(result: any) =>
                       handleUploadSuccess(result, 'avatar')

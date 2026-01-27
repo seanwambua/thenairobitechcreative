@@ -114,6 +114,12 @@ export function MediaClient({
           </div>
           <div className="flex space-x-4">
             <CldUploadButton
+              options={{
+                sources: ['local', 'url', 'unsplash'],
+                styles: {
+                  zIndex: 99999,
+                },
+              }}
               uploadPreset="nairobi_techcreative"
               onSuccess={(result) => handleUpload(result, 'heroImage')}
               onUpload={() => setIsUploading('heroImage')}
@@ -158,6 +164,12 @@ export function MediaClient({
           </div>
           <div className="flex space-x-4">
             <CldUploadButton
+              options={{
+                sources: ['local', 'url', 'unsplash'],
+                styles: {
+                  zIndex: 99999,
+                },
+              }}
               uploadPreset="nairobi_techcreative"
               onSuccess={(result) => handleUpload(result, 'logo')}
               onUpload={() => setIsUploading('logo')}
@@ -202,6 +214,12 @@ export function MediaClient({
           </div>
           <div className="flex space-x-4">
             <CldUploadButton
+              options={{
+                sources: ['local', 'url', 'unsplash'],
+                styles: {
+                  zIndex: 99999,
+                },
+              }}
               uploadPreset="nairobi_techcreative"
               onSuccess={(result) => handleUpload(result, 'founderImage')}
               onUpload={() => setIsUploading('founderImage')}
