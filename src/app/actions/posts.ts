@@ -6,6 +6,8 @@ import { PostSchema, PostInputSchema } from '@/lib/schemas';
 import type { Post, PostSummary } from '@/lib/data';
 import placeholderImages from '@/app/lib/placeholder-images.json';
 import { z } from 'zod';
+import { auth } from '@/auth';
+import { Role } from '@/lib/roles';
 
 export async function getPosts(): Promise<Post[]> {
   const results = await prisma.post.findMany({
@@ -69,6 +71,11 @@ async function generateUniqueSlug(title: string): Promise<string> {
 export async function createPost(
   data: z.infer<typeof PostInputSchema>
 ): Promise<Post> {
+  const session = await auth();
+  if (session?.user?.role !== Role.ADMIN) {
+    throw new Error('Unauthorized');
+  }
+
   const validatedData = PostInputSchema.parse(data);
   const uniqueSlug = await generateUniqueSlug(validatedData.title);
 
@@ -99,31 +106,53 @@ export async function createPost(
 }
 
 export async function updatePost(post: Post): Promise<Post> {
-  const validatedData = PostSchema.parse(post);
-  const { id, slug } = validatedData; // Keep original slug for revalidation
+  const session = await auth();
+  if (session?.user?.role !== Role.ADMIN) {
+    throw new Error('Unauthorized');
+  }
 
-  // Prepare data for update, excluding immutable fields like id and slug.
-  const {
-    id: _id,
-    slug: _slug,
-    createdAt: _createdAt,
-    ...dataToUpdate
-  } = validatedData;
+  try {
+    const validatedData = PostSchema.parse(post);
+    const { id, slug } = validatedData; // Keep original slug for revalidation
 
-  const updatedPost = await prisma.post.update({
-    where: { id },
-    data: dataToUpdate,
-  });
+    // Prepare data for update, excluding immutable fields like id and slug.
+    const {
+      id: _id,
+      slug: _slug,
+      createdAt: _createdAt,
+      ...dataToUpdate
+    } = validatedData;
 
-  revalidatePath('/dashboard/content');
-  revalidatePath('/dashboard/analytics');
-  revalidatePath('/blog');
-  revalidatePath(`/blog/${slug}`); // Use the original, immutable slug
-  revalidatePath('/');
-  return updatedPost;
+    const updatedPost = await prisma.post.update({
+      where: { id },
+      data: dataToUpdate,
+    });
+
+    revalidatePath('/dashboard/content');
+    revalidatePath('/dashboard/analytics');
+    revalidatePath('/blog');
+    revalidatePath(`/blog/${slug}`); // Use the original, immutable slug
+    revalidatePath('/');
+    return updatedPost;
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      // Handle validation errors
+      throw new Error(
+        `Validation failed: ${error.errors.map((e) => e.message).join(', ')}`
+      );
+    } else {
+      // Handle other potential errors (e.g., database connection)
+      throw new Error('Failed to update post due to a server error.');
+    }
+  }
 }
 
 export async function deletePost(postId: number): Promise<void> {
+  const session = await auth();
+  if (session?.user?.role !== Role.ADMIN) {
+    throw new Error('Unauthorized');
+  }
+
   const post = await prisma.post.findUnique({ where: { id: postId } });
   if (post) {
     await prisma.post.delete({ where: { id: postId } });
@@ -135,6 +164,11 @@ export async function deletePost(postId: number): Promise<void> {
 }
 
 export async function likePost(postId: number): Promise<Post> {
+  const session = await auth();
+  if (!session?.user) {
+    throw new Error('Unauthorized');
+  }
+
   const post = await prisma.post.findUnique({ where: { id: postId } });
   if (!post) {
     throw new Error('Post not found');

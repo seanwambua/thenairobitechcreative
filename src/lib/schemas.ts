@@ -36,6 +36,7 @@ export const ProjectSchema = z.object({
   icon: z.enum(iconNames),
   createdAt: z.date(),
   updatedAt: z.date(),
+  userId: z.string().optional(),
 });
 
 // Used for create/update actions where some fields are not required.
@@ -55,6 +56,7 @@ export const TestimonialSchema = z.object({
   avatarHint: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  userId: z.string().optional(),
 });
 
 const TestimonialInputSchema = TestimonialSchema.omit({
@@ -88,6 +90,7 @@ export const PostSchema = PostInputSchema.extend({
   comments: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
+  userId: z.string().optional(),
 });
 
 export type PostSchemaType = z.infer<typeof PostSchema>;

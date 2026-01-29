@@ -7,8 +7,16 @@ import {
 } from '@/components/ui/card';
 import { Briefcase, NotebookText, Star } from 'lucide-react';
 import prisma from '@/lib/prisma';
+import { auth } from '@/auth';
+import { redirect } from 'next/navigation';
+import { Role } from '@/lib/roles';
 
 export default async function AnalyticsPage() {
+  const session = await auth();
+  if (session?.user?.role !== Role.ADMIN) {
+    redirect('/unauthorized');
+  }
+
   const postCount = await prisma.post.count();
   const projectCount = await prisma.project.count();
   const testimonialCount = await prisma.testimonial.count();

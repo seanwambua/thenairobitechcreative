@@ -6,9 +6,16 @@ import {
 } from '@/components/ui/card';
 import { ContentClient } from './content-client';
 import { getPosts } from '@/app/actions/posts';
+import { auth } from '@/auth';
+import { redirect } from 'next/navigation';
 
 export default async function ContentPage() {
+  const session = await auth();
   const posts = await getPosts();
+
+  if (!session?.user) {
+    return redirect('/login');
+  }
 
   return (
     <Card>

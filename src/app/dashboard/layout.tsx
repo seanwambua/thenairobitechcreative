@@ -1,5 +1,5 @@
 import { getSetting } from '@/app/actions/settings';
-import { DashboardClient } from './dashboard-client';
+import DashboardClient from './dashboard-client';
 
 export default async function DashboardLayout({
   children,

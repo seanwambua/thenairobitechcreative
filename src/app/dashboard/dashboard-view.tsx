@@ -14,16 +14,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from 'recharts';
 import { Briefcase, NotebookText, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { Project } from '@/app/actions/projects';
@@ -33,16 +23,6 @@ const cardVariants = {
   visible: { opacity: 1, y: 0 },
 };
 
-// Chart data remains static as we don't have time-series data
-const chartData = [
-  { name: 'Jan', revenue: 4000 },
-  { name: 'Feb', revenue: 3000 },
-  { name: 'Mar', revenue: 5000 },
-  { name: 'Apr', revenue: 4500 },
-  { name: 'May', revenue: 6000 },
-  { name: 'Jun', revenue: 5500 },
-];
-
 interface DashboardViewProps {
   postCount: number;
   projectCount: number;
@@ -50,7 +30,7 @@ interface DashboardViewProps {
   recentProjects: Project[];
 }
 
-export default function DashboardView({
+function DashboardView({
   postCount,
   projectCount,
   testimonialCount,
@@ -122,79 +102,45 @@ export default function DashboardView({
         </motion.div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <motion.div
-          className="lg:col-span-2"
-          variants={cardVariants}
-          initial="hidden"
-          animate="visible"
-          transition={{ delay: 0.5 }}
-        >
-          <Card>
-            <CardHeader>
-              <CardTitle>Overview</CardTitle>
-              <CardDescription>
-                Monthly revenue overview for the last 6 months. (Static Data)
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: 'hsl(var(--background))',
-                      border: '1px solid hsl(var(--border))',
-                    }}
-                  />
-                  <Legend />
-                  <Bar dataKey="revenue" fill="hsl(var(--primary))" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          variants={cardVariants}
-          initial="hidden"
-          animate="visible"
-          transition={{ delay: 0.6 }}
-        >
-          <Card>
-            <CardHeader>
-              <CardTitle>Recent Projects</CardTitle>
-              <CardDescription>
-                A list of the most recent projects.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Project</TableHead>
-                    <TableHead>Description</TableHead>
+      <motion.div
+        variants={cardVariants}
+        initial="hidden"
+        animate="visible"
+        transition={{ delay: 0.6 }}
+      >
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Projects</CardTitle>
+            <CardDescription>
+              A list of the most recent projects.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Project</TableHead>
+                  <TableHead>Description</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {recentProjects.map((project) => (
+                  <TableRow key={project.id}>
+                    <TableCell className="font-medium">
+                      {project.title}
+                    </TableCell>
+                    <TableCell className="max-w-[200px] truncate">
+                      {project.description}
+                    </TableCell>
                   </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {recentProjects.map((project) => (
-                    <TableRow key={project.id}>
-                      <TableCell className="font-medium">
-                        {project.title}
-                      </TableCell>
-                      <TableCell className="max-w-[200px] truncate">
-                        {project.description}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </div>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </motion.div>
     </div>
   );
 }
+
+export default DashboardView;

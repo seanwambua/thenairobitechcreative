@@ -1,7 +1,21 @@
-import NextAuth from 'next-auth';
+import NextAuth, { DefaultSession } from 'next-auth';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import prisma from '@/lib/prisma';
 import Credentials from 'next-auth/providers/credentials';
+import bcrypt from 'bcryptjs';
+import { Role } from '@/lib/roles';
+
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      role: Role;
+    } & DefaultSession['user'];
+  }
+
+  interface User {
+    role: Role;
+  }
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -23,11 +37,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           },
         });
 
-        // This is a prototype and does not implement password hashing.
-        // In a production application, you should hash and salt passwords.
-        if (user) {
-          // For a real app, you'd compare a hashed password here.
-          // Since we don't have passwords, we'll just return the user.
+        if (!user || !user.hashedPassword) {
+          return null;
+        }
+
+        const isPasswordCorrect = await bcrypt.compare(
+          credentials.password as string,
+          user.hashedPassword
+        );
+
+        if (isPasswordCorrect) {
           return user;
         }
 
@@ -40,5 +59,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   session: {
     strategy: 'jwt',
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = user.role;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.role = token.role as Role;
+      }
+      return session;
+    },
   },
 });

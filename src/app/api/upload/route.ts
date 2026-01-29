@@ -21,5 +21,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
   }
 
-  return NextResponse.json({ success: true });
+  const { secure_url } = await cloudinary.uploader.upload(file, {
+    timestamp: timestamp,
+    signature: signature,
+    api_key: process.env.CLOUDINARY_API_KEY as string,
+  });
+
+  return NextResponse.json({ secure_url });
 }

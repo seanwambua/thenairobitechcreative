@@ -59,6 +59,15 @@ export function ServicesClient({
     .map((n) => n[0])
     .join('');
 
+  const getIcon = (iconName: string) => {
+    const Icon = iconMap[iconName as keyof typeof iconMap];
+    if (!Icon) {
+      console.warn(`Icon "${iconName}" not found. Using default icon.`);
+      return Plus;
+    }
+    return Icon;
+  };
+
   return (
     <>
       <section className="py-20 lg:py-24">
@@ -134,7 +143,7 @@ export function ServicesClient({
 
           <div className="mx-auto grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {services.map((service, index) => {
-              const Icon = iconMap[service.icon as keyof typeof iconMap];
+              const Icon = getIcon(service.icon);
               return (
                 <motion.div
                   key={service.id}
@@ -149,7 +158,7 @@ export function ServicesClient({
                   >
                     <CardHeader className="flex-row items-center gap-4 p-0">
                       <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                        {Icon && <Icon className="h-6 w-6" />}
+                        <Icon className="h-6 w-6" />
                       </div>
                       <CardTitle className="font-headline text-xl font-semibold text-foreground">
                         {service.title}
@@ -193,12 +202,9 @@ export function ServicesClient({
                   <AccordionTrigger className="text-left text-lg font-semibold hover:no-underline">
                     <div className="flex items-center gap-4">
                       <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-secondary/10 text-secondary">
-                        {React.createElement(
-                          iconMap[step.icon as keyof typeof iconMap],
-                          {
-                            className: 'h-6 w-6',
-                          }
-                        )}
+                        {React.createElement(getIcon(step.icon), {
+                          className: 'h-6 w-6',
+                        })}
                       </div>
                       {step.title}
                     </div>

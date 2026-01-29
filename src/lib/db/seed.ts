@@ -1,5 +1,7 @@
 import prisma from '@/lib/prisma';
 import placeholderImages from '@/app/lib/placeholder-images.json';
+import { Role } from '@/lib/roles';
+import bcrypt from 'bcrypt';
 
 export async function seedDatabase() {
   console.log('Starting database seed...');
@@ -13,10 +15,23 @@ export async function seedDatabase() {
   await prisma.session.deleteMany({});
   await prisma.verificationToken.deleteMany({});
 
+  const hashedPassword = await bcrypt.hash('12345678', 10);
+
   await prisma.user.create({
     data: {
-      email: 'admin@example.com',
-      name: 'Admin User',
+      email: 'seanwambua@gmail.com',
+      name: 'Sean Wambua',
+      role: Role.ADMIN,
+      hashedPassword: hashedPassword,
+    },
+  });
+
+  await prisma.account.create({
+    data: {
+      userId: (await prisma.user.findUnique({ where: { email: 'seanwambua@gmail.com' } }))!.id,
+      type: 'credentials',
+      provider: 'credentials',
+      providerAccountId: (await prisma.user.findUnique({ where: { email: 'seanwambua@gmail.com' } }))!.id,
     },
   });
 
@@ -28,7 +43,7 @@ export async function seedDatabase() {
       content: 'This is the content of my first post.',
       imageUrl: placeholderImages.blog1Image.imageUrl,
       imageHint: placeholderImages.blog1Image.imageHint,
-      author: 'Admin User',
+      author: 'Sean Wambua',
       authorAvatarUrl: placeholderImages.testimonial1Image.imageUrl,
       authorAvatarHint: placeholderImages.testimonial1Image.imageHint,
       likes: 10,
@@ -103,10 +118,10 @@ export async function seedDatabase() {
 
   await prisma.settings.createMany({
     data: [
-      { key: 'heroImage', value: null },
-      { key: 'logo', value: null },
-      { key: 'founderImage', value: null },
-      { key: 'founderName', value: 'Admin User' },
+      { key: 'heroImage', value: 'https://res.cloudinary.com/dm1bn7vkd/image/upload/v1769188669/nairobi_techcreative/1769188621878_kgkj5u.png' },
+      { key: 'logo', value: 'https://res.cloudinary.com/dm1bn7vkd/image/upload/v1769187527/nairobi_techcreative/ntc-logo_cv0t3n.png' },
+      { key: 'founderImage', value: 'https://res.cloudinary.com/dm1bn7vkd/image/upload/v1769189197/nairobi_techcreative/IMG_20260123_202554_at0rca.jpg' },
+      { key: 'founderName', value: 'Sean Wambua' },
       {
         key: 'founderMessage',
         value:

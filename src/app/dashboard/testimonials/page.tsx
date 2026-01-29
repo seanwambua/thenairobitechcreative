@@ -5,10 +5,10 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { TestimonialsClient } from './testimonials-client';
-import { getTestimonials } from '@/app/actions/testimonials';
+import { getAllTestimonials } from '@/app/actions/testimonials';
 
 export default async function TestimonialsPage() {
-  const testimonials = await getTestimonials();
+  const testimonials = await getAllTestimonials();
 
   return (
     <Card>

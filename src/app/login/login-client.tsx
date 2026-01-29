@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -28,6 +28,8 @@ const formSchema = z.object({
 export function LoginClient() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl');
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -40,21 +42,30 @@ export function LoginClient() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    const result = await signIn('credentials', {
-      redirect: false,
-      email: values.email,
-      password: values.password,
-    });
-    setIsLoading(false);
+    try {
+      const result = await signIn('credentials', {
+        redirect: false,
+        email: values.email,
+        password: values.password,
+      });
 
-    if (result?.error) {
+      if (result?.error) {
+        toast({
+          variant: 'destructive',
+          title: 'Login Failed',
+          description: 'Invalid email or password.',
+        });
+      } else if (result?.ok) {
+        router.push(callbackUrl || '/dashboard');
+      }
+    } catch (error) {
       toast({
         variant: 'destructive',
-        title: 'Login Failed',
-        description: 'Invalid email or password.',
+        title: 'An Error Occurred',
+        description: 'Could not connect to the server. Please try again later.',
       });
-    } else if (result?.ok) {
-      router.push('/dashboard');
+    } finally {
+      setIsLoading(false);
     }
   }
 

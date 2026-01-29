@@ -1,95 +1,18 @@
-import type { IconName } from './schemas';
-import type {
-  Project as PrismaProject,
-  Post as PrismaPost,
-  Testimonial as PrismaTestimonial,
-} from '@/app/generated/prisma';
+import { FAQ, NavLink, SocialLink, Service, FooterLink, PricingPlan, ProcessStep } from './definitions';
 
-export type Post = PrismaPost;
-export type PostSummary = Omit<Post, 'content'>;
-
-export type Testimonial = PrismaTestimonial;
-
-export interface NavItem {
-  href: string;
-  label: string;
-  hidden?: boolean;
-}
-
-export type Project = Omit<PrismaProject, 'keyFeatures' | 'icon'> & {
-  keyFeatures: string[];
-  icon: IconName;
-};
-
-export interface Service {
-  id: number;
-  title: string;
-  icon: IconName;
-  description: string;
-}
-
-export interface PricingPlan {
-  id: number;
-  title: string;
-  description: string;
-  price: string;
-  priceSuffix: string;
-  features: string[];
-}
-
-export interface ProcessStep {
-  icon: IconName;
-  title: string;
-  description: string;
-}
-
-export interface FAQ {
-  id: number;
-  question: string;
-  answer: string;
-}
-
-export const navItems: NavItem[] = [
+export const navLinks: NavLink[] = [
   { href: '/#portfolio', label: 'Portfolio' },
   { href: '/services', label: 'Services' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/blog', label: 'Blog' },
   { href: '/#testimonials', label: 'Testimonials' },
   { href: '/#contact', label: 'Contact' },
-  { href: '/dashboard', label: 'Comprehensive Dashboard', hidden: true },
 ];
 
-export const faqs: FAQ[] = [
-  {
-    id: 1,
-    question: 'What is the typical timeline for a project?',
-    answer:
-      'Project timelines vary depending on the scope and complexity. A typical project discovery and design phase takes 2-4 weeks, followed by development sprints of 2-3 months. We work closely with you to establish a detailed timeline upfront.',
-  },
-  {
-    id: 2,
-    question: 'How do you handle project management and communication?',
-    answer:
-      "We use an agile project management approach with regular check-ins and demos. You'll have a dedicated project manager and direct access to the team through collaborative tools like Slack and Asana to ensure clear communication and transparency.",
-  },
-  {
-    id: 3,
-    question: 'Can you work with existing codebases or systems?',
-    answer:
-      'Absolutely. We can audit your existing systems, identify areas for improvement, and integrate new features or build on top of your current infrastructure. Our goal is to enhance your technology, not necessarily replace it.',
-  },
-  {
-    id: 4,
-    question: 'What kind of post-launch support do you offer?',
-    answer:
-      'We offer various levels of ongoing support and maintenance retainers to ensure your product remains secure, up-to-date, and optimized for performance. We can also provide support for future feature development and scaling.',
-  },
-  {
-    id: 5,
-    question: 'How do you ensure the quality of the final product?',
-    answer:
-      'Quality is at the core of our process. We conduct rigorous testing at every stage, including unit testing, integration testing, and user acceptance testing (UAT). We also perform security audits and performance profiling before launch.',
-  },
+export const socialLinks: SocialLink[] = [
+  { href: 'https://twitter.com/example', icon: 'Twitter' },
+  { href: 'https://facebook.com/example', icon: 'Facebook' },
+  { href: 'https://instagram.com/example', icon: 'Instagram' },
 ];
 
 export const services: Service[] = [
@@ -113,13 +36,66 @@ export const services: Service[] = [
     icon: 'Rocket',
     description:
       'We ensure a smooth launch and provide ongoing support to help you grow.',
+  }
+];
+
+export const footerLinks: FooterLink[] = [
+  {
+    title: 'Company',
+    links: [
+      { href: '/about', label: 'About' },
+      { href: '/projects', label: 'Projects' },
+      { href: '/blog', label: 'Blog' },
+      { href: '/contact', label: 'Contact' },
+    ],
+  },
+  {
+    title: 'Social',
+    links: [
+      { href: 'https://twitter.com/example', label: 'Twitter' },
+      { href: 'https://facebook.com/example', label: 'Facebook' },
+      { href: 'https://instagram.com/example', label: 'Instagram' },
+    ],
+  },
+  {
+    title: 'Legal',
+    links: [
+      { href: '/privacy', label: 'Privacy Policy' },
+      { href: '/terms', label: 'Terms of Service' },
+    ],
+  },
+];
+
+export const faqs: FAQ[] = [
+  {
+    id: 1,
+    question: 'What is the typical timeline for a project?',
+    answer:
+      'Project timelines vary depending on the scope and complexity. A typical project discovery and design phase takes 2-4 weeks, followed by development sprints of 2-3 months. We work closely with you to establish a detailed timeline upfront.',
+  },
+  {
+    id: 2,
+    question: 'How do you handle project management and communication?',
+    answer:
+      "We use an agile project management approach with regular check-ins and demos. You\'ll have a dedicated project manager and direct access to the team through collaborative tools like Slack and Asana to ensure clear communication and transparency.",
+  },
+  {
+    id: 3,
+    question: 'Can you work with existing codebases or systems?',
+    answer:
+      'Absolutely. We can audit your existing systems, identify areas for improvement, and integrate new features or build on top of your current infrastructure. Our goal is to enhance your technology, not necessarily replace it.',
   },
   {
     id: 4,
-    title: 'Initial Consult',
-    icon: 'Briefcase',
-    description:
-      'One-on-one guidance to refine your idea, define your strategy, and create a clear roadmap for your project.',
+    question: 'What kind of post-launch support do you offer?',
+    answer:
+      'We offer various levels of ongoing support and maintenance retainers to ensure your product remains secure, up-to-date, and optimized for performance. We can also provide support for future feature development and scaling.',
+  },
+  {
+    id: 5,
+    question: 'How do you ensure the quality of the final product?',
+    answer:
+      'Quality is at the core of our process. We conduct rigorous testing at every stage, including unit testing, integration testing, and user acceptance testing (UAT). We also perform security audits and performance profiling before launch.',
   },
 ];
 

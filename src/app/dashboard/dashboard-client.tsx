@@ -8,8 +8,6 @@ import {
   SidebarFooter,
   SidebarTrigger,
   SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
   SidebarInset,
   useSidebar,
 } from '@/components/ui/sidebar';
@@ -48,6 +46,7 @@ import {
   MenubarTrigger,
 } from '@/components/ui/menubar';
 import { useSession, signOut } from 'next-auth/react';
+import { Role } from '@/lib/roles';
 
 function DashboardClientLayout({
   children,
@@ -56,7 +55,7 @@ function DashboardClientLayout({
   children: React.ReactNode;
   logoUrl: string | null;
 }) {
-  const { setOpenMobile, isMobile } = useSidebar();
+  const { isMobile } = useSidebar();
   const [mounted, setMounted] = React.useState(false);
   const router = useRouter();
   const { data: session } = useSession();
@@ -64,14 +63,6 @@ function DashboardClientLayout({
   React.useEffect(() => {
     setMounted(true);
   }, []);
-
-  const handleLinkClick = () => {
-    if (isMobile) {
-      setOpenMobile(false);
-    }
-  };
-
-  const pathname = usePathname();
 
   return (
     <>
@@ -91,110 +82,70 @@ function DashboardClientLayout({
         </SidebarHeader>
         <SidebarContent>
           <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                isActive={pathname === '/dashboard'}
-                tooltip="Dashboard"
-                onClick={handleLinkClick}
+            <Link
+              href="/dashboard"
+              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+            >
+              <LayoutGrid className="h-4 w-4" />
+              <span>Dashboard</span>
+            </Link>
+            {session?.user?.role === Role.ADMIN && (
+              <Link
+                href="/dashboard/content"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
               >
-                <Link href="/dashboard">
-                  <LayoutGrid />
-                  <span>Dashboard</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                isActive={pathname.startsWith('/dashboard/content')}
-                tooltip="Content"
-                onClick={handleLinkClick}
+                <NotebookText className="h-4 w-4" />
+                <span>Content</span>
+              </Link>
+            )}
+            {session?.user?.role === Role.ADMIN && (
+              <Link
+                href="/dashboard/media"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
               >
-                <Link href="/dashboard/content">
-                  <NotebookText />
-                  <span>Content</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                isActive={pathname.startsWith('/dashboard/media')}
-                tooltip="Media"
-                onClick={handleLinkClick}
+                <ImageIcon className="h-4 w-4" />
+                <span>Media</span>
+              </Link>
+            )}
+            <Link
+              href="/dashboard/projects"
+              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+            >
+              <Briefcase className="h-4 w-4" />
+              <span>Projects</span>
+            </Link>
+            <Link
+              href="/dashboard/testimonials"
+              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+            >
+              <Star className="h-4 w-4" />
+              <span>Testimonials</span>
+            </Link>
+            {session?.user?.role === Role.ADMIN && (
+              <Link
+                href="/dashboard/analytics"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
               >
-                <Link href="/dashboard/media">
-                  <ImageIcon />
-                  <span>Media</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                isActive={pathname.startsWith('/dashboard/projects')}
-                tooltip="Projects"
-                onClick={handleLinkClick}
+                <LineChart className="h-4 w-4" />
+                <span>Analytics</span>
+              </Link>
+            )}
+            <Link
+              href="/dashboard/settings"
+              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+            >
+              <Settings className="h-4 w-4" />
+              <span>Settings</span>
+            </Link>
+            {session?.user?.role === Role.ADMIN && (
+              <Link
+                href="/dashboard/troubleshooting"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
               >
-                <Link href="/dashboard/projects">
-                  <Briefcase />
-                  <span>Projects</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                isActive={pathname.startsWith('/dashboard/testimonials')}
-                tooltip="Testimonials"
-                onClick={handleLinkClick}
-              >
-                <Link href="/dashboard/testimonials">
-                  <Star />
-                  <span>Testimonials</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                isActive={pathname.startsWith('/dashboard/analytics')}
-                tooltip="Analytics"
-                onClick={handleLinkClick}
-              >
-                <Link href="/dashboard/analytics">
-                  <LineChart />
-                  <span>Analytics</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                isActive={pathname.startsWith('/dashboard/settings')}
-                tooltip="Settings"
-                onClick={handleLinkClick}
-              >
-                <Link href="/dashboard/settings">
-                  <Settings />
-                  <span>Settings</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                isActive={pathname.startsWith('/dashboard/troubleshooting')}
-                tooltip="Troubleshooting"
-                onClick={handleLinkClick}
-              >
-                <Link href="/dashboard/troubleshooting">
-                  <Wrench />
-                  <span>Troubleshooting</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+                <Wrench className="h-4 w-4" />
+                <span>Troubleshooting</span>
+              </Link>
+            )}
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
@@ -227,12 +178,21 @@ function DashboardClientLayout({
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
+                    <Link href="/dashboard">
+                      <LayoutGrid className="mr-2 h-4 w-4" />
+                      <span>Dashboard</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link href="/dashboard/settings">
                       <Settings className="mr-2 h-4 w-4" />
                       <span>Settings</span>
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => signOut()}>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => signOut({ callbackUrl: '/login' })}
+                  >
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                   </DropdownMenuItem>
@@ -257,16 +217,20 @@ function DashboardClientLayout({
                   <PlusCircle className="mr-2 h-4 w-4" /> New
                 </MenubarTrigger>
                 <MenubarContent>
-                  <MenubarItem
-                    onClick={() => router.push('/dashboard/content')}
-                  >
-                    Post
-                  </MenubarItem>
-                  <MenubarItem
-                    onClick={() => router.push('/dashboard/projects')}
-                  >
-                    Project
-                  </MenubarItem>
+                  {session?.user?.role === Role.ADMIN && (
+                    <MenubarItem
+                      onClick={() => router.push('/dashboard/content')}
+                    >
+                      Post
+                    </MenubarItem>
+                  )}
+                  {session?.user?.role === Role.ADMIN && (
+                    <MenubarItem
+                      onClick={() => router.push('/dashboard/projects')}
+                    >
+                      Project
+                    </MenubarItem>
+                  )}
                   <MenubarItem
                     onClick={() => router.push('/dashboard/testimonials')}
                   >
@@ -284,7 +248,7 @@ function DashboardClientLayout({
   );
 }
 
-export function DashboardClient({
+export default function DashboardClient({
   children,
   logoUrl,
 }: {

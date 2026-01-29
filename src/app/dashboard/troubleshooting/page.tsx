@@ -23,6 +23,9 @@ import prisma from '@/lib/prisma';
 import { seedDatabase } from '@/lib/db/seed';
 import { Badge } from '@/components/ui/badge';
 import { iconNames } from '@/lib/schemas';
+import { auth } from '@/auth';
+import { redirect } from 'next/navigation';
+import { Role } from '@/lib/roles';
 
 async function reinitializeDatabase() {
   'use server';
@@ -175,6 +178,11 @@ const checkIconMap: Record<string, React.ElementType> = {
 };
 
 export default async function TroubleshootingPage() {
+  const session = await auth();
+  if (session?.user?.role !== Role.ADMIN) {
+    redirect('/unauthorized');
+  }
+
   const systemChecks = await runSystemChecks();
   const isSystemHealthy = systemChecks.every((check) => check.status === 'ok');
   const hasWarnings = systemChecks.some((check) => check.status === 'warning');

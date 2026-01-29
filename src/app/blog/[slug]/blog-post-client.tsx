@@ -3,19 +3,25 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { PostInteractions } from '@/components/post-interactions';
+import { Comments } from '@/components/comments';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Terminal, ArrowLeft } from 'lucide-react';
-import type { Post } from '@/app/generated/prisma';
+import type { Post, Comment as CommentType, User } from '@/app/generated/prisma';
 
 export function BlogPostClient({
   postData,
+  comments,
+  likes,
+  userHasLiked,
   error,
 }: {
   postData: Post | null;
+  comments: (CommentType & { user: User })[];
+  likes: number;
+  userHasLiked: boolean;
   error: Error | null;
 }) {
   if (error) {
@@ -45,21 +51,6 @@ export function BlogPostClient({
   // Handle case where post is not found or slug was invalid.
   if (!postData) {
     return null; // The page will show a 404 from notFound()
-  }
-
-  // Safely parse comments and get the count.
-  let commentsCount = 0;
-  try {
-    if (postData.comments && postData.comments.trim().startsWith('[')) {
-      const commentsArray = JSON.parse(postData.comments);
-      if (Array.isArray(commentsArray)) {
-        commentsCount = commentsArray.length;
-      }
-    }
-  } catch (e) {
-    // If parsing fails, commentsCount remains 0.
-    // This handles cases where the string is not valid JSON.
-    console.error('Could not parse comments:', e);
   }
 
   return (
@@ -111,20 +102,14 @@ export function BlogPostClient({
 
       <Separator className="my-12" />
 
-      <PostInteractions post={postData} commentsCount={commentsCount} />
+      <PostInteractions
+        post={postData}
+        likes={likes}
+        hasLiked={userHasLiked}
+        commentsCount={comments.length}
+      />
 
-      <section className="mt-12">
-        <h2 className="font-headline text-3xl font-bold">Comments</h2>
-        <Card className="mt-6">
-          <CardContent className="p-6 text-center">
-            <h3 className="text-lg font-semibold">Comments Coming Soon</h3>
-            <p className="mt-2 text-muted-foreground">
-              We&apos;re working on a new commenting system. User authentication
-              will be required. Please check back later!
-            </p>
-          </CardContent>
-        </Card>
-      </section>
+      <Comments postId={postData.id} comments={comments} />
     </article>
   );
 }

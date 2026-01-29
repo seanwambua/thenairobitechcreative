@@ -1,7 +1,9 @@
 import { getPostBySlug } from '@/app/actions/posts';
+import { getComments } from '@/app/actions/comments';
+import { getLikes, hasLiked } from '@/app/actions/likes';
 import { DbUninitializedError } from '@/lib/errors';
 import { BlogPostClient } from './blog-post-client';
-import type { Post } from '@/app/generated/prisma';
+import type { Post, Comment, User } from '@/app/generated/prisma';
 import { DbUninitializedError as DbUninitializedErrorComponent } from '@/components/db-uninitialized-error';
 import { notFound } from 'next/navigation';
 
@@ -12,25 +14,57 @@ export const dynamic = 'force-dynamic';
  * This prevents the server from crashing and allows us to show
  * specific UI for database configuration issues.
  */
-async function getPageData(
-  slug: string
-): Promise<{ post: Post | null; error: Error | null }> {
+async function getPageData(slug: string): Promise<{
+  post: Post | null;
+  comments: (Comment & { user: User })[];
+  likes: number;
+  userHasLiked: boolean;
+  error: Error | null;
+}> {
   try {
     const post = await getPostBySlug(slug);
+
+    if (!post) {
+      return {
+        post: null,
+        comments: [],
+        likes: 0,
+        userHasLiked: false,
+        error: null,
+      };
+    }
+
+    const [comments, likes, userHasLiked] = await Promise.all([
+      getComments(post.id),
+      getLikes(post.id),
+      hasLiked(post.id),
+    ]);
 
     // QA Debug: If this logs 'null', your database doesn't have a post with this slug
     console.log(`[QA Blog Search] Slug: "${slug}" | Found: ${!!post}`);
 
-    return { post, error: null };
+    return { post, comments, likes, userHasLiked, error: null };
   } catch (error: any) {
     console.error('[QA Database Error]:', error);
 
     // Specifically catch missing table errors (common in SQLite/Prisma setups)
     if (error.message?.includes('no such table') || error.code === 'P2021') {
-      return { post: null, error: new DbUninitializedError() };
+      return {
+        post: null,
+        comments: [],
+        likes: 0,
+        userHasLiked: false,
+        error: new DbUninitializedError(),
+      };
     }
 
-    return { post: null, error: error as Error };
+    return {
+      post: null,
+      comments: [],
+      likes: 0,
+      userHasLiked: false,
+      error: error as Error,
+    };
   }
 }
 
@@ -44,7 +78,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params;
 
   // 2. Fetch data using our wrapper
-  const { post, error } = await getPageData(slug);
+  const { post, comments, likes, userHasLiked, error } = await getPageData(slug);
 
   // 3. Handle Database Initialization errors (DX/UX)
   if (error instanceof DbUninitializedError) {
@@ -53,7 +87,15 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   // 4. Handle generic errors (Passes the error to the client component)
   if (error) {
-    return <BlogPostClient postData={null} error={error} />;
+    return (
+      <BlogPostClient
+        postData={null}
+        comments={[]}
+        likes={0}
+        userHasLiked={false}
+        error={error}
+      />
+    );
   }
 
   // 5. Handle "Not Found" (If post is null after a successful query)
@@ -63,5 +105,13 @@ export default async function BlogPostPage({ params }: PageProps) {
   }
 
   // 6. Success State
-  return <BlogPostClient postData={post} error={null} />;
+  return (
+    <BlogPostClient
+      postData={post}
+      comments={comments}
+      likes={likes}
+      userHasLiked={userHasLiked}
+      error={null}
+    />
+  );
 }

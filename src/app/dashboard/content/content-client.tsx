@@ -36,6 +36,8 @@ import type { Post } from '@/app/generated/prisma';
 import { format } from 'date-fns';
 import { CardContent } from '@/components/ui/card';
 import { deletePost } from '@/app/actions/posts';
+import { useSession } from 'next-auth/react';
+import { Role } from '@/lib/roles';
 
 export function ContentClient({ initialPosts }: { initialPosts: Post[] }) {
   const router = useRouter();
@@ -44,6 +46,7 @@ export function ContentClient({ initialPosts }: { initialPosts: Post[] }) {
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState<Post | null>(null);
   const { toast } = useToast();
+  const { data: session } = useSession();
 
   const handleCreateNew = () => {
     setEditingPost(null);
@@ -89,12 +92,14 @@ export function ContentClient({ initialPosts }: { initialPosts: Post[] }) {
 
   return (
     <>
-      <div className="flex justify-end p-6 pt-0">
-        <Button onClick={handleCreateNew}>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Create New Post
-        </Button>
-      </div>
+      {session?.user?.role === Role.ADMIN && (
+        <div className="flex justify-end p-6 pt-0">
+          <Button onClick={handleCreateNew}>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Create New Post
+          </Button>
+        </div>
+      )}
       <CardContent>
         {initialPosts.length === 0 ? (
           <div className="py-8 text-center text-muted-foreground">
@@ -108,9 +113,11 @@ export function ContentClient({ initialPosts }: { initialPosts: Post[] }) {
                 <TableHead className="hidden md:table-cell">Author</TableHead>
                 <TableHead className="hidden md:table-cell">Date</TableHead>
                 <TableHead className="hidden md:table-cell">Status</TableHead>
-                <TableHead>
-                  <span className="sr-only">Actions</span>
-                </TableHead>
+                {session?.user?.role === Role.ADMIN && (
+                  <TableHead>
+                    <span className="sr-only">Actions</span>
+                  </TableHead>
+                )}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -126,32 +133,34 @@ export function ContentClient({ initialPosts }: { initialPosts: Post[] }) {
                   <TableCell className="hidden md:table-cell">
                     <Badge variant="outline">Published</Badge>
                   </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          aria-haspopup="true"
-                          size="icon"
-                          variant="ghost"
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Toggle menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => handleEdit(post)}>
-                          Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onClick={() => handleDeleteInitiate(post)}
-                          className="text-destructive"
-                        >
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+                  {session?.user?.role === Role.ADMIN && (
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            aria-haspopup="true"
+                            size="icon"
+                            variant="ghost"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Toggle menu</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => handleEdit(post)}>
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onClick={() => handleDeleteInitiate(post)}
+                            className="text-destructive"
+                          >
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
             </TableBody>

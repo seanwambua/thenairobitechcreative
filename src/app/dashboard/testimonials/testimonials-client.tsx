@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { CardContent } from '@/components/ui/card';
 import {
   Table,
@@ -35,6 +36,7 @@ import { useToast } from '@/hooks/use-toast';
 import { TestimonialEditorSheet } from '@/components/testimonial-editor-sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { deleteTestimonial } from '@/app/actions/testimonials';
+import { Role } from '@/lib/roles';
 
 export function TestimonialsClient({
   initialTestimonials,
@@ -42,6 +44,7 @@ export function TestimonialsClient({
   initialTestimonials: Testimonial[];
 }) {
   const router = useRouter();
+  const { data: session } = useSession();
   const [isEditorOpen, setEditorOpen] = useState(false);
   const [editingTestimonial, setEditingTestimonial] =
     useState<Testimonial | null>(null);
@@ -49,6 +52,24 @@ export function TestimonialsClient({
   const [testimonialToDelete, setTestimonialToDelete] =
     useState<Testimonial | null>(null);
   const { toast } = useToast();
+
+  const { userHasTestimonial, sortedTestimonials } = useMemo(() => {
+    if (!session?.user) {
+      return { userHasTestimonial: false, sortedTestimonials: initialTestimonials };
+    }
+    const userTestimonial = initialTestimonials.find(
+      (t) => t.userId === session.user.id
+    );
+    const otherTestimonials = initialTestimonials.filter(
+      (t) => t.userId !== session.user.id
+    );
+    return {
+      userHasTestimonial: !!userTestimonial,
+      sortedTestimonials: userTestimonial
+        ? [userTestimonial, ...otherTestimonials]
+        : otherTestimonials,
+    };
+  }, [initialTestimonials, session?.user]);
 
   const handleCreateNew = () => {
     setEditingTestimonial(null);
@@ -74,11 +95,11 @@ export function TestimonialsClient({
           title: 'Testimonial Deleted',
           description: `The testimonial from "${testimonialToDelete.author}" has been successfully deleted.`,
         });
-      } catch (e) {
+      } catch (e: any) {
         toast({
           variant: 'destructive',
           title: 'Error',
-          description: 'Failed to delete testimonial.',
+          description: e.message || 'Failed to delete testimonial.',
         });
       } finally {
         setDeleteDialogOpen(false);
@@ -92,16 +113,22 @@ export function TestimonialsClient({
     router.refresh();
   };
 
+  const canPerformAction = (testimonial: Testimonial) => {
+    return (
+      session?.user?.role === Role.ADMIN || session?.user?.id === testimonial.userId
+    );
+  };
+
   return (
     <>
       <div className="flex justify-end p-6 pt-0">
-        <Button onClick={handleCreateNew}>
+        <Button onClick={handleCreateNew} disabled={userHasTestimonial && session?.user?.role !== Role.ADMIN}>
           <PlusCircle className="mr-2 h-4 w-4" />
           Create New Testimonial
         </Button>
       </div>
       <CardContent>
-        {initialTestimonials.length === 0 ? (
+        {sortedTestimonials.length === 0 ? (
           <div className="py-8 text-center text-muted-foreground">
             No testimonials found.
           </div>
@@ -118,8 +145,11 @@ export function TestimonialsClient({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {initialTestimonials.map((testimonial) => (
-                <TableRow key={testimonial.id}>
+              {sortedTestimonials.map((testimonial) => (
+                <TableRow
+                  key={testimonial.id}
+                  className={testimonial.userId === session?.user?.id ? 'bg-muted/50' : ''}
+                >
                   <TableCell className="font-medium">
                     <div className="flex items-center gap-3">
                       <Avatar className="h-10 w-10">
@@ -141,32 +171,34 @@ export function TestimonialsClient({
                     &quot;{testimonial.quote}&quot;
                   </TableCell>
                   <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          aria-haspopup="true"
-                          size="icon"
-                          variant="ghost"
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Toggle menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          onClick={() => handleEdit(testimonial)}
-                        >
-                          Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onClick={() => handleDeleteInitiate(testimonial)}
-                          className="text-destructive"
-                        >
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    {canPerformAction(testimonial) && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            aria-haspopup="true"
+                            size="icon"
+                            variant="ghost"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Toggle menu</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={() => handleEdit(testimonial)}
+                          >
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onClick={() => handleDeleteInitiate(testimonial)}
+                            className="text-destructive"
+                          >
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

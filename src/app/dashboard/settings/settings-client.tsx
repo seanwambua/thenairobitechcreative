@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Form,
   FormControl,
@@ -13,101 +14,99 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { updateSettings } from '@/app/actions/settings';
 import { Loader2 } from 'lucide-react';
-import { CardContent, CardFooter } from '@/components/ui/card';
-import { useRouter } from 'next/navigation';
+import { User } from 'next-auth';
+import { updateUser } from '@/app/actions/users';
 
-const settingsSchema = z.object({
-  founderName: z.string().min(2, 'Name must be at least 2 characters.'),
-  founderMessage: z.string().min(10, 'Message must be at least 10 characters.'),
+const formSchema = z.object({
+  name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
+  email: z.string().email({ message: 'Please enter a valid email address.' }),
 });
 
-type SettingsFormValues = z.infer<typeof settingsSchema>;
-
 interface SettingsClientProps {
-  initialSettings: Record<string, string | null>;
+  user: User;
 }
 
-export function SettingsClient({ initialSettings }: SettingsClientProps) {
-  const router = useRouter();
-  const [isSaving, setIsSaving] = useState(false);
+export function SettingsClient({ user }: SettingsClientProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const form = useForm<SettingsFormValues>({
-    resolver: zodResolver(settingsSchema),
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
-      founderName: initialSettings.founderName ?? '',
-      founderMessage: initialSettings.founderMessage ?? '',
+      name: user.name || '',
+      email: user.email || '',
     },
   });
 
-  async function onSubmit(values: SettingsFormValues) {
-    setIsSaving(true);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
     try {
-      await updateSettings(values);
+      await updateUser(values);
       toast({
-        title: 'Settings Updated',
-        description: 'Your changes have been saved successfully.',
+        title: 'Profile Updated',
+        description: 'Your profile has been successfully updated.',
       });
-      router.refresh();
-    } catch (error) {
+    } catch (error: any) {
       toast({
         variant: 'destructive',
-        title: 'Error',
-        description: 'Failed to save settings.',
+        title: 'Update Failed',
+        description: error.message || 'An unexpected error occurred.',
       });
     } finally {
-      setIsSaving(false);
+      setIsLoading(false);
     }
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <CardContent className="space-y-6">
-          <FormField
-            control={form.control}
-            name="founderName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Founder&apos;s Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter founder's name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="founderMessage"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Founder&apos;s Message</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Enter the founder's message"
-                    className="resize-y"
-                    rows={5}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </CardContent>
-        <CardFooter className="border-t px-6 py-4">
-          <Button type="submit" disabled={isSaving}>
-            {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Save Changes
-          </Button>
-        </CardFooter>
-      </form>
-    </Form>
+    <div className="space-y-6">
+      <div>
+        <h3 className="text-lg font-medium">Profile</h3>
+        <p className="text-sm text-muted-foreground">
+          This is how others will see you on the site.
+        </p>
+      </div>
+      <div className="grid gap-6">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Your Name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="your.email@example.com"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" disabled={isLoading}>
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Update Profile
+            </Button>
+          </form>
+        </Form>
+      </div>
+    </div>
   );
 }

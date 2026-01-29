@@ -25,6 +25,10 @@ import {
 } from 'lucide-react';
 import type { ComponentType } from 'react';
 import placeholderImages from '@/app/lib/placeholder-images.json';
+import { z } from 'zod';
+import { ProjectSchema } from '@/lib/schemas';
+
+const BentoPortfolioSchema = z.array(ProjectSchema);
 
 const icons: Record<IconName, ComponentType<LucideProps>> = {
   Boxes,
@@ -50,9 +54,23 @@ interface BentoPortfolioProps {
 }
 
 export function BentoPortfolio({ projects }: BentoPortfolioProps) {
+  const validation = BentoPortfolioSchema.safeParse(projects);
+
+  if (!validation.success) {
+    console.error('Invalid projects prop:', validation.error.flatten());
+    return (
+      <div className="rounded-2xl bg-destructive/10 p-6 text-destructive">
+        <h3 className="font-headline text-2xl font-bold">Validation Error</h3>
+        <p className="mt-2 text-sm">
+          The data provided for the portfolio is invalid. Please check the
+          console for more details.
+        </p>
+      </div>
+    );
+  }
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {projects.map((project, index) => {
+      {validation.data.map((project, index) => {
         const Icon = icons[project.icon];
         const hasProjectImage = !!project.imageUrl;
 
@@ -70,15 +88,16 @@ export function BentoPortfolio({ projects }: BentoPortfolioProps) {
           >
             <div className="absolute inset-0 z-0">
               <Image
-                src={project.imageUrl || placeholderImages.logo.imageUrl}
+                src={project.imageUrl}
                 alt={project.title}
                 fill
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 data-ai-hint={hasProjectImage ? project.imageHint : 'logo'}
+                unoptimized={!hasProjectImage}
               />
             </div>
-            <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+            <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/100 via-black/60 to-transparent" />
             <div className="relative z-20 flex flex-col gap-3 p-6 text-white">
               <div className="flex items-center gap-3">
                 {Icon && (

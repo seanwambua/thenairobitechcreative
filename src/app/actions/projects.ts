@@ -2,6 +2,7 @@
 
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
+import { z } from 'zod';
 import {
   ProjectSchema,
   type ProjectInputSchemaType,
@@ -9,21 +10,23 @@ import {
 } from '@/lib/schemas';
 import type { Project as PrismaProject } from '@/app/generated/prisma';
 
-export type Project = Omit<PrismaProject, 'keyFeatures' | 'icon'> & {
-  keyFeatures: string[];
-  icon: IconName;
-};
+export type Project = z.infer<typeof ProjectSchema>;
 
 export async function getProjects(): Promise<Project[]> {
   const projectsData = await prisma.project.findMany({
     orderBy: { createdAt: 'desc' },
   });
 
-  return projectsData.map((p) => ({
-    ...p,
-    keyFeatures: (p.keyFeatures || '').split(',').map((s) => s.trim()),
-    icon: p.icon as IconName,
-  }));
+  // Validate and transform the data to match the ProjectSchema
+  const validatedProjects = ProjectSchema.array().parse(
+    projectsData.map((p) => ({
+      ...p,
+      keyFeatures: (p.keyFeatures || '').split(',').map((s) => s.trim()),
+      icon: p.icon as IconName,
+    }))
+  );
+
+  return validatedProjects;
 }
 
 export async function createProject(

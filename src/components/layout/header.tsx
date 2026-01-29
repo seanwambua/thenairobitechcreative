@@ -2,12 +2,12 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Stamp } from '@/components/stamp';
-import { LogOut, Menu, X } from 'lucide-react';
+import { LayoutGrid, LogOut, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { InquirySheet } from '../inquiry-sheet';
-import { navItems } from '@/lib/data';
+import { navLinks } from '@/lib/data';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import {
   DropdownMenu,
@@ -18,12 +18,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Role } from '@/lib/roles';
 
 export function Header({ logoUrl }: { logoUrl: string | null }) {
   const { data: session, status } = useSession();
   const [isOpen, setIsOpen] = useState(false);
 
-  const visibleNavItems = navItems.filter((item) => !item.hidden);
+  const visibleNavItems = navLinks.filter(() => true);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-lg">
@@ -73,7 +74,17 @@ export function Header({ logoUrl }: { logoUrl: string | null }) {
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => signOut()}>
+                {session.user?.role === Role.ADMIN && (
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard">
+                      <LayoutGrid className="mr-2 h-4 w-4" />
+                      <span>Dashboard</span>
+                    </Link>
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuItem
+                  onClick={() => signOut({ callbackUrl: '/login' })}
+                >
                   <LogOut className="mr-2 h-4 w-4" />
                   Sign Out
                 </DropdownMenuItem>

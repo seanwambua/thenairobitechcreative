@@ -1,24 +1,13 @@
-import { getSettings } from '@/app/actions/settings';
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { auth } from '@/auth';
 import { SettingsClient } from './settings-client';
+import { redirect } from 'next/navigation';
 
 export default async function SettingsPage() {
-  const settings = await getSettings(['founderName', 'founderMessage']);
+  const session = await auth();
 
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Site Settings</CardTitle>
-        <CardDescription>
-          Manage general site settings and content.
-        </CardDescription>
-      </CardHeader>
-      <SettingsClient initialSettings={settings} />
-    </Card>
-  );
+  if (!session?.user) {
+    return redirect('/login');
+  }
+
+  return <SettingsClient user={session.user} />;
 }

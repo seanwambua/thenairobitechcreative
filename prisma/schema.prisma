@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/app/generated/prisma"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -19,10 +19,12 @@ model Post {
   author           String
   authorAvatarUrl  String
   authorAvatarHint String
-  likes            Int
-  comments         String
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+  user             User     @relation(fields: [userId], references: [id])
+  userId           String
+  comments         Comment[]
+  likes            Like[]
 }
 
 model Project {
@@ -36,6 +38,8 @@ model Project {
   icon        String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
 }
 
 model Testimonial {
@@ -47,6 +51,8 @@ model Testimonial {
   avatarHint String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
 }
 
 model Settings {
@@ -84,13 +90,20 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
+  id             String        @id @default(cuid())
+  name           String?
+  email          String?       @unique
+  emailVerified  DateTime?
+  image          String?
+  hashedPassword String?
+  role           Role          @default(USER)
+  accounts       Account[]
+  sessions       Session[]
+  posts          Post[]
+  projects       Project[]
+  testimonials   Testimonial[]
+  comments       Comment[]
+  likes          Like[]
 }
 
 model VerificationToken {
@@ -99,4 +112,30 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    Int
+}
+
+model Like {
+  id     Int  @id @default(autoincrement())
+  user   User @relation(fields: [userId], references: [id])
+  userId String
+  post   Post @relation(fields: [postId], references: [id])
+  postId Int
+
+  @@unique([userId, postId])
+}
+
+enum Role {
+  USER
+  ADMIN
 }
