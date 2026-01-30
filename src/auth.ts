@@ -18,7 +18,8 @@ declare module 'next-auth' {
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: PrismaAdapter(prisma),
+  // @ts-expect-error - The Edge runtime does not support the Prisma adapter.
+  adapter: process.env.NODE_ENV === 'production' ? PrismaAdapter(prisma) : undefined,
   providers: [
     Credentials({
       name: 'Credentials',

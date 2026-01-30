@@ -43,11 +43,8 @@ export function LoginClient() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
-      const result = await signIn('credentials', {
-        redirect: false,
-        email: values.email,
-        password: values.password,
-      });
+      const { email, password } = values;
+      const result = await signIn('credentials', { redirect: false, email, password });
 
       if (result?.error) {
         toast({

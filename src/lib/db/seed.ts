@@ -6,6 +6,8 @@ import bcrypt from 'bcrypt';
 export async function seedDatabase() {
   console.log('Starting database seed...');
 
+  await prisma.comment.deleteMany({});
+  await prisma.like.deleteMany({});
   await prisma.post.deleteMany({});
   await prisma.project.deleteMany({});
   await prisma.testimonial.deleteMany({});
@@ -15,27 +17,28 @@ export async function seedDatabase() {
   await prisma.session.deleteMany({});
   await prisma.verificationToken.deleteMany({});
 
-  const hashedPassword = await bcrypt.hash('12345678', 10);
+  const hashedPassword = await bcrypt.hash('12345678', 16);
 
-  await prisma.user.create({
+  const adminUser = await prisma.user.create({
     data: {
       email: 'seanwambua@gmail.com',
       name: 'Sean Wambua',
       role: Role.ADMIN,
       hashedPassword: hashedPassword,
+      image: placeholderImages.testimonial1Image.imageUrl,
     },
   });
 
   await prisma.account.create({
     data: {
-      userId: (await prisma.user.findUnique({ where: { email: 'seanwambua@gmail.com' } }))!.id,
+      userId: adminUser.id,
       type: 'credentials',
       provider: 'credentials',
-      providerAccountId: (await prisma.user.findUnique({ where: { email: 'seanwambua@gmail.com' } }))!.id,
+      providerAccountId: adminUser.id,
     },
   });
 
-  await prisma.post.create({
+  const post = await prisma.post.create({
     data: {
       slug: 'my-first-post',
       title: 'My First Post',
@@ -46,9 +49,23 @@ export async function seedDatabase() {
       author: 'Sean Wambua',
       authorAvatarUrl: placeholderImages.testimonial1Image.imageUrl,
       authorAvatarHint: placeholderImages.testimonial1Image.imageHint,
-      likes: 10,
-      comments: '[]',
+      userId: adminUser.id,
     },
+  });
+
+  await prisma.like.create({
+    data: {
+      postId: post.id,
+      userId: adminUser.id,
+    }
+  });
+
+  await prisma.comment.create({
+    data: {
+      postId: post.id,
+      userId: adminUser.id,
+      content: "This is a great first comment!"
+    }
   });
 
   await prisma.project.createMany({
@@ -62,6 +79,7 @@ export async function seedDatabase() {
         imageHint: 'data analytics dashboard',
         gridSpan: 'sm:col-span-2 lg:col-span-2',
         icon: 'Boxes',
+        userId: adminUser.id,
       },
       {
         title: 'StellarGuard',
@@ -71,6 +89,7 @@ export async function seedDatabase() {
         imageHint: 'blockchain security',
         gridSpan: 'col-span-1',
         icon: 'ShieldCheck',
+        userId: adminUser.id,
       },
       {
         title: 'InnovateU',
@@ -81,6 +100,7 @@ export async function seedDatabase() {
         imageHint: 'e-learning platform',
         gridSpan: 'col-span-1',
         icon: 'BookOpen',
+        userId: adminUser.id,
       },
       {
         title: 'EcoTrack',
@@ -92,6 +112,7 @@ export async function seedDatabase() {
         imageHint: 'eco friendly app',
         gridSpan: 'col-span-1',
         icon: 'Globe',
+        userId: adminUser.id,
       },
       {
         title: 'FinWiz',
@@ -102,6 +123,7 @@ export async function seedDatabase() {
         imageHint: 'finance app',
         gridSpan: 'col-span-1 sm:col-span-2 lg:col-span-2',
         icon: 'LineChart',
+        userId: adminUser.id,
       },
     ],
   });
@@ -113,6 +135,7 @@ export async function seedDatabase() {
       title: 'CEO of a company',
       avatarUrl: placeholderImages.testimonial1Image.imageUrl,
       avatarHint: 'A happy customer',
+      userId: adminUser.id,
     },
   });
 
