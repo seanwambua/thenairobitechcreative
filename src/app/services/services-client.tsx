@@ -10,7 +10,6 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import {
-  type Icon as LucideIcon,
   Briefcase,
   Computer,
   Wrench,
@@ -21,6 +20,7 @@ import {
   ServerCog,
   Plus,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   HoverCard,

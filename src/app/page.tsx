@@ -1,3 +1,4 @@
+
 'use server';
 import { Hero } from '@/components/hero';
 import { ProspectsBanner } from '@/components/prospects-banner';
@@ -57,12 +58,12 @@ export default async function Home() {
   }
 
   const heroImage =
-    settingsResult.status === 'fulfilled'
-      ? (settingsResult.value ?? placeholderImages.hero.imageUrl)
-      : placeholderImages.hero.imageUrl;
+    (settingsResult.status === 'fulfilled'
+      ? settingsResult.value
+      : placeholderImages.hero.imageUrl) ?? '';
 
   const logoUrl =
-    logoUrlResult.status === 'fulfilled' ? logoUrlResult.value : null;
+    (logoUrlResult.status === 'fulfilled' ? logoUrlResult.value : null) ?? null;
 
   return (
     <>
@@ -92,9 +93,7 @@ export default async function Home() {
       {testimonialsResult.status === 'fulfilled' &&
       testimonialsResult.value.length > 0 ? (
         <TestimonialsComponent testimonials={testimonialsResult.value} />
-      ) : (
-        <></>
-      )}
+      ) : null}
 
       <section id="faq" className="border-t bg-background py-20 lg:py-32">
         <div className="container mx-auto px-4">
