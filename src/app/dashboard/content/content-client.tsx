@@ -32,12 +32,12 @@ import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { PostEditorSheet } from '@/components/post-editor-sheet';
 import { useToast } from '@/hooks/use-toast';
-import type { Post } from '@/app/generated/prisma';
+import type { Post } from '@/generated/client';
 import { format } from 'date-fns';
 import { CardContent } from '@/components/ui/card';
 import { deletePost } from '@/app/actions/posts';
 import { useSession } from 'next-auth/react';
-import { Role } from '@/lib/roles';
+import { Role } from '@/generated/client';
 
 export function ContentClient({ initialPosts }: { initialPosts: Post[] }) {
   const router = useRouter();

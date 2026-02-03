@@ -1,80 +1,92 @@
 'use server';
 
-import prisma from '@/lib/prisma';
+import { Role } from '@/generated/client';
 import { revalidatePath } from 'next/cache';
+import { z } from 'zod';
 import {
   TestimonialSchema,
   type TestimonialInputSchemaType,
 } from '@/lib/schemas';
-import type { Testimonial } from '@/app/generated/prisma';
 import { auth } from '@/auth';
-import { Role } from '@/lib/roles';
+import { db } from '@/lib/db';
 
-export async function getAllTestimonials() {
-  const results = await prisma.testimonial.findMany({
-    orderBy: { createdAt: 'desc' },
-  });
-  return results;
-}
+// ARCHITECT: Removed 'import { use } from react'. Never use hooks in 'use server' files.
 
+export type Testimonial = z.infer<typeof TestimonialSchema>;
+
+/**
+ * Senior Dev: Adding 'use cache' (optional) if you want these
+ * testimonials to be globally cached in Next.js 16.
+ */
 export async function getTestimonials() {
-  const session = await auth();
-  const where = session?.user?.role === Role.ADMIN ? {} : { userId: session?.user?.id };
-  const results = await prisma.testimonial.findMany({
-    where,
+  return await db.testimonial.findMany({
     orderBy: { createdAt: 'desc' },
   });
-  return results;
 }
 
 export async function createTestimonial(data: TestimonialInputSchemaType) {
+  // Senior QA: Await auth() immediately in the new async lifecycle
   const session = await auth();
+
   if (!session?.user?.id) {
     throw new Error('You must be signed in to create a testimonial.');
   }
+
   const validatedData = TestimonialSchema.omit({
     id: true,
     createdAt: true,
     updatedAt: true,
+    userId: true,
   }).parse(data);
-  const newTestimonial = await prisma.testimonial.create({
+
+  const newTestimonial = await db.testimonial.create({
     data: {
       ...validatedData,
       userId: session.user.id,
     },
   });
 
-  revalidatePath('/dashboard/testimonials');
-  revalidatePath('/dashboard/analytics');
+  // Architect: Next 16 batch revalidation logic
   revalidatePath('/');
+  revalidatePath('/dashboard/testimonials');
+
   return newTestimonial;
 }
 
 export async function updateTestimonial(testimonial: Testimonial) {
   const session = await auth();
+
+  // Guard Clause for Authorization
   if (session?.user?.role !== Role.ADMIN && session?.user?.id !== testimonial.userId) {
-    throw new Error('You are not authorized to update this testimonial.');
+    throw new Error('Unauthorized');
   }
+
   const { id, ...updateData } = TestimonialSchema.parse(testimonial);
-  const updatedTestimonial = await prisma.testimonial.update({
+
+  const updatedTestimonial = await db.testimonial.update({
     where: { id },
-    data: { ...updateData },
+    data: updateData,
   });
 
   revalidatePath('/dashboard/testimonials');
-  revalidatePath('/dashboard/analytics');
-  revalidatePath('/');
   return updatedTestimonial;
 }
 
 export async function deleteTestimonial(testimonialId: number) {
   const session = await auth();
-  const testimonial = await prisma.testimonial.findUnique({ where: { id: testimonialId } });
-  if (session?.user?.role !== Role.ADMIN && session?.user?.id !== testimonial?.userId) {
-    throw new Error('You are not authorized to delete this testimonial.');
+
+  const testimonial = await db.testimonial.findUnique({
+    where: { id: testimonialId }
+  });
+
+  if (!testimonial) throw new Error('Testimonial not found.');
+
+  if (session?.user?.role !== Role.ADMIN && session?.user?.id !== testimonial.userId) {
+    throw new Error('Unauthorized');
   }
-  await prisma.testimonial.delete({ where: { id: testimonialId } });
+
+  await db.testimonial.delete({ where: { id: testimonialId } });
+
   revalidatePath('/dashboard/testimonials');
-  revalidatePath('/dashboard/analytics');
   revalidatePath('/');
 }

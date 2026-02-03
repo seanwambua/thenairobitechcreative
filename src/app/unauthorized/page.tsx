@@ -25,7 +25,7 @@ export default function UnauthorizedPage() {
         </div>
         <h1 className="mb-4 text-4xl font-bold text-destructive">Access Denied</h1>
         <p className="mb-6 text-lg text-muted-foreground">
-          Sorry, you don't have the necessary permissions to access this page.
+          Sorry, you don&apos;t have the necessary permissions to access this page.
         </p>
         <Button asChild>
           <Link href="/">Return to Homepage</Link>

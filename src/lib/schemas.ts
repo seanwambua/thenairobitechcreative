@@ -56,13 +56,14 @@ export const TestimonialSchema = z.object({
   avatarHint: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
-  userId: z.string().optional(),
+  userId: z.string(),
 });
 
 const TestimonialInputSchema = TestimonialSchema.omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+  userId: true,
 });
 export type TestimonialInputSchemaType = z.infer<typeof TestimonialInputSchema>;
 
@@ -92,5 +93,23 @@ export const PostSchema = PostInputSchema.extend({
   updatedAt: z.coerce.date(),
   userId: z.string().optional(),
 });
+
+export const PostSummarySchema = PostSchema.pick({
+  id: true,
+  slug: true,
+  title: true,
+  description: true,
+  imageUrl: true,
+  imageHint: true,
+  author: true,
+  authorAvatarUrl: true,
+  authorAvatarHint: true,
+  likes: true,
+  comments: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type PostSummary = z.infer<typeof PostSummarySchema>;
 
 export type PostSchemaType = z.infer<typeof PostSchema>;

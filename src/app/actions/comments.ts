@@ -2,89 +2,109 @@
 
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import { auth } from '@/lib/auth';
-import prisma from '@/lib/prisma';
-import { Role } from '@/lib/roles';
 
-const CommentInputSchema = z.object({
-  content: z.string().min(1),
+import { auth } from '@/auth';
+import { db } from '@/lib/db';
+import { Role } from '@/generated/client';
+
+const CreateCommentSchema = z.object({
   postId: z.number(),
+  comment: z.string().min(1, 'Comment must be at least 1 character'),
 });
 
-export async function createComment(data: z.infer<typeof CommentInputSchema>) {
+const UpdateCommentSchema = z.object({
+  commentId: z.number(),
+  comment: z.string().min(1, 'Comment must be at least 1 character'),
+});
+
+const DeleteCommentSchema = z.object({
+  commentId: z.number(),
+});
+
+export async function createComment(values: z.infer<typeof CreateCommentSchema>) {
   const session = await auth();
   if (!session?.user?.id) {
-    throw new Error('You must be signed in to create a comment.');
+    throw new Error('Unauthorized: You must be logged in to comment.');
   }
 
-  const validatedData = CommentInputSchema.parse(data);
+  const validatedValues = CreateCommentSchema.parse(values);
 
-  const newComment = await prisma.comment.create({
+  const newComment = await db.comment.create({
     data: {
-      ...validatedData,
+      content: validatedValues.comment,
+      postId: validatedValues.postId,
       userId: session.user.id,
     },
   });
 
-  revalidatePath(`/blog/${newComment.postId}`);
+  revalidatePath(`/blog/${validatedValues.postId}`);
+
   return newComment;
 }
 
-export async function updateComment(commentId: number, content: string) {
+export async function updateComment(values: z.infer<typeof UpdateCommentSchema>) {
   const session = await auth();
   if (!session?.user?.id) {
-    throw new Error('You must be signed in to update a comment.');
+    throw new Error('Unauthorized: You must be logged in to update this comment.');
   }
 
-  const comment = await prisma.comment.findUnique({
-    where: { id: commentId },
+  const validatedValues = UpdateCommentSchema.parse(values);
+
+  const commentToUpdate = await db.comment.findUnique({
+    where: { id: validatedValues.commentId },
   });
 
-  if (!comment) {
+  if (!commentToUpdate) {
     throw new Error('Comment not found.');
   }
 
-  if (session.user.role !== Role.ADMIN && session.user.id !== comment.userId) {
-    throw new Error('You are not authorized to update this comment.');
+  if (commentToUpdate.userId !== session.user.id && session.user.role !== Role.ADMIN) {
+    throw new Error('Forbidden: You are not authorized to update this comment.');
   }
 
-  const updatedComment = await prisma.comment.update({
-    where: { id: commentId },
-    data: { content },
+  const updatedComment = await db.comment.update({
+    where: { id: validatedValues.commentId },
+    data: {
+      content: validatedValues.comment,
+    },
   });
 
-  revalidatePath(`/blog/${updatedComment.postId}`);
+  revalidatePath(`/blog/${commentToUpdate.postId}`);
+
   return updatedComment;
 }
 
-export async function deleteComment(commentId: number) {
+export async function deleteComment(values: z.infer<typeof DeleteCommentSchema>) {
   const session = await auth();
   if (!session?.user?.id) {
-    throw new Error('You must be signed in to delete a comment.');
+    throw new Error('Unauthorized: You must be logged in to delete this comment.');
   }
 
-  const comment = await prisma.comment.findUnique({
-    where: { id: commentId },
+  const validatedValues = DeleteCommentSchema.parse(values);
+
+  const commentToDelete = await db.comment.findUnique({
+    where: { id: validatedValues.commentId },
   });
 
-  if (!comment) {
+  if (!commentToDelete) {
     throw new Error('Comment not found.');
   }
 
-  if (session.user.role !== Role.ADMIN && session.user.id !== comment.userId) {
-    throw new Error('You are not authorized to delete this comment.');
+  if (commentToDelete.userId !== session.user.id && session.user.role !== Role.ADMIN) {
+    throw new Error('Forbidden: You are not authorized to delete this comment.');
   }
 
-  const deletedComment = await prisma.comment.delete({
-    where: { id: commentId },
+  await db.comment.delete({
+    where: { id: validatedValues.commentId },
   });
 
-  revalidatePath(`/blog/${deletedComment.postId}`);
-  return deletedComment;
+  revalidatePath(`/blog/${commentToDelete.postId}`);
+
+  return { success: true };
 }
 
 export async function getComments(postId: number) {
-  return await prisma.comment.findMany({
+  const comments = await db.comment.findMany({
     where: { postId },
     include: {
       user: true,
@@ -93,4 +113,5 @@ export async function getComments(postId: number) {
       createdAt: 'desc',
     },
   });
+  return comments;
 }

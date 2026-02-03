@@ -1,6 +1,5 @@
-
 import type { NextAuthConfig } from 'next-auth';
-import { Role } from '@/lib/roles';
+import { Role } from '@/generated/client';
 
 export const authConfig: NextAuthConfig = {
   pages: {
@@ -9,7 +8,6 @@ export const authConfig: NextAuthConfig = {
     verifyRequest: '/verify-request',
     newUser: '/register',
     signOut: '/logout',
-    unauthorized: '/unauthorized',
   },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
@@ -32,15 +30,16 @@ export const authConfig: NextAuthConfig = {
       return true;
     },
     async session({ session, token }) {
+      if (session.user && token.sub) {
+        session.user.id = token.sub;
+      }
       if (session.user) {
-        session.user.id = token.id as string;
-        session.user.role = token.role as Role;
+        session.user.role = token.role;
       }
       return session;
     },
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
         token.role = user.role;
       }
       return token;

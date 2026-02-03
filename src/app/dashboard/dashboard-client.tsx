@@ -47,7 +47,7 @@ import {
   MenubarTrigger,
 } from '@/components/ui/menubar';
 import { useSession, signOut } from 'next-auth/react';
-import { Role } from '@/lib/roles';
+import { Role } from '@/generated/client';
 
 function DashboardClientLayout({
   children,

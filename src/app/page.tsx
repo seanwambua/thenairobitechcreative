@@ -13,7 +13,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { getProjects } from '@/app/actions/projects';
-import { getAllTestimonials } from '@/app/actions/testimonials';
+import { getTestimonials } from '@/app/actions/testimonials';
 import { getSetting } from '@/app/actions/settings';
 import { DbUninitializedError } from '@/components/db-uninitialized-error';
 import placeholderImages from '@/app/lib/placeholder-images.json';
@@ -40,7 +40,7 @@ export default async function Home() {
     [projectsResult, testimonialsResult, settingsResult, logoUrlResult] =
       await Promise.allSettled([
         getProjects(),
-        getAllTestimonials(),
+        getTestimonials(),
         getSetting('heroImage'),
         getSetting('logo'),
       ]);

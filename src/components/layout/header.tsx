@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Role } from '@/lib/roles';
+import { Role } from '@/generated/client';
 
 export function Header({ logoUrl }: { logoUrl: string | null }) {
   const { data: session, status } = useSession();

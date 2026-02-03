@@ -23,7 +23,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Select,
   SelectContent,
@@ -52,11 +52,6 @@ interface InquirySheetProps {
 export function InquirySheet({ children, logoUrl }: InquirySheetProps) {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -77,10 +72,6 @@ export function InquirySheet({ children, logoUrl }: InquirySheetProps) {
     });
     form.reset();
     setOpen(false);
-  }
-
-  if (!isMounted) {
-    return null;
   }
 
   return (

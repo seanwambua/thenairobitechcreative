@@ -1,23 +1,22 @@
 'use server';
 
-import prisma from '@/lib/prisma';
+import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
-import { PostSchema, PostInputSchema } from '@/lib/schemas';
-import type { Post, PostSummary } from '@/lib/data';
+import { PostSchema, PostInputSchema, PostSummary } from '@/lib/schemas';
+import type { Post } from '@/generated/client';
 import placeholderImages from '@/app/lib/placeholder-images.json';
 import { z } from 'zod';
 import { auth } from '@/auth';
-import { Role } from '@/lib/roles';
 
 export async function getPosts(): Promise<Post[]> {
-  const results = await prisma.post.findMany({
+  const results = await db.post.findMany({
     orderBy: { createdAt: 'desc' },
   });
   return results;
 }
 
 export async function getPostSummaries(): Promise<PostSummary[]> {
-  return prisma.post.findMany({
+  const results = await db.post.findMany({
     select: {
       id: true,
       slug: true,
@@ -28,17 +27,25 @@ export async function getPostSummaries(): Promise<PostSummary[]> {
       author: true,
       authorAvatarUrl: true,
       authorAvatarHint: true,
-      likes: true,
-      comments: true,
+      _count: {
+        select: { likes: true, comments: true },
+      },
       createdAt: true,
       updatedAt: true,
     },
     orderBy: { createdAt: 'desc' },
   });
+
+  // Remap the data to flatten the _count object and ensure correct types
+  return results.map((post) => ({
+    ...post,
+    likes: post._count.likes,
+    comments: String(post._count.comments), // Convert number to string to match PostSummary type
+  }));
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | null> {
-  const result = await prisma.post.findUnique({
+  const result = await db.post.findUnique({
     where: { slug },
   });
   return result;
@@ -61,7 +68,7 @@ async function generateUniqueSlug(title: string): Promise<string> {
   let counter = 1;
 
   // Check if the slug already exists and append a number if it does
-  while (await prisma.post.findUnique({ where: { slug: uniqueSlug } })) {
+  while (await db.post.findUnique({ where: { slug: uniqueSlug } })) {
     uniqueSlug = `${baseSlug}-${counter}`;
     counter++;
   }
@@ -72,20 +79,16 @@ export async function createPost(
   data: z.infer<typeof PostInputSchema>
 ): Promise<Post> {
   const session = await auth();
-  if (session?.user?.role !== Role.ADMIN) {
+  if (session?.user?.role !== 'ADMIN') {
     throw new Error('Unauthorized');
   }
 
   const validatedData = PostInputSchema.parse(data);
   const uniqueSlug = await generateUniqueSlug(validatedData.title);
 
-  const newPost = await prisma.post.create({
+  const newPost = await db.post.create({
     data: {
       ...validatedData,
-      title: validatedData.title,
-      description: validatedData.description,
-      content: validatedData.content,
-      author: validatedData.author,
       slug: uniqueSlug,
       imageUrl: validatedData.imageUrl ?? placeholderImages.blog1Image.imageUrl,
       imageHint: placeholderImages.blog1Image.imageHint,
@@ -93,8 +96,6 @@ export async function createPost(
         validatedData.authorAvatarUrl ??
         placeholderImages.testimonial1Image.imageUrl,
       authorAvatarHint: placeholderImages.testimonial1Image.imageHint,
-      likes: 0,
-      comments: '',
     },
   });
 
@@ -107,7 +108,7 @@ export async function createPost(
 
 export async function updatePost(post: Post): Promise<Post> {
   const session = await auth();
-  if (session?.user?.role !== Role.ADMIN) {
+  if (session?.user?.role !== 'ADMIN') {
     throw new Error('Unauthorized');
   }
 
@@ -115,15 +116,18 @@ export async function updatePost(post: Post): Promise<Post> {
     const validatedData = PostSchema.parse(post);
     const { id, slug } = validatedData; // Keep original slug for revalidation
 
-    // Prepare data for update, excluding immutable fields like id and slug.
+    // Prepare data for update, excluding immutable and relational fields.
     const {
       id: _id,
       slug: _slug,
       createdAt: _createdAt,
+      userId: _userId,
+      likes: _likes, // Exclude relational field
+      comments: _comments, // Exclude relational field
       ...dataToUpdate
     } = validatedData;
 
-    const updatedPost = await prisma.post.update({
+    const updatedPost = await db.post.update({
       where: { id },
       data: dataToUpdate,
     });
@@ -149,40 +153,16 @@ export async function updatePost(post: Post): Promise<Post> {
 
 export async function deletePost(postId: number): Promise<void> {
   const session = await auth();
-  if (session?.user?.role !== Role.ADMIN) {
+  if (session?.user?.role !== 'ADMIN') {
     throw new Error('Unauthorized');
   }
 
-  const post = await prisma.post.findUnique({ where: { id: postId } });
+  const post = await db.post.findUnique({ where: { id: postId } });
   if (post) {
-    await prisma.post.delete({ where: { id: postId } });
+    await db.post.delete({ where: { id: postId } });
     revalidatePath('/dashboard/content');
     revalidatePath('/dashboard/analytics');
     revalidatePath('/blog');
     revalidatePath(`/blog/${post.slug}`);
   }
-}
-
-export async function likePost(postId: number): Promise<Post> {
-  const session = await auth();
-  if (!session?.user) {
-    throw new Error('Unauthorized');
-  }
-
-  const post = await prisma.post.findUnique({ where: { id: postId } });
-  if (!post) {
-    throw new Error('Post not found');
-  }
-
-  const updatedPost = await prisma.post.update({
-    where: { id: postId },
-    data: {
-      likes: {
-        increment: 1,
-      },
-    },
-  });
-
-  revalidatePath(`/blog/${post.slug}`);
-  return updatedPost;
 }

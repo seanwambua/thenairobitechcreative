@@ -30,13 +30,13 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import type { Testimonial } from '@/app/generated/prisma';
+import type { Testimonial } from '@/generated/client';
 import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { TestimonialEditorSheet } from '@/components/testimonial-editor-sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { deleteTestimonial } from '@/app/actions/testimonials';
-import { Role } from '@/lib/roles';
+import { Role } from '@/generated/client';
 
 export function TestimonialsClient({
   initialTestimonials,
