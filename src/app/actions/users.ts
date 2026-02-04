@@ -15,11 +15,6 @@ const CreateUserSchema = z.object({
 });
 
 export async function createUser(data: z.infer<typeof CreateUserSchema>) {
-  const session = await auth();
-  if (session?.user?.role !== Role.ADMIN) {
-    throw new Error('Unauthorized');
-  }
-
   const validatedData = CreateUserSchema.parse(data);
 
   const existingUser = await prisma.user.findUnique({

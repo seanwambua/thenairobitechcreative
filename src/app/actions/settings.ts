@@ -1,11 +1,11 @@
 'use server';
 
 import { cache } from 'react';
-import { db } from '@/lib/db';
+import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 
 export const getSetting = cache(async (key: string): Promise<string | null> => {
-  const result = await db.settings.findUnique({
+  const result = await prisma.settings.findUnique({
     where: { key },
   });
   return result?.value ?? null;
@@ -16,7 +16,7 @@ export const getSettings = cache(
     if (keys.length === 0) {
       return {};
     }
-    const settingsMap = await db.settings.findMany({
+    const settingsMap = await prisma.settings.findMany({
       where: { key: { in: keys } },
     });
 
@@ -31,7 +31,7 @@ export const getSettings = cache(
 );
 
 export async function updateSetting(key: string, value: string | null) {
-  await db.settings.upsert({
+  await prisma.settings.upsert({
     where: { key },
     update: { value },
     create: { key, value },

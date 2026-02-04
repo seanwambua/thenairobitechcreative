@@ -12,6 +12,7 @@ This is a full-stack Next.js application that serves as a portfolio and Content 
 - **State Management:** [Zustand](https://github.com/pmndrs/zustand)
 - **Validation:** [Zod](https://zod.dev/)
 - **Server Logic:** Next.js Server Actions
+- **Testing:** [Vitest](https://vitest.dev/) (Unit/Integration), [Cypress](https://www.cypress.io/) (E2E)
 
 ## Project Structure
 
@@ -19,6 +20,7 @@ The project follows a structure designed for clarity and scalability, with the P
 
 ```
 .
+├── cypress/              # Cypress E2E tests
 ├── prisma/               # Prisma schema and migrations
 ├── public/               # Static assets
 ├── scripts/              # Test scripts (e.g., test-database.ts)
@@ -179,6 +181,27 @@ npm run dev
 ```
 
 The application will be available at [http://localhost:9002](http://localhost:9002).
+
+## Testing
+
+This project uses **Vitest** for unit and integration testing and **Cypress** for end-to-end (E2E) testing.
+
+### Running Tests
+
+- **Run all tests (Vitest):**
+  ```bash
+  npm test
+  ```
+
+- **Run all tests with a UI (Vitest):**
+  ```bash
+  npm run test:ui
+  ```
+
+- **Run E2E tests (Cypress):**
+  ```bash
+  npm run test:e2e
+  ```
 
 ## Useful Commands
 

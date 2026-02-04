@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
 import { auth } from '@/auth';
-import { db } from '@/lib/db';
+import { prisma } from '@/lib/prisma';
 import { Role } from '@/generated/client';
 
 const CreateCommentSchema = z.object({
@@ -29,7 +29,7 @@ export async function createComment(values: z.infer<typeof CreateCommentSchema>)
 
   const validatedValues = CreateCommentSchema.parse(values);
 
-  const newComment = await db.comment.create({
+  const newComment = await prisma.comment.create({
     data: {
       content: validatedValues.comment,
       postId: validatedValues.postId,
@@ -50,7 +50,7 @@ export async function updateComment(values: z.infer<typeof UpdateCommentSchema>)
 
   const validatedValues = UpdateCommentSchema.parse(values);
 
-  const commentToUpdate = await db.comment.findUnique({
+  const commentToUpdate = await prisma.comment.findUnique({
     where: { id: validatedValues.commentId },
   });
 
@@ -62,7 +62,7 @@ export async function updateComment(values: z.infer<typeof UpdateCommentSchema>)
     throw new Error('Forbidden: You are not authorized to update this comment.');
   }
 
-  const updatedComment = await db.comment.update({
+  const updatedComment = await prisma.comment.update({
     where: { id: validatedValues.commentId },
     data: {
       content: validatedValues.comment,
@@ -82,7 +82,7 @@ export async function deleteComment(values: z.infer<typeof DeleteCommentSchema>)
 
   const validatedValues = DeleteCommentSchema.parse(values);
 
-  const commentToDelete = await db.comment.findUnique({
+  const commentToDelete = await prisma.comment.findUnique({
     where: { id: validatedValues.commentId },
   });
 
@@ -94,7 +94,7 @@ export async function deleteComment(values: z.infer<typeof DeleteCommentSchema>)
     throw new Error('Forbidden: You are not authorized to delete this comment.');
   }
 
-  await db.comment.delete({
+  await prisma.comment.delete({
     where: { id: validatedValues.commentId },
   });
 
@@ -104,7 +104,7 @@ export async function deleteComment(values: z.infer<typeof DeleteCommentSchema>)
 }
 
 export async function getComments(postId: number) {
-  const comments = await db.comment.findMany({
+  const comments = await prisma.comment.findMany({
     where: { postId },
     include: {
       user: true,

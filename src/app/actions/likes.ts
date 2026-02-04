@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { auth } from '@/auth';
-import { db } from '@/lib/db';
+import { prisma } from '@/lib/prisma';
 
 const LikeInputSchema = z.object({
   postId: z.number(),
@@ -17,7 +17,7 @@ export async function likePost(data: z.infer<typeof LikeInputSchema>) {
 
   const validatedData = LikeInputSchema.parse(data);
 
-  const existingLike = await db.like.findUnique({
+  const existingLike = await prisma.like.findUnique({
     where: {
       userId_postId: {
         userId: session.user.id,
@@ -30,7 +30,7 @@ export async function likePost(data: z.infer<typeof LikeInputSchema>) {
     throw new Error('You have already liked this post.');
   }
 
-  const newLike = await db.like.create({
+  const newLike = await prisma.like.create({
     data: {
       userId: session.user.id,
       postId: validatedData.postId,
@@ -49,7 +49,7 @@ export async function unlikePost(data: z.infer<typeof LikeInputSchema>) {
 
   const validatedData = LikeInputSchema.parse(data);
 
-  const deletedLike = await db.like.delete({
+  const deletedLike = await prisma.like.delete({
     where: {
       userId_postId: {
         userId: session.user.id,
@@ -63,7 +63,7 @@ export async function unlikePost(data: z.infer<typeof LikeInputSchema>) {
 }
 
 export async function getLikes(postId: number) {
-  return await db.like.count({
+  return await prisma.like.count({
     where: { postId },
   });
 }
@@ -74,7 +74,7 @@ export async function hasLiked(postId: number) {
     return false;
   }
 
-  const like = await db.like.findUnique({
+  const like = await prisma.like.findUnique({
     where: {
       userId_postId: {
         userId: session.user.id,

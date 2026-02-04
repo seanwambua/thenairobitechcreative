@@ -1,6 +1,6 @@
 import NextAuth, { DefaultSession } from 'next-auth';
 import { PrismaAdapter } from '@auth/prisma-adapter';
-import { db } from '@/lib/db';
+import { prisma } from '@/lib/prisma';
 import Credentials from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import { Role } from '@/generated/client';
@@ -19,7 +19,7 @@ declare module 'next-auth' {
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   // @ts-expect-error - The Edge runtime does not support the Prisma adapter.
-  adapter: process.env.NODE_ENV === 'production' ? PrismaAdapter(db) : undefined,
+  adapter: process.env.NODE_ENV === 'production' ? PrismaAdapter(prisma) : undefined,
   providers: [
     Credentials({
       name: 'Credentials',
@@ -32,7 +32,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return null;
         }
 
-        const user = await db.user.findUnique({
+        const user = await prisma.user.findUnique({
           where: {
             email: credentials.email as string,
           },

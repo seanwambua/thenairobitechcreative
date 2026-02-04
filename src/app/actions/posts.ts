@@ -1,6 +1,6 @@
 'use server';
 
-import { db } from '@/lib/db';
+import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { PostSchema, PostInputSchema, PostSummary } from '@/lib/schemas';
 import type { Post } from '@/generated/client';
@@ -9,14 +9,14 @@ import { z } from 'zod';
 import { auth } from '@/auth';
 
 export async function getPosts(): Promise<Post[]> {
-  const results = await db.post.findMany({
+  const results = await prisma.post.findMany({
     orderBy: { createdAt: 'desc' },
   });
   return results;
 }
 
 export async function getPostSummaries(): Promise<PostSummary[]> {
-  const results = await db.post.findMany({
+  const results = await prisma.post.findMany({
     select: {
       id: true,
       slug: true,
@@ -45,7 +45,7 @@ export async function getPostSummaries(): Promise<PostSummary[]> {
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | null> {
-  const result = await db.post.findUnique({
+  const result = await prisma.post.findUnique({
     where: { slug },
   });
   return result;
@@ -68,7 +68,7 @@ async function generateUniqueSlug(title: string): Promise<string> {
   let counter = 1;
 
   // Check if the slug already exists and append a number if it does
-  while (await db.post.findUnique({ where: { slug: uniqueSlug } })) {
+  while (await prisma.post.findUnique({ where: { slug: uniqueSlug } })) {
     uniqueSlug = `${baseSlug}-${counter}`;
     counter++;
   }
@@ -86,7 +86,7 @@ export async function createPost(
   const validatedData = PostInputSchema.parse(data);
   const uniqueSlug = await generateUniqueSlug(validatedData.title);
 
-  const newPost = await db.post.create({
+  const newPost = await prisma.post.create({
     data: {
       ...validatedData,
       slug: uniqueSlug,
@@ -127,7 +127,7 @@ export async function updatePost(post: Post): Promise<Post> {
       ...dataToUpdate
     } = validatedData;
 
-    const updatedPost = await db.post.update({
+    const updatedPost = await prisma.post.update({
       where: { id },
       data: dataToUpdate,
     });
@@ -157,9 +157,9 @@ export async function deletePost(postId: number): Promise<void> {
     throw new Error('Unauthorized');
   }
 
-  const post = await db.post.findUnique({ where: { id: postId } });
+  const post = await prisma.post.findUnique({ where: { id: postId } });
   if (post) {
-    await db.post.delete({ where: { id: postId } });
+    await prisma.post.delete({ where: { id: postId } });
     revalidatePath('/dashboard/content');
     revalidatePath('/dashboard/analytics');
     revalidatePath('/blog');

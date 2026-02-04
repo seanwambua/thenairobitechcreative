@@ -1,6 +1,7 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "src/app/generated/prisma"
+  provider        = "prisma-client-js"
+  output          = "../generated/client"
+  previewFeatures = ["dataProxy"]
 }
 
 datasource db {
@@ -106,6 +107,7 @@ model User {
   emailVerified  DateTime?
   image          String?
   hashedPassword String?
+  createdAt      DateTime      @default(now())
   role           Role          @default(USER)
   status         UserStatus    @default(PENDING)
   accounts       Account[]

@@ -1,7 +1,7 @@
 'use server';
 
 import { auth } from '@/auth';
-import { db } from '@/lib/db';
+import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import {
@@ -14,7 +14,7 @@ import type { Project as PrismaProject } from '@/generated/client';
 export type Project = z.infer<typeof ProjectSchema>;
 
 export async function getProjects(): Promise<Project[]> {
-  const projectsData = await db.project.findMany({
+  const projectsData = await prisma.project.findMany({
     orderBy: { createdAt: 'desc' },
   });
 
@@ -46,7 +46,7 @@ export async function createProject(
   }).parse(data);
 
   const { keyFeatures, ...rest } = validatedData;
-  const newProjectData = await db.project.create({
+  const newProjectData = await prisma.project.create({
     data: {
       ...rest,
       keyFeatures: keyFeatures.join(','),
@@ -81,7 +81,7 @@ export async function updateProject(
   }).parse(data);
   const { keyFeatures, ...rest } = validatedData;
 
-  const updatedProjectData = await db.project.update({
+  const updatedProjectData = await prisma.project.update({
     where: { id },
     data: {
       ...rest,
@@ -108,7 +108,7 @@ export async function deleteProject(id: number): Promise<void> {
     throw new Error('Unauthorized');
   }
 
-  await db.project.delete({
+  await prisma.project.delete({
     where: { id },
   });
   revalidatePath('/');

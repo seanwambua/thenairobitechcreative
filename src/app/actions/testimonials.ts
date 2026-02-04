@@ -8,7 +8,7 @@ import {
   type TestimonialInputSchemaType,
 } from '@/lib/schemas';
 import { auth } from '@/auth';
-import { db } from '@/lib/db';
+import { prisma } from '@/lib/prisma';
 
 // ARCHITECT: Removed 'import { use } from react'. Never use hooks in 'use server' files.
 
@@ -19,7 +19,7 @@ export type Testimonial = z.infer<typeof TestimonialSchema>;
  * testimonials to be globally cached in Next.js 16.
  */
 export async function getTestimonials() {
-  return await db.testimonial.findMany({
+  return await prisma.testimonial.findMany({
     orderBy: { createdAt: 'desc' },
   });
 }
@@ -39,7 +39,7 @@ export async function createTestimonial(data: TestimonialInputSchemaType) {
     userId: true,
   }).parse(data);
 
-  const newTestimonial = await db.testimonial.create({
+  const newTestimonial = await prisma.testimonial.create({
     data: {
       ...validatedData,
       userId: session.user.id,
@@ -63,7 +63,7 @@ export async function updateTestimonial(testimonial: Testimonial) {
 
   const { id, ...updateData } = TestimonialSchema.parse(testimonial);
 
-  const updatedTestimonial = await db.testimonial.update({
+  const updatedTestimonial = await prisma.testimonial.update({
     where: { id },
     data: updateData,
   });
@@ -75,7 +75,7 @@ export async function updateTestimonial(testimonial: Testimonial) {
 export async function deleteTestimonial(testimonialId: number) {
   const session = await auth();
 
-  const testimonial = await db.testimonial.findUnique({
+  const testimonial = await prisma.testimonial.findUnique({
     where: { id: testimonialId }
   });
 
@@ -85,7 +85,7 @@ export async function deleteTestimonial(testimonialId: number) {
     throw new Error('Unauthorized');
   }
 
-  await db.testimonial.delete({ where: { id: testimonialId } });
+  await prisma.testimonial.delete({ where: { id: testimonialId } });
 
   revalidatePath('/dashboard/testimonials');
   revalidatePath('/');
