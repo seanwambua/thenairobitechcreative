@@ -14,7 +14,11 @@
     "reinitialize": "tsx prisma/seed.ts",
     "db:seed": "tsx prisma/seed.ts",
     "db:test": "tsx scripts/test-database.ts",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:e2e": "cypress open",
+    "test:ct": "cypress run --component --config video=false"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -78,6 +82,7 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.13",
+    "@testing-library/cypress": "^10.1.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/bcrypt": "^6.0.0",
@@ -98,6 +103,7 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.16.2",
     "typescript": "^5.9.3",
+    "vite-tsconfig-paths": "^6.0.5",
     "vitest": "^4.0.18"
   },
   "overrides": {
