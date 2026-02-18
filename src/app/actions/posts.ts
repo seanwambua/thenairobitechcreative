@@ -3,7 +3,7 @@
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { PostSchema, PostInputSchema, PostSummary } from '@/lib/schemas';
-import type { Post } from '@/generated/client';
+import type { Post } from '@/generated/prisma';
 import placeholderImages from '@/app/lib/placeholder-images.json';
 import { z } from 'zod';
 import { auth } from '@/auth';

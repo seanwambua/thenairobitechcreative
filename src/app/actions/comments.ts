@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 import { auth } from '@/auth';
 import { db } from '@/lib/db';
-import { Role } from '@/generated/client';
+import { Role } from '@prisma/client';
 
 const CreateCommentSchema = z.object({
   postId: z.number(),

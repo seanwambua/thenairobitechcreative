@@ -12,7 +12,7 @@ import {
   updateComment,
   deleteComment,
 } from '@/app/actions/comments';
-import type { Comment, User } from '@/app/generated/prisma';
+import type { Comment, User } from '@/generated/prisma';
 
 interface CommentsProps {
   postId: number;

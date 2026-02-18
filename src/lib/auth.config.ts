@@ -1,5 +1,5 @@
 import type { NextAuthConfig } from 'next-auth';
-import { Role } from '@/generated/client';
+import { Role } from '@/generated/prisma';
 
 export const authConfig: NextAuthConfig = {
   pages: {

@@ -1,6 +1,6 @@
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
-import { Role } from '@/generated/client';
+import { Role } from '@/generated/prisma';
 import {
   getUsers,
   updateUserStatus,

@@ -9,7 +9,7 @@ import { Comments } from '@/components/comments';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Terminal, ArrowLeft } from 'lucide-react';
-import type { Post, Comment as CommentType, User } from '@/app/generated/prisma';
+import type { Post, Comment as CommentType, User } from '@/generated/prisma';
 
 export function BlogPostClient({
   postData,

@@ -3,7 +3,7 @@ import { getComments } from '@/app/actions/comments';
 import { getLikes, hasLiked } from '@/app/actions/likes';
 import { DbUninitializedError } from '@/lib/errors';
 import { BlogPostClient } from './blog-post-client';
-import type { Post, Comment, User } from '@/app/generated/prisma';
+import type { Post, Comment, User } from '@/generated/prisma';
 import { DbUninitializedError as DbUninitializedErrorComponent } from '@/components/db-uninitialized-error';
 import { notFound } from 'next/navigation';
 

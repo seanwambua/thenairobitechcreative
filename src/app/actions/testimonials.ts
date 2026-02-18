@@ -1,6 +1,6 @@
 'use server';
 
-import { Role } from '@/generated/client';
+import { Role } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import {

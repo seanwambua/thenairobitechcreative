@@ -1,4 +1,4 @@
-import { Role } from '@/generated/client';
+import { Role } from '@/generated/prisma';
 import NextAuth, { type DefaultSession } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 

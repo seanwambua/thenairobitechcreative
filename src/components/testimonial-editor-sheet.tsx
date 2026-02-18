@@ -26,7 +26,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import type { Testimonial } from '@/app/generated/prisma';
+import type { Testimonial } from '@/generated/prisma';
 import placeholderImages from '@/app/lib/placeholder-images.json';
 import { Upload, Loader2 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';

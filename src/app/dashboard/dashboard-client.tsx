@@ -47,7 +47,7 @@ import {
   MenubarTrigger,
 } from '@/components/ui/menubar';
 import { useSession, signOut } from 'next-auth/react';
-import { Role } from '@/generated/client';
+import { Role } from '@prisma/client';
 
 function DashboardClientLayout({
   children,

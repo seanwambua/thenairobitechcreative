@@ -9,7 +9,7 @@ import {
   type ProjectInputSchemaType,
   type IconName,
 } from '@/lib/schemas';
-import type { Project as PrismaProject } from '@/generated/client';
+import type { Project as PrismaProject } from '@/generated/prisma';
 
 export type Project = z.infer<typeof ProjectSchema>;
 

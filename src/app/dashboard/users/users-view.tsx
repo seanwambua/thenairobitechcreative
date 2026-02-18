@@ -17,8 +17,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { MoreHorizontal } from 'lucide-react';
-import type { User } from '@/generated/client';
-import { UserStatus, Role } from '@/generated/client';
+import type { User } from '@/generated/prisma';
+import { UserStatus, Role } from '@/generated/prisma';
 
 interface UsersViewProps {
   users: User[];
