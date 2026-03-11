@@ -34,6 +34,7 @@ export const ProjectSchema = z.object({
   imageHint: z.string(),
   gridSpan: z.string(),
   icon: z.enum(iconNames),
+  url: z.string().url().optional().or(z.literal('')), 
   createdAt: z.date(),
   updatedAt: z.date(),
   userId: z.string().optional(),

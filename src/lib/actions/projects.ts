@@ -8,7 +8,6 @@ import {
   type ProjectInputSchemaType,
   type IconName,
 } from '@/lib/schemas';
-import type { Project as PrismaProject } from '@/app/generated/prisma';
 
 export type Project = z.infer<typeof ProjectSchema>;
 
@@ -17,16 +16,26 @@ export async function getProjects(): Promise<Project[]> {
     orderBy: { createdAt: 'desc' },
   });
 
-  // Validate and transform the data to match the ProjectSchema
   const validatedProjects = ProjectSchema.array().parse(
     projectsData.map((p) => ({
       ...p,
       keyFeatures: (p.keyFeatures || '').split(',').map((s) => s.trim()),
       icon: p.icon as IconName,
+      url: p.url ?? '',
     }))
   );
 
   return validatedProjects;
+}
+
+export async function upsertProject(
+  data: ProjectInputSchemaType & { id?: number }
+): Promise<Project> {
+  if (data.id) {
+    return updateProject(data.id, data);
+  } else {
+    return createProject(data);
+  }
 }
 
 export async function createProject(
@@ -53,6 +62,7 @@ export async function createProject(
       .map((s) => s.trim()),
     icon: newProjectData.icon as IconName,
     userId: newProjectData.userId ?? undefined,
+    url: newProjectData.url ?? '',
   };
 
   revalidatePath('/');
@@ -85,6 +95,7 @@ export async function updateProject(
       .map((s) => s.trim()),
     icon: updatedProjectData.icon as IconName,
     userId: updatedProjectData.userId ?? undefined,
+    url: updatedProjectData.url ?? '',
   };
 
   revalidatePath('/');

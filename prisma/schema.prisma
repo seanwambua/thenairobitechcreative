@@ -46,6 +46,7 @@ model Project {
   imageHint   String
   gridSpan    String
   icon        String
+  url         String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   userId      String?
