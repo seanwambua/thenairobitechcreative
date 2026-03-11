@@ -30,11 +30,11 @@ export const ProjectSchema = z.object({
   keyFeatures: z
     .array(z.string())
     .min(1, 'Please add at least one key feature.'),
+  url: z.string().url().optional().or(z.literal('')), 
   imageUrl: z.string().url(),
   imageHint: z.string(),
   gridSpan: z.string(),
   icon: z.enum(iconNames),
-  url: z.string().url().optional().or(z.literal('')), 
   createdAt: z.date(),
   updatedAt: z.date(),
   userId: z.string().optional(),

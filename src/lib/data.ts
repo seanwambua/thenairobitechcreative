@@ -65,6 +65,27 @@ export const services = [
   }
 ];
 
+export const partners = [
+  {
+    name: 'Imani financial services (IFS-KE).',
+    description: 'A leading provider of innovative tech solutions, we partner with Innovate Inc. to deliver cutting-edge products.',
+    logo: '',
+    url: 'https://imanifinancialservices.vercel.app/'
+  },
+  {
+    name: 'The Global Grid.',
+    description: 'Experts in system integration, Synergy Systems helps us provide seamless and unified solutions for our clients.',
+    logo: '',
+    url: 'https://globalgrid.vercel.app/'
+  },
+  {
+    name: 'Whyte Interior Designs.',
+    description: 'Specializing in business growth strategies, Growth Catalysts works with us to help our clients scale effectively.',
+    logo: '',
+    url: 'https://whyteinteriordesigns.vercel.app/'
+  }
+];
+
 export const processSteps = [
   {
     title: 'Discovery & Strategy',

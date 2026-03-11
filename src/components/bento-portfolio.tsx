@@ -1,7 +1,9 @@
 'use client';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import type { Project, IconName } from '@/lib/data';
+import { useRouter } from 'next/navigation';
+import type { Project } from '@/lib/actions/projects';
+import type { IconName } from '@/lib/schemas';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -24,7 +26,6 @@ import {
   type LucideProps,
 } from 'lucide-react';
 import type { ComponentType } from 'react';
-import placeholderImages from '@/lib/placeholder-images.json';
 import { z } from 'zod';
 import { ProjectSchema } from '@/lib/schemas';
 
@@ -54,6 +55,7 @@ interface BentoPortfolioProps {
 }
 
 export function BentoPortfolio({ projects }: BentoPortfolioProps) {
+  const router = useRouter();
   const validation = BentoPortfolioSchema.safeParse(projects);
 
   if (!validation.success) {
@@ -68,6 +70,17 @@ export function BentoPortfolio({ projects }: BentoPortfolioProps) {
       </div>
     );
   }
+
+  const handleProjectClick = (project: Project) => {
+    if (project.url) {
+      window.open(project.url, '_blank', 'noopener,noreferrer');
+    } else {
+      // If there is a modal or detail page planned, this is where to trigger it.
+      // For now, we will just log to the console.
+      console.log(`Card for ${project.title} clicked, but no URL is available.`);
+    }
+  };
+
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {validation.data.map((project, index) => {
@@ -77,9 +90,11 @@ export function BentoPortfolio({ projects }: BentoPortfolioProps) {
         return (
           <motion.div
             key={project.id}
+            onClick={() => handleProjectClick(project)}
             className={cn(
               'group relative flex min-h-96 flex-col justify-end overflow-hidden rounded-2xl',
-              project.gridSpan
+              project.gridSpan,
+              project.url && 'cursor-pointer' // Add cursor-pointer if URL exists
             )}
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}

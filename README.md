@@ -1,4 +1,4 @@
-# Bootstrap Next.js app with Prisma Postgres (Prisma 7)
+Bootstrap Next.js app with Prisma Postgres (Prisma 7)
 
 This is a full-stack Next.js application that serves as a portfolio and Content Management System (CMS). It uses Prisma ORM 7 for database interaction with a PostgreSQL database, following best practices for production-ready applications.
 

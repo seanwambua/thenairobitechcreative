@@ -1,31 +1,13 @@
 'use client';
 
+import { partners } from '@/lib/data';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { ServicesSelector } from '@/components/services-selector';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
-const partners = [
-  {
-    name: 'Imani financial services (IFS-KE).',
-    description: 'A leading provider of innovative tech solutions, we partner with Innovate Inc. to deliver cutting-edge products.',
-    logo: '',
-    url: 'https://imanifinancialservices.vercel.app/'
-  },
-  {
-    name: 'The Global Grid.',
-    description: 'Experts in system integration, Synergy Systems helps us provide seamless and unified solutions for our clients.',
-    logo: '',
-    url: 'https://theglobalgrid.vercel.app/'
-  },
-  {
-    name: 'Whyte Interior Designs.',
-    description: 'Specializing in business growth strategies, Growth Catalysts works with us to help our clients scale effectively.',
-    logo: '',
-    url: 'https://whyteinteriordesigns.vercel.app/'
-  }
-];
+
 
 const containerVariants = {
   hidden: { opacity: 0 },
