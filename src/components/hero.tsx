@@ -83,7 +83,7 @@ export function Hero({
           </motion.div>
         </div>
         <motion.div
-          className="relative hidden h-[600px] w-full md:block md:h-full"
+          className="relative hidden w-full aspect-square md:block"
           variants={imageItemVariants}
         >
           <Image

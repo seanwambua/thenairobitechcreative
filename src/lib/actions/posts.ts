@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { PostSchema, PostInputSchema } from '@/lib/schemas';
 import type { Post } from '@prisma/client';
 import type { PostSummary } from '@/lib/data';
-import placeholderImages from '@/app/lib/placeholder-images.json';
+import placeholderImages from '@/lib/placeholder-images.json';
 import { z } from 'zod';
 import { auth } from '@/lib/auth';
 import { Role } from '@/lib/roles';

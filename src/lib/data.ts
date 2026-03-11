@@ -30,21 +30,39 @@ export const navLinks = [
 
 export const services = [
   {
-    title: 'Web Development',
-    description: 'Building modern, responsive websites.',
+    id: 'strategy',
+    title: 'Business Strategy & Tech Consulting',
+    description:
+      'Aligning technology with your business goals. Ideal for founders and SMEs who need a technical IT partner.',
   },
   {
-    title: 'Mobile App Development',
-    description: 'Creating native and cross-platform mobile apps.',
+    id: 'development',
+    title: 'Product Development',
+    description:
+      'Taking your idea from concept to shipped product. We help you define the right MVP, build it iteratively, and validate with real users before scaling.',
   },
   {
-    title: 'UI/UX Design',
-    description: 'Designing intuitive and beautiful user interfaces.',
+    id: 'devops',
+    title: 'DevOps & Infrastructure',
+    description:
+      'Setting up and managing CI/CD pipelines, cloud servers, VPS environments, and monitoring systems. Less downtime, faster deployments, and infrastructure that scales with your business.',
   },
   {
-    title: 'Digital Marketing',
-    description: 'Helping you reach your target audience.',
+    id: 'process',
+    title: 'Business Process Development',
+    description:
+      'Mapping, streamlining, and automating the workflows that run your business. From helpdesk systems to internal tooling, we turn chaotic processes into repeatable, efficient systems.',
   },
+  {
+    id: 'support',
+    title: 'Technical Support',
+    description: 'Reliable remote technical support to ensure your systems are always running smoothly. We offer fast and efficient solutions to keep your business operational.',
+  },
+  {
+    id: 'training',
+    title: 'User Training',
+    description: 'Empowering your team with the skills to effectively use your software and systems. We provide comprehensive training sessions tailored to your needs.',
+  }
 ];
 
 export const processSteps = [
@@ -69,33 +87,15 @@ export const processSteps = [
 
 export const pricingPlans = [
   {
-    name: 'Basic',
-    price: '$49',
-    features: ['1 Project', 'Basic Support', '10GB Storage'],
-    isFeatured: false,
-  },
-  {
-    name: 'Pro',
-    price: '$99',
-    features: [
-      '5 Projects',
-      'Priority Support',
-      '50GB Storage',
-      'Advanced Analytics',
-    ],
+    id:1,
+    name: 'One v One Consultation',
+    priceSuffix:'KES',
+    price: '5,000',
+    description: ['Business Strategy & Tech Consulting  | In-person'],
+    features: ['1 Hr Session'],
     isFeatured: true,
   },
-  {
-    name: 'Enterprise',
-    price: 'Custom',
-    features: [
-      'Unlimited Projects',
-      '24/7 Support',
-      'Unlimited Storage',
-      'Custom Integrations',
-    ],
-    isFeatured: false,
-  },
+  
 ];
 
 export const faqs = [

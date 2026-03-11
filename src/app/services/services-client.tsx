@@ -1,70 +1,104 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Server, GitMerge, Rocket, BrainCircuit } from 'lucide-react';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { ServicesSelector } from '@/components/services-selector';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
-const services = [
+const partners = [
   {
-    icon: <BrainCircuit className="h-8 w-8 text-primary" />,
-    title: 'Business Strategy & Tech Consulting',
-    description: 'Aligning your technology decisions with your business goals. Ideal for founders and SMEs who need a technical thought partner, not just an executor.',
+    name: 'Imani financial services (IFS-KE).',
+    description: 'A leading provider of innovative tech solutions, we partner with Innovate Inc. to deliver cutting-edge products.',
+    logo: '/placeholder.svg',
+    url: 'https://imanifinancialservices.vercel.app/'
   },
   {
-    icon: <Rocket className="h-8 w-8 text-primary" />,
-    title: 'Product Development',
-    description: 'Taking your idea from concept to shipped product. We help you define the right MVP, build it iteratively, and validate with real users before scaling.',
+    name: 'The Global Grid.',
+    description: 'Experts in system integration, Synergy Systems helps us provide seamless and unified solutions for our clients.',
+    logo: '/placeholder.svg',
+    url: 'https://theglobalgrid.vercel.app/'
   },
   {
-    icon: <Server className="h-8 w-8 text-primary" />,
-    title: 'DevOps & Infrastructure',
-    description: 'Setting up and managing CI/CD pipelines, cloud servers, VPS environments, and monitoring systems. Less downtime, faster deployments, and infrastructure that scales with your business.',
-  },
-  {
-    icon: <GitMerge className="h-8 w-8 text-primary" />,
-    title: 'Business Process Development',
-    description: 'Mapping, streamlining, and automating the workflows that run your business. From helpdesk systems to internal tooling, we turn chaotic processes into repeatable, efficient systems.',
-  },
+    name: 'Whyte Interior Designs.',
+    description: 'Specializing in business growth strategies, Growth Catalysts works with us to help our clients scale effectively.',
+    logo: '/placeholder.svg',
+    url: 'https://whyteinteriordesigns.vercel.app/'
+  }
 ];
 
-export function ServicesClient() {
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      type: 'spring',
+      stiffness: 100,
+    },
+  },
+};
+
+export default function ServicesClient() {
+
   return (
     <div className="bg-background text-foreground">
-      <header className="bg-primary/5 text-center py-20 lg:py-32">
-        <div className="container mx-auto px-4">
-          <h1 className="font-headline text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl">
-            Our Services
-          </h1>
-          <p className="mt-6 max-w-3xl mx-auto text-lg text-muted-foreground">
-            We offer a range of services designed to help your business grow and thrive in the digital age.
-          </p>
-        </div>
-      </header>
 
       <main className="container mx-auto px-4 py-12 md:px-6 md:py-20">
-        <section id="services">
-          <div className="grid gap-8 md:grid-cols-2">
-            {services.map((service, index) => (
-              <motion.div
-                key={service.title}
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.2 }}
-              >
-                <Card className="flex flex-col items-center text-center p-6 h-full">
-                  <CardHeader>
-                    {service.icon}
-                    <CardTitle className="mt-4 text-lg font-semibold">{service.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">{service.description}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </section>
+        <ServicesSelector />
       </main>
+
+      <section className="bg-primary/5 py-20 lg:py-32">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12 p-6">
+            <h4 className="fint-headline text-4xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+              NTC SME HUB
+            </h4>
+            <p className="mt-6 max-w-3xl mx-auto text-lg text-muted-foreground">
+              Our network of trusted affiliates and collaborative partners.
+            </p>
+          </div>
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {partners.map((partner) => (
+              <Link key={partner.name} href={partner.url} target="_blank" rel="noopener noreferrer" className="block">
+                <motion.div
+                  variants={cardVariants}
+                  whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+                  className="h-full"
+                >
+                  <Card className="h-full bg-background/60 backdrop-blur-sm border-border/20 shadow-lg border-[1px] hover:shadow-[0_20px_25px_-5px_rgba(249,115,22,0.4),_0_8px_10px_-6px_rgba(249,115,22,0.4)] transition-shadow duration-300">
+                    <CardHeader className="flex flex-row items-center gap-4">
+                      <Avatar className="w-12 h-12">
+                        <AvatarImage src={partner.logo} alt={`${partner.name} logo`} />
+                        <AvatarFallback className="text-lg">{partner.name.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <CardTitle className="text-xl font-normal">{partner.name}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-muted-foreground text-base">{partner.description}</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </Link>
+            ))}
+          </motion.div>
+        </div>
+      </section>
     </div>
   );
 }

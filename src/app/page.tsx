@@ -1,4 +1,3 @@
-
 'use server';
 import { Hero } from '@/components/hero';
 import { ProspectsBanner } from '@/components/prospects-banner';
@@ -19,6 +18,7 @@ import { DbUninitializedError } from '@/components/db-uninitialized-error';
 import placeholderImages from '@/lib/placeholder-images.json';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
+import { ServicesSelector } from '@/components/services-selector';
 
 function DataError({ sectionName }: { sectionName: string }) {
   return (
@@ -94,11 +94,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {testimonialsResult.status === 'fulfilled' &&
-      testimonialsResult.value.length > 0 ? (
-        <TestimonialsComponent testimonials={testimonialsResult.value} />
-      ) : null}
-
       <section id="faq" className="border-t bg-background py-20 lg:py-32">
         <div className="container mx-auto px-4">
           <div className="mx-auto mb-16 max-w-3xl text-center">
@@ -126,6 +121,11 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {testimonialsResult.status === 'fulfilled' &&
+      testimonialsResult.value.length > 0 ? (
+        <TestimonialsComponent testimonials={testimonialsResult.value} />
+      ) : null}
 
       <Cta logoUrl={logoUrl} />
     </>
