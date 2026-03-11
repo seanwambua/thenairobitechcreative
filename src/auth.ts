@@ -4,10 +4,13 @@ import prisma from '@/lib/prisma';
 import Credentials from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import { Role } from '@/lib/roles';
+import { routes } from '@/lib/routes';
+import { authConfig } from '@/lib/auth.config';
 
 declare module 'next-auth' {
   interface Session {
     user: {
+      id: string;
       role: Role;
     } & DefaultSession['user'];
   }
@@ -17,9 +20,17 @@ declare module 'next-auth' {
   }
 }
 
+declare module '@auth/core/adapters' {
+  interface AdapterUser {
+    role: Role;
+  }
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  // @ts-expect-error - The Edge runtime does not support the Prisma adapter.
-  adapter: process.env.NODE_ENV === 'production' ? PrismaAdapter(prisma) : undefined,
+  ...authConfig,
+  trustHost: true,
+  secret: process.env.AUTH_SECRET,
+  adapter: PrismaAdapter(prisma),
   providers: [
     Credentials({
       name: 'Credentials',
@@ -48,28 +59,31 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         );
 
         if (isPasswordCorrect) {
-          return user;
+          const { hashedPassword, ...userWithoutPassword } = user;
+          return { ...userWithoutPassword, role: userWithoutPassword.role as Role };
         }
 
         return null;
       },
     }),
   ],
-  pages: {
-    signIn: '/login',
-  },
   session: {
     strategy: 'jwt',
   },
   callbacks: {
+    ...authConfig.callbacks,
     async jwt({ token, user }) {
       if (user) {
+        token.id = user.id;
         token.role = user.role;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
+        if (token.id) {
+          session.user.id = token.id as string;
+        }
         session.user.role = token.role as Role;
       }
       return session;

@@ -52,6 +52,7 @@ export async function createProject(
       .split(',')
       .map((s) => s.trim()),
     icon: newProjectData.icon as IconName,
+    userId: newProjectData.userId ?? undefined,
   };
 
   revalidatePath('/');
@@ -83,6 +84,7 @@ export async function updateProject(
       .split(',')
       .map((s) => s.trim()),
     icon: updatedProjectData.icon as IconName,
+    userId: updatedProjectData.userId ?? undefined,
   };
 
   revalidatePath('/');

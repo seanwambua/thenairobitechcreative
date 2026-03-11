@@ -1,156 +1,117 @@
-import { FAQ, NavLink, SocialLink, Service, FooterLink, PricingPlan, ProcessStep } from './definitions';
+import { Prisma } from '@prisma/client';
 
-export const navLinks: NavLink[] = [
-  { href: '/#portfolio', label: 'Portfolio' },
+export type PostSummary = Prisma.PostGetPayload<{
+  select: {
+    id: true;
+    slug: true;
+    title: true;
+    description: true;
+    imageUrl: true;
+    imageHint: true;
+    author: true;
+    authorAvatarUrl: true;
+    authorAvatarHint: true;
+    createdAt: true;
+    updatedAt: true;
+    _count: {
+      select: { likes: true; comments: true };
+    };
+  };
+}>;
+
+export const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/about', label: 'About' },
   { href: '/services', label: 'Services' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/blog', label: 'Blog' },
-  { href: '/#testimonials', label: 'Testimonials' },
-  { href: '/#contact', label: 'Contact' },
+  { href: '/contact', label: 'Contact' },
 ];
 
-export const socialLinks: SocialLink[] = [
-  { href: 'https://twitter.com/example', icon: 'Twitter' },
-  { href: 'https://facebook.com/example', icon: 'Facebook' },
-  { href: 'https://instagram.com/example', icon: 'Instagram' },
-];
-
-export const services: Service[] = [
+export const services = [
   {
-    id: 1,
-    title: 'Strategy & Discovery',
-    icon: 'ScanSearch',
+    title: 'Web Development',
+    description: 'Building modern, responsive websites.',
+  },
+  {
+    title: 'Mobile App Development',
+    description: 'Creating native and cross-platform mobile apps.',
+  },
+  {
+    title: 'UI/UX Design',
+    description: 'Designing intuitive and beautiful user interfaces.',
+  },
+  {
+    title: 'Digital Marketing',
+    description: 'Helping you reach your target audience.',
+  },
+];
+
+export const processSteps = [
+  {
+    title: 'Discovery & Strategy',
     description:
-      'We help you refine your vision and create a solid technical and business strategy.',
+      'We start by understanding your goals and planning the project.',
   },
   {
-    id: 2,
-    title: 'Design & Development',
-    icon: 'LayoutTemplate',
-    description:
-      'We design and build beautiful, scalable, and user-centric digital products.',
+    title: 'Design & Prototyping',
+    description: 'We create wireframes and prototypes for your approval.',
   },
   {
-    id: 3,
-    title: 'Launch & Scale',
-    icon: 'Rocket',
-    description:
-      'We ensure a smooth launch and provide ongoing support to help you grow.',
-  }
-];
-
-export const footerLinks: FooterLink[] = [
-  {
-    title: 'Company',
-    links: [
-      { href: '/about', label: 'About' },
-      { href: '/projects', label: 'Projects' },
-      { href: '/blog', label: 'Blog' },
-      { href: '/contact', label: 'Contact' },
-    ],
+    title: 'Development & Testing',
+    description: 'We build and rigorously test your application.',
   },
   {
-    title: 'Social',
-    links: [
-      { href: 'https://twitter.com/example', label: 'Twitter' },
-      { href: 'https://facebook.com/example', label: 'Facebook' },
-      { href: 'https://instagram.com/example', label: 'Instagram' },
-    ],
-  },
-  {
-    title: 'Legal',
-    links: [
-      { href: '/privacy', label: 'Privacy Policy' },
-      { href: '/terms', label: 'Terms of Service' },
-    ],
+    title: 'Deployment & Support',
+    description: 'We launch your project and provide ongoing support.',
   },
 ];
 
-export const faqs: FAQ[] = [
+export const pricingPlans = [
   {
-    id: 1,
-    question: 'What is the typical timeline for a project?',
-    answer:
-      'Project timelines vary depending on the scope and complexity. A typical project discovery and design phase takes 2-4 weeks, followed by development sprints of 2-3 months. We work closely with you to establish a detailed timeline upfront.',
+    name: 'Basic',
+    price: '$49',
+    features: ['1 Project', 'Basic Support', '10GB Storage'],
+    isFeatured: false,
   },
   {
-    id: 2,
-    question: 'How do you handle project management and communication?',
-    answer:
-      "We use an agile project management approach with regular check-ins and demos. You\'ll have a dedicated project manager and direct access to the team through collaborative tools like Slack and Asana to ensure clear communication and transparency.",
-  },
-  {
-    id: 3,
-    question: 'Can you work with existing codebases or systems?',
-    answer:
-      'Absolutely. We can audit your existing systems, identify areas for improvement, and integrate new features or build on top of your current infrastructure. Our goal is to enhance your technology, not necessarily replace it.',
-  },
-  {
-    id: 4,
-    question: 'What kind of post-launch support do you offer?',
-    answer:
-      'We offer various levels of ongoing support and maintenance retainers to ensure your product remains secure, up-to-date, and optimized for performance. We can also provide support for future feature development and scaling.',
-  },
-  {
-    id: 5,
-    question: 'How do you ensure the quality of the final product?',
-    answer:
-      'Quality is at the core of our process. We conduct rigorous testing at every stage, including unit testing, integration testing, and user acceptance testing (UAT). We also perform security audits and performance profiling before launch.',
-  },
-];
-
-export const pricingPlans: PricingPlan[] = [
-  {
-    id: 1,
-    title: 'Initial Consult',
-    description:
-      'One-on-one guidance to refine your idea, define your strategy, and create a clear roadmap for your project.',
-    price: '3,500',
-    priceSuffix: '',
+    name: 'Pro',
+    price: '$99',
     features: [
-      '2-Hour Intensive Strategy Session',
-      'Actionable Project Roadmap',
+      '5 Projects',
+      'Priority Support',
+      '50GB Storage',
+      'Advanced Analytics',
     ],
+    isFeatured: true,
   },
   {
-    id: 2,
-    title: 'Custom Solution',
-    description:
-      'End-to-end design and development of a bespoke digital product, tailored to your specific business needs and built to scale.',
+    name: 'Enterprise',
     price: 'Custom',
-    priceSuffix: '',
     features: [
-      'Full Project Lifecycle (Strategy to Scale)',
-      'Dedicated Project Team',
-      'Custom UI/UX and System Architecture',
-      'Ongoing Support & Maintenance',
+      'Unlimited Projects',
+      '24/7 Support',
+      'Unlimited Storage',
+      'Custom Integrations',
     ],
+    isFeatured: false,
   },
 ];
 
-export const processSteps: ProcessStep[] = [
+export const faqs = [
   {
-    icon: 'ScanSearch',
-    title: '1. Discover',
-    description:
-      'We kick off with collaborative workshops to dive deep into your business goals, target audience, and challenges.',
+    question: 'What is your development process?',
+    answer:
+      'We follow a four-step process: Discovery & Strategy, Design & Prototyping, Development & Testing, and Deployment & Support.',
   },
   {
-    icon: 'LayoutTemplate',
-    title: '2. Define',
-    description:
-      'We translate insights into a concrete plan, creating user journeys, wireframes, and a technical roadmap.',
+    question: 'How long does a project typically take?',
+    answer:
+      "The timeline varies depending on the project's complexity, but we always provide a detailed schedule upfront.",
   },
   {
-    icon: 'Rocket',
-    title: '3. Develop',
-    description:
-      'Our agile team builds your product in iterative sprints with regular demos and feedback sessions.',
-  },
-  {
-    icon: 'Scaling',
-    title: '4. Deploy',
-    description:
-      'We manage a seamless launch and transition to a support phase, ensuring your product thrives and evolves.',
+    question: 'Do you offer support after the project is launched?',
+    answer:
+      'Yes, we offer various support and maintenance packages to ensure your project runs smoothly post-launch.',
   },
 ];

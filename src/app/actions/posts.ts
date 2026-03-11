@@ -3,7 +3,8 @@
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { PostSchema, PostInputSchema } from '@/lib/schemas';
-import type { Post, PostSummary } from '@/lib/data';
+import type { Post } from '@prisma/client';
+import type { PostSummary } from '@/lib/data';
 import placeholderImages from '@/app/lib/placeholder-images.json';
 import { z } from 'zod';
 import { auth } from '@/auth';
@@ -28,10 +29,11 @@ export async function getPostSummaries(): Promise<PostSummary[]> {
       author: true,
       authorAvatarUrl: true,
       authorAvatarHint: true,
-      likes: true,
-      comments: true,
       createdAt: true,
       updatedAt: true,
+      _count: {
+        select: { likes: true, comments: true },
+      },
     },
     orderBy: { createdAt: 'desc' },
   });
@@ -93,8 +95,6 @@ export async function createPost(
         validatedData.authorAvatarUrl ??
         placeholderImages.testimonial1Image.imageUrl,
       authorAvatarHint: placeholderImages.testimonial1Image.imageHint,
-      likes: 0,
-      comments: '',
     },
   });
 
@@ -115,11 +115,14 @@ export async function updatePost(post: Post): Promise<Post> {
     const validatedData = PostSchema.parse(post);
     const { id, slug } = validatedData; // Keep original slug for revalidation
 
-    // Prepare data for update, excluding immutable fields like id and slug.
+    // Prepare data for update, excluding immutable and relational fields
     const {
       id: _id,
       slug: _slug,
       createdAt: _createdAt,
+      userId: _userId,
+      likes: _likes,
+      comments: _comments,
       ...dataToUpdate
     } = validatedData;
 
@@ -165,24 +168,50 @@ export async function deletePost(postId: number): Promise<void> {
 
 export async function likePost(postId: number): Promise<Post> {
   const session = await auth();
-  if (!session?.user) {
+  if (!session?.user?.id) {
     throw new Error('Unauthorized');
   }
+  const userId = session.user.id;
 
-  const post = await prisma.post.findUnique({ where: { id: postId } });
-  if (!post) {
-    throw new Error('Post not found');
-  }
-
-  const updatedPost = await prisma.post.update({
-    where: { id: postId },
-    data: {
-      likes: {
-        increment: 1,
+  const like = await prisma.like.findUnique({
+    where: {
+      userId_postId: {
+        userId,
+        postId,
       },
     },
   });
 
+  if (like) {
+    await prisma.like.delete({
+      where: {
+        userId_postId: {
+          userId,
+          postId,
+        },
+      },
+    });
+  } else {
+    await prisma.like.create({
+      data: {
+        userId,
+        postId,
+      },
+    });
+  }
+
+  const post = await prisma.post.findUnique({
+    where: { id: postId },
+    include: {
+      likes: true,
+      comments: true,
+    },
+  });
+
+  if (!post) {
+    throw new Error('Post not found');
+  }
+
   revalidatePath(`/blog/${post.slug}`);
-  return updatedPost;
+  return post;
 }

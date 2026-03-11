@@ -52,8 +52,8 @@ export function LoginClient() {
           title: 'Login Failed',
           description: 'Invalid email or password.',
         });
-      } else if (result?.ok) {
-        router.push(callbackUrl || '/dashboard');
+      } else if (result?.ok && result.url) {
+        router.push(result.url);
       }
     } catch (error) {
       toast({

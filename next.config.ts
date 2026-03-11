@@ -31,14 +31,7 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
-  },
-  webpack: (config) => {
-    // Note: It's needed to add the following config to seamlessly use prisma with nextjs.
-    // See: https://github.com/prisma/prisma/issues/21937#issuecomment-1986323872
-    // @ts-expect-error - `externals` is not in the type definition for some reason.
-    config.externals.push('@node-rs/argon2', '@node-rs/bcrypt');
-    return config;
-  },
+  }
 };
 
 export default nextConfig;
