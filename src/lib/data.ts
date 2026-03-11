@@ -88,10 +88,10 @@ export const processSteps = [
 export const pricingPlans = [
   {
     id:1,
-    name: 'One v One Consultation',
+    name: 'Business Strategy & Tech Consultation',
     priceSuffix:'KES',
-    price: '5,000',
-    description: ['Business Strategy & Tech Consulting  | In-person'],
+    price: '3,500',
+    description: ['Remote | In-person'],
     features: ['1 Hr Session'],
     isFeatured: true,
   },

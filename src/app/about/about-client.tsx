@@ -17,9 +17,9 @@ export function AboutClient({
     <div className="bg-background text-foreground">
       <header className="bg-primary/5 text-center py-20 lg:py-20">
         <div className="container mx-auto px-4">
-          <h1 className="font-headline text-4xl font-normal tracking-tight text-foreground sm:text-5xl md:text-6xl">
+          <h2 className="font-headline text-2xl font-normal tracking-tight text-foreground sm:text-3xl md:text-4xl lg:text-5xl">
             About The Nairobi Tech Creative
-          </h1>
+          </h2>
         </div>
       </header>
 

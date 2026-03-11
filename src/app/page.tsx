@@ -72,7 +72,7 @@ export default async function Home() {
   return (
     <>
       <Hero heroImage={heroImage} logoUrl={logoUrl} />
-      <ProspectsBanner logoUrl={logoUrl} />
+      {/* <ProspectsBanner logoUrl={logoUrl} /> */}
 
       <section id="portfolio" className="py-20 lg:py-32">
         <div className="container mx-auto px-4">
@@ -94,7 +94,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section id="faq" className="border-t bg-background py-20 lg:py-32">
+      {/* <section id="faq" className="border-t bg-background py-20 lg:py-32">
         <div className="container mx-auto px-4">
           <div className="mx-auto mb-16 max-w-3xl text-center">
             <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
@@ -120,7 +120,7 @@ export default async function Home() {
             </Accordion>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {testimonialsResult.status === 'fulfilled' &&
       testimonialsResult.value.length > 0 ? (
