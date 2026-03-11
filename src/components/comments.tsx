@@ -11,7 +11,7 @@ import {
   createComment,
   updateComment,
   deleteComment,
-} from '@/app/actions/comments';
+} from '@/lib/actions/comments';
 import type { Comment, User } from '@/app/generated/prisma';
 
 interface CommentsProps {

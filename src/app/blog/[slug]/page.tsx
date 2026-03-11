@@ -1,6 +1,6 @@
-import { getPostBySlug } from '@/app/actions/posts';
-import { getComments } from '@/app/actions/comments';
-import { getLikes, hasLiked } from '@/app/actions/likes';
+import { getPostBySlug } from '@/lib/actions/posts';
+import { getComments } from '@/lib/actions/comments';
+import { getLikes, hasLiked } from '@/lib/actions/likes';
 import { DbUninitializedError } from '@/lib/errors';
 import { BlogPostClient } from './blog-post-client';
 import type { Post, Comment, User } from '@/app/generated/prisma';

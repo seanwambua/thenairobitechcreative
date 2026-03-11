@@ -5,7 +5,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { ProjectsClient } from './projects-client';
-import { getProjects } from '@/app/actions/projects';
+import { getProjects } from '@/lib/actions/projects';
 
 export default async function ProjectsPage() {
   const projects = await getProjects();

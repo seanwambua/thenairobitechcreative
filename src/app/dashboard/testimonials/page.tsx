@@ -5,7 +5,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { TestimonialsClient } from './testimonials-client';
-import { getAllTestimonials } from '@/app/actions/testimonials';
+import { getAllTestimonials } from '@/lib/actions/testimonials';
 
 export default async function TestimonialsPage() {
   const testimonials = await getAllTestimonials();

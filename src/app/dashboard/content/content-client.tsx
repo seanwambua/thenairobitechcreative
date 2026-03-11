@@ -35,7 +35,7 @@ import { useToast } from '@/hooks/use-toast';
 import type { Post } from '@/app/generated/prisma';
 import { format } from 'date-fns';
 import { CardContent } from '@/components/ui/card';
-import { deletePost } from '@/app/actions/posts';
+import { deletePost } from '@/lib/actions/posts';
 import { useSession } from 'next-auth/react';
 import { Role } from '@/lib/roles';
 

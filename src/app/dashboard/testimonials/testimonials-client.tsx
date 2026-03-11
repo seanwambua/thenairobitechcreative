@@ -35,7 +35,7 @@ import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { TestimonialEditorSheet } from '@/components/testimonial-editor-sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { deleteTestimonial } from '@/app/actions/testimonials';
+import { deleteTestimonial } from '@/lib/actions/testimonials';
 import { Role } from '@/lib/roles';
 
 export function TestimonialsClient({

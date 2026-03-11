@@ -1,7 +1,7 @@
-import { auth } from '@/auth';
+import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { Role } from '@/lib/roles';
-import { getUsers } from '@/app/actions/admin';
+import { getUsers } from '@/lib/actions/admin';
 import { UsersClient } from './users-client';
 
 export default async function UsersPage() {

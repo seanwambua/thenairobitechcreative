@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/table';
 import { Briefcase, NotebookText, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
-import type { Project } from '@/app/actions/projects';
+import type { Project } from '@/lib/actions/projects';
 
 const cardVariants = {
   hidden: { opacity: 0, y: 30 },

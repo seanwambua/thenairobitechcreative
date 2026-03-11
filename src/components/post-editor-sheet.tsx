@@ -27,7 +27,7 @@ import { useToast } from '@/hooks/use-toast';
 import type { Post } from '@/app/generated/prisma';
 import { Loader2 } from 'lucide-react';
 import { PostInputSchema } from '@/lib/schemas';
-import { createPost, updatePost } from '@/app/actions/posts';
+import { createPost, updatePost } from '@/lib/actions/posts';
 import placeholderImages from '@/app/lib/placeholder-images.json';
 import RichTextEditor from './rich-text-editor';
 import { Textarea } from '@/components/ui/textarea';

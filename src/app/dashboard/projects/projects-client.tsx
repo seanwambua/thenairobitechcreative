@@ -33,7 +33,7 @@ import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ProjectEditorDialog } from '@/components/project-editor-sheet';
 import type { Project } from '@/lib/data';
-import { deleteProject } from '@/app/actions/projects';
+import { deleteProject } from '@/lib/actions/projects';
 
 export function ProjectsClient({
   initialProjects,

@@ -4,10 +4,10 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import { Providers } from '@/components/providers';
-import { auth } from '@/auth';
+import { auth } from '@/lib/auth';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { getSetting } from './actions/settings';
+import { getSetting } from '../lib/actions/settings';
 
 const poppins = Poppins({
   subsets: ['latin'],

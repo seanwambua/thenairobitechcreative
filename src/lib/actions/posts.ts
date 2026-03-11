@@ -7,7 +7,7 @@ import type { Post } from '@prisma/client';
 import type { PostSummary } from '@/lib/data';
 import placeholderImages from '@/app/lib/placeholder-images.json';
 import { z } from 'zod';
-import { auth } from '@/auth';
+import { auth } from '@/lib/auth';
 import { Role } from '@/lib/roles';
 
 export async function getPosts(): Promise<Post[]> {

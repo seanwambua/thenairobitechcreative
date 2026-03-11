@@ -37,7 +37,7 @@ import placeholderImages from '@/app/lib/placeholder-images.json';
 import { type Project } from '@/lib/data';
 import { Upload, Loader2 } from 'lucide-react';
 import { ProjectSchema, iconNames } from '@/lib/schemas';
-import { createProject, updateProject } from '@/app/actions/projects';
+import { createProject, updateProject } from '@/lib/actions/projects';
 import { CldUploadButton } from 'next-cloudinary';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';

@@ -1,6 +1,6 @@
-import { getSettings } from '@/app/actions/settings';
+import { getSettings } from '@/lib/actions/settings';
 import { MediaClient } from './media-client';
-import { auth } from '@/auth';
+import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { Role } from '@/lib/roles';
 

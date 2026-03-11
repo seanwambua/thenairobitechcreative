@@ -10,7 +10,7 @@ import type { Post } from '@/app/generated/prisma';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
 import placeholderImages from '@/app/lib/placeholder-images.json';
-import { updatePost } from '@/app/actions/posts';
+import { updatePost } from '@/lib/actions/posts';
 
 interface PostImageManagerProps {
   post: Post;

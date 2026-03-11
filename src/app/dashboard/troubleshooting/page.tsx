@@ -24,7 +24,7 @@ import prisma from '@/lib/prisma';
 import { seedDatabase } from '@/lib/db/seed';
 import { Badge } from '@/components/ui/badge';
 import { iconNames } from '@/lib/schemas';
-import { auth } from '@/auth';
+import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { Role } from '@/lib/roles';
 import { checkDatabaseConnection, getSystemInfo } from '@/lib/system';

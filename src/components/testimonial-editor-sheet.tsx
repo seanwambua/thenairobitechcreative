@@ -34,7 +34,7 @@ import { TestimonialSchema } from '@/lib/schemas';
 import {
   createTestimonial,
   updateTestimonial,
-} from '@/app/actions/testimonials';
+} from '@/lib/actions/testimonials';
 import { CldUploadButton } from 'next-cloudinary';
 import { cn } from '@/lib/utils';
 

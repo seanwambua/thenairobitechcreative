@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { CldUploadButton } from 'next-cloudinary';
-import { updateSetting } from '@/app/actions/settings';
+import { updateSetting } from '@/lib/actions/settings';
 import { ImageIcon, UserCircle, Loader2, Upload } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Button, buttonVariants } from '@/components/ui/button';

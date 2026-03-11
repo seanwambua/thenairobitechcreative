@@ -1,223 +1,70 @@
 'use client';
-import * as React from 'react';
-import { services, processSteps } from '@/lib/data';
-import { motion } from 'framer-motion';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-import {
-  Briefcase,
-  Computer,
-  Wrench,
-  ScanSearch,
-  LayoutTemplate,
-  Rocket,
-  Scaling,
-  ServerCog,
-  Plus,
-} from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '@/components/ui/hover-card';
-import { Separator } from '@/components/ui/separator';
+import { Server, GitMerge, Rocket, BrainCircuit } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-const iconMap: { [key: string]: LucideIcon } = {
-  ScanSearch,
-  Rocket,
-  Scaling,
-  Briefcase,
-  Computer,
-  Wrench,
-  ServerCog,
-  LayoutTemplate,
-};
+const services = [
+  {
+    icon: <BrainCircuit className="h-8 w-8 text-primary" />,
+    title: 'Business Strategy & Tech Consulting',
+    description: 'Aligning your technology decisions with your business goals. Ideal for founders and SMEs who need a technical thought partner, not just an executor.',
+  },
+  {
+    icon: <Rocket className="h-8 w-8 text-primary" />,
+    title: 'Product Development',
+    description: 'Taking your idea from concept to shipped product. We help you define the right MVP, build it iteratively, and validate with real users before scaling.',
+  },
+  {
+    icon: <Server className="h-8 w-8 text-primary" />,
+    title: 'DevOps & Infrastructure',
+    description: 'Setting up and managing CI/CD pipelines, cloud servers, VPS environments, and monitoring systems. Less downtime, faster deployments, and infrastructure that scales with your business.',
+  },
+  {
+    icon: <GitMerge className="h-8 w-8 text-primary" />,
+    title: 'Business Process Development',
+    description: 'Mapping, streamlining, and automating the workflows that run your business. From helpdesk systems to internal tooling, we turn chaotic processes into repeatable, efficient systems.',
+  },
+];
 
-export function ServicesClient({
-  founderImage,
-  founderName,
-  founderMessage,
-}: {
-  founderImage: string | null;
-  founderName: string | null;
-  founderMessage: string | null;
-}) {
-  const cardVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0 },
-  };
-
-  const founderInitials = founderName
-    ?.split(' ')
-    .map((n) => n[0])
-    .join('');
-
-  const getIcon = (iconName: string) => {
-    const Icon = iconMap[iconName as keyof typeof iconMap];
-    if (!Icon) {
-      console.warn(`Icon "${iconName}" not found. Using default icon.`);
-      return Plus;
-    }
-    return Icon;
-  };
-
+export function ServicesClient() {
   return (
-    <>
-      <section className="py-20 lg:py-24">
+    <div className="bg-background text-foreground">
+      <header className="bg-primary/5 text-center py-20 lg:py-32">
         <div className="container mx-auto px-4">
-          <div className="mx-auto mb-16 flex max-w-4xl flex-col items-center justify-center gap-6 text-center md:flex-row md:items-start md:text-left">
-            <div className="flex-1">
-              <h1 className="font-headline text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl">
-                Our Services & Philosophy
-              </h1>
-              <p className="mt-4 text-lg text-muted-foreground">
-                We blend strategy, design, and engineering to transform your
-                vision into a reality that thrives.
-              </p>
-            </div>
-            <HoverCard>
-              <HoverCardTrigger asChild>
-                <div className="group relative">
-                  <Avatar className="h-24 w-24 cursor-pointer transition-all duration-300 md:h-32 md:w-32">
-                    <AvatarImage
-                      src={founderImage ?? undefined}
-                      alt={founderName ?? undefined}
-                      className="object-contain"
-                    />
-                    <AvatarFallback>{founderInitials}</AvatarFallback>
-                  </Avatar>
-                  <div className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-background bg-primary text-primary-foreground shadow-lg transition-transform duration-300 group-hover:scale-125">
-                    <Plus className="h-4 w-4" />
-                  </div>
-                </div>
-              </HoverCardTrigger>
-              <HoverCardContent className="w-80">
-                <div className="flex flex-col gap-4">
-                  <div className="flex flex-col items-center space-y-2">
-                    <Avatar>
-                      <AvatarImage
-                        src={founderImage ?? undefined}
-                        alt={founderName ?? undefined}
-                        className="object-contain"
-                      />
-                      <AvatarFallback>{founderInitials}</AvatarFallback>
-                    </Avatar>
-                    <div className="space-y-1 text-center">
-                      <h4 className="text-sm font-semibold">
-                        Meet the founder
-                      </h4>
-                      <p className="text-sm text-muted-foreground">
-                        {founderName}
-                      </p>
-                    </div>
-                  </div>
-                  <Separator />
-                  <div className="text-sm text-muted-foreground">
-                    <p className="mb-2">&quot;{founderMessage}&quot;</p>
-                    <p className="mb-1 font-semibold text-foreground">
-                      Our Mission
-                    </p>
-                    <p className="mb-2">
-                      To empower African businesses and entrepreneurs with
-                      world-class digital products.
-                    </p>
-                    <p className="mb-1 font-semibold text-foreground">
-                      Our Vision
-                    </p>
-                    <p>
-                      To be the leading catalyst for digital transformation in
-                      Africa.
-                    </p>
-                  </div>
-                </div>
-              </HoverCardContent>
-            </HoverCard>
-          </div>
-
-          <div className="mx-auto grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {services.map((service, index) => {
-              const Icon = getIcon(service.icon);
-              return (
-                <motion.div
-                  key={service.id}
-                  variants={cardVariants}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                >
-                  <Card
-                    className={`flex h-full flex-col p-6 transition-all duration-300 hover:border-primary hover:shadow-xl hover:shadow-primary/10`}
-                  >
-                    <CardHeader className="flex-row items-center gap-4 p-0">
-                      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                        <Icon className="h-6 w-6" />
-                      </div>
-                      <CardTitle className="font-headline text-xl font-semibold text-foreground">
-                        {service.title}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex-1 p-0 pt-4">
-                      <p className="flex-1 text-muted-foreground">
-                        {service.description}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              );
-            })}
-          </div>
+          <h1 className="font-headline text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl">
+            Our Services
+          </h1>
+          <p className="mt-6 max-w-3xl mx-auto text-lg text-muted-foreground">
+            We offer a range of services designed to help your business grow and thrive in the digital age.
+          </p>
         </div>
-      </section>
+      </header>
 
-      <section className="border-t py-20 lg:py-24">
-        <div className="container mx-auto max-w-3xl px-4">
-          <div className="relative mx-auto mb-16 text-center">
-            <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-              How We Do It
-            </h2>
-            <p className="mt-3 text-lg text-muted-foreground">
-              Our collaborative process ensures we build the right thing, the
-              right way.
-            </p>
-          </div>
-
-          <Accordion type="single" collapsible className="w-full">
-            {processSteps.map((step, index) => (
+      <main className="container mx-auto px-4 py-12 md:px-6 md:py-20">
+        <section id="services">
+          <div className="grid gap-8 md:grid-cols-2">
+            {services.map((service, index) => (
               <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                key={service.title}
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.2 }}
               >
-                <AccordionItem value={`item-${index}`}>
-                  <AccordionTrigger className="text-left text-lg font-semibold hover:no-underline">
-                    <div className="flex items-center gap-4">
-                      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-secondary/10 text-secondary">
-                        {React.createElement(getIcon(step.icon), {
-                          className: 'h-6 w-6',
-                        })}
-                      </div>
-                      {step.title}
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="pl-16 text-base text-muted-foreground">
-                    {step.description}
-                  </AccordionContent>
-                </AccordionItem>
+                <Card className="flex flex-col items-center text-center p-6 h-full">
+                  <CardHeader>
+                    {service.icon}
+                    <CardTitle className="mt-4 text-lg font-semibold">{service.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">{service.description}</p>
+                  </CardContent>
+                </Card>
               </motion.div>
             ))}
-          </Accordion>
-        </div>
-      </section>
-    </>
+          </div>
+        </section>
+      </main>
+    </div>
   );
 }

@@ -1,6 +1,6 @@
 import prisma from '@/lib/prisma';
 import DashboardView from './dashboard-view';
-import { Project } from '../actions/projects';
+import { Project } from '../../lib/actions/projects';
 import type { IconName } from '@/lib/schemas';
 
 export default async function DashboardPage() {

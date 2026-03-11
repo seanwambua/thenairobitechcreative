@@ -5,8 +5,8 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { ContentClient } from './content-client';
-import { getPosts } from '@/app/actions/posts';
-import { auth } from '@/auth';
+import { getPosts } from '@/lib/actions/posts';
+import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 
 export default async function ContentPage() {

@@ -7,44 +7,54 @@ export const authConfig: NextAuthConfig = {
     signIn: routes.login,
     error: '/unauthorized',
   },
+  // Ensure middleware remains lightweight for Edge Runtime
+  providers: [], 
   callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
+    async authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnDashboard = nextUrl.pathname.startsWith(routes.admin.dashboard);
+      const userRole = auth?.user?.role;
+      
+      const isDashboardRoute = nextUrl.pathname.startsWith(routes.admin.dashboard);
+      const isLoginPage = nextUrl.pathname === routes.login;
 
-      if (isOnDashboard) {
-        if (isLoggedIn) {
-          if (auth?.user.role === Role.ADMIN) {
-            return true; // Allow admin access to dashboard
-          }
-          // Logged-in but not an admin
+      // 1. Guard Dashboard: Explicitly check for both authentication and authorization
+      if (isDashboardRoute) {
+        if (!isLoggedIn) return false; // Triggers redirect to sign-in page
+        
+        // Authorization: Only Admins can enter the dashboard
+        if (userRole !== Role.ADMIN) {
           return Response.redirect(new URL('/unauthorized', nextUrl));
         }
-        return false; // Redirect unauthenticated users from dashboard to login
-      } else if (isLoggedIn && nextUrl.pathname === routes.login) {
-        // Redirect logged-in users from the login page to the dashboard
-        return Response.redirect(new URL(routes.admin.dashboard, nextUrl));
+        return true;
       }
 
-      // Allow all other requests, including public pages for anonymous users
-      // and logged-in non-admins.
-      return true;
-    },
-    async signIn({ user }) {
-      if (!user) return false;
-      if (user.role === Role.ADMIN) {
-        return routes.admin.dashboard;
+      // 2. Prevent logged-in users from seeing the login page
+      if (isLoginPage && isLoggedIn) {
+        const redirectUrl = userRole === Role.ADMIN 
+          ? routes.admin.dashboard 
+          : '/';
+        return Response.redirect(new URL(redirectUrl, nextUrl));
       }
+
       return true;
     },
-    async redirect({ url, baseUrl }) {
-      // Allows relative callback URLs
-      if (url.startsWith('/')) return `${baseUrl}${url}`;
-      // Allows callback URLs on the same origin
-      if (new URL(url).origin === new URL(baseUrl).origin) return url;
-      // Fallback to dashboard
-      return baseUrl + routes.admin.dashboard;
+
+    // JWT strategy logic: Keep this minimal to avoid bloat in the session cookie
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.role = user.role;
+      }
+      return token;
+    },
+
+    // Session synchronization: Ensure user object in Client Components stays up-to-date
+    async session({ session, token }) {
+      if (session.user && token) {
+        session.user.id = token.id as string;
+        session.user.role = token.role as Role;
+      }
+      return session;
     },
   },
-  providers: [], // Add providers in the main auth.ts file
 };

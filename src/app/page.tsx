@@ -12,17 +12,21 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { getProjects } from '@/app/actions/projects';
-import { getAllTestimonials } from '@/app/actions/testimonials';
-import { getSetting } from '@/app/actions/settings';
+import { getProjects } from '@/lib/actions/projects';
+import { getAllTestimonials } from '@/lib/actions/testimonials';
+import { getSetting } from '@/lib/actions/settings';
 import { DbUninitializedError } from '@/components/db-uninitialized-error';
-import placeholderImages from '@/app/lib/placeholder-images.json';
+import placeholderImages from '@/lib/placeholder-images.json';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
 
 function DataError({ sectionName }: { sectionName: string }) {
   return (
-    <Alert variant="destructive" className="mx-auto max-w-4xl">
+    <Alert
+      variant="destructive"
+      className="mx-auto max-w-4xl"
+      key={sectionName}
+    >
       <Terminal className="h-4 w-4" />
       <AlertTitle>Error Loading {sectionName}</AlertTitle>
       <AlertDescription>
@@ -106,10 +110,10 @@ export default async function Home() {
               you&apos;re looking for, feel free to contact us.
             </p>
           </div>
-          <div className="mx-auto max-w-3xl">
+          <div className="mx-auto.max-w-3xl">
             <Accordion type="single" collapsible className="w-full">
-              {faqs.map((faq) => (
-                <AccordionItem key={faq.id} value={`item-${faq.id}`}>
+              {faqs.map((faq,index) => (
+                <AccordionItem key={index} value={`item-${index}`}>
                   <AccordionTrigger className="text-left font-semibold hover:no-underline">
                     {faq.question}
                   </AccordionTrigger>

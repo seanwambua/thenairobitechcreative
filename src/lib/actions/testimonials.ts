@@ -7,7 +7,7 @@ import {
   type TestimonialInputSchemaType,
 } from '@/lib/schemas';
 import type { Testimonial } from '@/app/generated/prisma';
-import { auth } from '@/auth';
+import { auth } from '@/lib/auth';
 import { Role } from '@/lib/roles';
 
 export async function getAllTestimonials() {

@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
-import { createUser } from '@/app/actions/users';
+import { createUser } from '@/lib/actions/users';
 import Link from 'next/link';
 
 const formSchema = z.object({
