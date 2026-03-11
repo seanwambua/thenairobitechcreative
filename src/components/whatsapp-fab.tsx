@@ -14,7 +14,7 @@ export function WhatsAppFAB({ phoneNumber }: { phoneNumber: string }) {
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ duration: 0.5, ease: 'easeInOut' }}
-      className="fixed bottom-40 right-8 z-50"
+      className="fixed bottom-20 right-8 z-50"
     >
       <Link href={whatsappUrl} target="_blank" rel="noopener noreferrer">
         <div className="flex h-16 w-16 cursor-pointer items-center justify-center rounded-full bg-green-500 text-white shadow-lg hover:bg-green-600 active:scale-95">

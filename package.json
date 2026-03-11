@@ -14,7 +14,8 @@
     "reinitialize": "tsx prisma/seed.ts",
     "db:seed": "tsx prisma/seed.ts",
     "db:test": "tsx scripts/test-database.ts",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "test": "jest"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -79,16 +80,22 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.13",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/bcrypt": "^6.0.0",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.19.37",
     "eslint": "^9.39.2",
     "eslint-config-next": "16.1.6",
     "eslint-config-prettier": "^9.1.0",
+    "jest": "^30.3.0",
+    "jest-environment-jsdom": "^30.3.0",
     "postcss": "^8",
     "prettier": "^3.3.2",
     "prettier-plugin-tailwindcss": "^0.6.5",
     "prisma": "6.19.0",
     "tailwindcss": "^4.2.1",
+    "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
     "tsx": "^4.16.2",
     "typescript": "^5.9.3"

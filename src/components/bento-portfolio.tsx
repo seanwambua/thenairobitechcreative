@@ -24,7 +24,7 @@ import {
   type LucideProps,
 } from 'lucide-react';
 import type { ComponentType } from 'react';
-import placeholderImages from '@/app/lib/placeholder-images.json';
+import placeholderImages from '@/lib/placeholder-images.json';
 import { z } from 'zod';
 import { ProjectSchema } from '@/lib/schemas';
 

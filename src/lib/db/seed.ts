@@ -1,5 +1,5 @@
 import prisma from '@/lib/prisma';
-import placeholderImages from '@/app/lib/placeholder-images.json';
+import placeholderImages from '@/lib/placeholder-images.json';
 import { Role } from '@/lib/roles';
 import bcrypt from 'bcrypt';
 

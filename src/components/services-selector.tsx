@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { useState } from 'react';
 import { Server, GitMerge, Rocket, BrainCircuit, LifeBuoy, Users, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';

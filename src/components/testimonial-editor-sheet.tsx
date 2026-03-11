@@ -27,7 +27,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import type { Testimonial } from '@/app/generated/prisma';
-import placeholderImages from '@/app/lib/placeholder-images.json';
+import placeholderImages from '@/lib/placeholder-images.json';
 import { Upload, Loader2 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { TestimonialSchema } from '@/lib/schemas';
@@ -173,31 +173,38 @@ export function TestimonialEditorSheet({
                     </div>
                   )}
                 </div>
-                <CldUploadButton
-                  options={{
-                    sources: ['local', 'url', 'unsplash'],
-                    styles: {
-                      zIndex: 99999,
-                    },
-                  }}
-                  type="button"
-                  uploadPreset="nairobi_techcreative"
-                  onSuccess={handleUploadSuccess}
-                  onUpload={() => setIsUploading(true)}
-                  onError={(error) => {
-                    setIsUploading(false);
-                    toast({
-                      variant: 'destructive',
-                      title: 'Upload Failed',
-                      description: String((error as any).info),
-                    });
-                  }}
-                  className={cn(buttonVariants({ variant: 'outline' }), 'mt-2')}
-                  disabled={isUploading}
+                <span
+                  className={cn({
+                    'pointer-events-none opacity-50': isUploading,
+                  })}
                 >
-                  <Upload className="mr-2 h-4 w-4" />
-                  {isUploading ? 'Uploading...' : 'Upload Image'}
-                </CldUploadButton>
+                  <CldUploadButton
+                    options={{
+                      sources: ['local', 'url', 'unsplash'],
+                      styles: {
+                        zIndex: 99999,
+                      },
+                    }}
+                    uploadPreset="nairobi_techcreative"
+                    onSuccess={handleUploadSuccess}
+                    onUpload={() => setIsUploading(true)}
+                    onError={(error) => {
+                      setIsUploading(false);
+                      toast({
+                        variant: 'destructive',
+                        title: 'Upload Failed',
+                        description: String((error as any).info),
+                      });
+                    }}
+                    className={cn(
+                      buttonVariants({ variant: 'outline' }),
+                      'mt-2'
+                    )}
+                  >
+                    <Upload className="mr-2 h-4 w-4" />
+                    {isUploading ? 'Uploading...' : 'Upload Image'}
+                  </CldUploadButton>
+                </span>
               </FormItem>
 
               <FormField
