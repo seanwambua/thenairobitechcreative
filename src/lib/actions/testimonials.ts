@@ -6,7 +6,7 @@ import {
   TestimonialSchema,
   type TestimonialInputSchemaType,
 } from '@/lib/schemas';
-import type { Testimonial } from '@/app/generated/prisma';
+import type { Testimonial } from '@prisma/client';
 import { auth } from '@/lib/auth';
 import { Role } from '@/lib/roles';
 

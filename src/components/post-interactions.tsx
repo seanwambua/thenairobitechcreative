@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import { Heart, MessageCircle } from 'lucide-react';
 import { likePost, unlikePost } from '@/lib/actions/likes';
-import type { Post } from '@/app/generated/prisma';
+import type { Post } from '@prisma/client';
 
 interface PostInteractionsProps {
   post: Post;

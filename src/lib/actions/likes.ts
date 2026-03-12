@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { getUserById } from '@/lib/actions/get-user-by-id';
 
 const LikeInputSchema = z.object({
   postId: z.number(),
@@ -13,6 +14,12 @@ export async function likePost(data: z.infer<typeof LikeInputSchema>) {
   const session = await auth();
   if (!session?.user?.id) {
     throw new Error('You must be signed in to like a post.');
+  }
+
+  const user = await getUserById(session.user.id);
+
+  if (!user) {
+    throw new Error('User not found.');
   }
 
   const validatedData = LikeInputSchema.parse(data);
@@ -45,6 +52,12 @@ export async function unlikePost(data: z.infer<typeof LikeInputSchema>) {
   const session = await auth();
   if (!session?.user?.id) {
     throw new Error('You must be signed in to unlike a post.');
+  }
+
+  const user = await getUserById(session.user.id);
+
+  if (!user) {
+    throw new Error('User not found.');
   }
 
   const validatedData = LikeInputSchema.parse(data);

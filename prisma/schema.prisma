@@ -3,13 +3,23 @@ generator client {
 }
 
 datasource db {
-  provider = "postgres"
-  url      = env("DATABASE_URL")
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum UserStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 model Post {
-  id               Int       @id @default(autoincrement())
-  slug             String    @unique
+  id               Int      @id @default(autoincrement())
+  slug             String   @unique
   title            String
   description      String
   content          String
@@ -18,12 +28,12 @@ model Post {
   author           String
   authorAvatarUrl  String
   authorAvatarHint String
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-  userId           String?
-  comments         Comment[]
   likes            Like[]
-  user             User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comments         Comment[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  userId           String?
+  user             User?    @relation(fields: [userId], references: [id])
 }
 
 model Project {
@@ -35,11 +45,11 @@ model Project {
   imageHint   String
   gridSpan    String
   icon        String
+  url         String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   userId      String?
-  url         String?
-  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User?    @relation(fields: [userId], references: [id])
 }
 
 model Testimonial {
@@ -51,14 +61,36 @@ model Testimonial {
   avatarHint String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  userId     String?
-  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id])
 }
 
 model Settings {
   id        Int      @id @default(autoincrement())
   key       String   @unique
   value     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, postId])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -90,23 +122,23 @@ model Session {
 }
 
 model User {
-  id             String        @id @default(cuid())
-  email          String?       @unique
+  id             String    @id @default(cuid())
   name           String?
+  email          String?   @unique
   emailVerified  DateTime?
   image          String?
   hashedPassword String?
-  role           Role          @default(USER)
-  status         UserStatus    @default(PENDING)
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  role           Role      @default(USER)
+  status         UserStatus @default(PENDING)
   accounts       Account[]
-  comments       Comment[]
-  likes          Like[]
+  sessions       Session[]
   posts          Post[]
   projects       Project[]
-  sessions       Session[]
   testimonials   Testimonial[]
+  likes          Like[]
+  comments       Comment[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 }
 
 model VerificationToken {
@@ -115,37 +147,4 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
-}
-
-model Comment {
-  id        Int      @id @default(autoincrement())
-  content   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  postId    Int
-  userId    String
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model Like {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  postId    Int
-  userId    String
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, postId])
-}
-
-enum Role {
-  USER
-  ADMIN
-}
-
-enum UserStatus {
-  PENDING
-  APPROVED
-  REJECTED
 }

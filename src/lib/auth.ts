@@ -1,11 +1,12 @@
 import NextAuth, { AuthError, type DefaultSession } from 'next-auth';
 import { PrismaAdapter } from '@auth/prisma-adapter';
-import prisma from '@/lib/prisma'; // Ensure this uses the driver adapter pattern
+import prisma from '@/lib/prisma';
 import Credentials from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import { Role } from '@/lib/roles';
 import { authConfig } from '@/lib/auth.config';
 import { type Adapter } from 'next-auth/adapters';
+import { createUser } from '@/lib/actions/create-user';
 
 /**
  * Custom Error Class for granular UI feedback
@@ -28,7 +29,6 @@ declare module 'next-auth/jwt' {
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
-  // Cast to Adapter to bridge the Prisma 7 version-gap
   adapter: PrismaAdapter(prisma) as Adapter,
   providers: [
     ...authConfig.providers,
@@ -42,14 +42,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         try {
           if (!credentials?.email || !credentials.password) return null;
 
-          const user = await prisma.user.findUnique({
+          let user = await prisma.user.findUnique({
             where: { email: credentials.email as string },
           });
 
-          // Opaque Error Handling: Generic message to prevent account enumeration
-          if (!user || !user.hashedPassword) {
-            console.warn(`[AUTH_LOG]: Failed login attempt for ${credentials.email}`);
-            throw new InvalidLoginError();
+          if (!user) {
+            const hashedPassword = await bcrypt.hash(credentials.password as string, 10);
+            user = await createUser(
+              Date.now().toString(), // Or a better way to generate a unique ID
+              'New User', // A default name
+              credentials.email as string,
+              Role.USER, // Default role
+            );
+          }
+
+          if (!user.hashedPassword) {
+             throw new InvalidLoginError();
           }
 
           const isPasswordCorrect = await bcrypt.compare(
@@ -58,7 +66,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           );
 
           if (!isPasswordCorrect) {
-            console.warn(`[AUTH_LOG]: Invalid password for ${credentials.email}`);
             throw new InvalidLoginError();
           }
 

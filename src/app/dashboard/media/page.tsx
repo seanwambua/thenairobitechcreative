@@ -12,5 +12,11 @@ export default async function MediaPage() {
 
   const settings = await getSettings(['heroImage', 'logo', 'founderImage']);
 
-  return <MediaClient initialSettings={settings} />;
+  const initialSettings = {
+    heroImage: settings.heroImage || null,
+    logo: settings.logo || null,
+    founderImage: settings.founderImage || null,
+  };
+
+  return <MediaClient initialSettings={initialSettings} />;
 }

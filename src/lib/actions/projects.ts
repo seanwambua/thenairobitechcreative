@@ -12,20 +12,26 @@ import {
 export type Project = z.infer<typeof ProjectSchema>;
 
 export async function getProjects(): Promise<Project[]> {
-  const projectsData = await prisma.project.findMany({
-    orderBy: { createdAt: 'desc' },
-  });
+  try {
+    const projectsData = await prisma.project.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
 
-  const validatedProjects = ProjectSchema.array().parse(
-    projectsData.map((p) => ({
-      ...p,
-      keyFeatures: (p.keyFeatures || '').split(',').map((s) => s.trim()),
-      icon: p.icon as IconName,
-      url: p.url ?? '',
-    }))
-  );
+    const validatedProjects = ProjectSchema.array().parse(
+      projectsData.map((p) => ({
+        ...p,
+        keyFeatures: (p.keyFeatures || '').split(',').map((s) => s.trim()),
+        icon: p.icon as IconName,
+        url: p.url || null,
+        userId: p.userId || null,
+      }))
+    );
 
-  return validatedProjects;
+    return validatedProjects;
+  } catch (error) {
+    console.error('[GET_PROJECTS_ERROR]:', error);
+    return [];
+  }
 }
 
 export async function upsertProject(
@@ -52,6 +58,7 @@ export async function createProject(
     data: {
       ...rest,
       keyFeatures: keyFeatures.join(','),
+      url: validatedData.url,
     },
   });
 
@@ -61,11 +68,12 @@ export async function createProject(
       .split(',')
       .map((s) => s.trim()),
     icon: newProjectData.icon as IconName,
-    userId: newProjectData.userId ?? undefined,
-    url: newProjectData.url ?? '',
+    userId: newProjectData.userId || null,
+    url: newProjectData.url || null,
   };
 
   revalidatePath('/');
+  revalidatePath('/projects');
   return newProject;
 }
 
@@ -85,6 +93,7 @@ export async function updateProject(
     data: {
       ...rest,
       keyFeatures: keyFeatures.join(','),
+      url: validatedData.url,
     },
   });
 
@@ -94,11 +103,12 @@ export async function updateProject(
       .split(',')
       .map((s) => s.trim()),
     icon: updatedProjectData.icon as IconName,
-    userId: updatedProjectData.userId ?? undefined,
-    url: updatedProjectData.url ?? '',
+    userId: updatedProjectData.userId || null,
+    url: updatedProjectData.url || null,
   };
 
   revalidatePath('/');
+  revalidatePath('/projects');
   return updatedProject;
 }
 
@@ -107,4 +117,5 @@ export async function deleteProject(id: number): Promise<void> {
     where: { id },
   });
   revalidatePath('/');
+  revalidatePath('/projects');
 }

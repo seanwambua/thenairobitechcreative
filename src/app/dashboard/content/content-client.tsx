@@ -32,7 +32,7 @@ import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { PostEditorSheet } from '@/components/post-editor-sheet';
 import { useToast } from '@/hooks/use-toast';
-import type { Post } from '@/app/generated/prisma';
+import type { Post } from '@prisma/client';
 import { format } from 'date-fns';
 import { CardContent } from '@/components/ui/card';
 import { deletePost } from '@/lib/actions/posts';

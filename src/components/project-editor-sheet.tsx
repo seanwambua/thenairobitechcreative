@@ -34,11 +34,11 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import placeholderImages from '@/lib/placeholder-images.json';
-import { type Project } from '@/lib/data';
+import { type Project } from '@/lib/actions/projects';
 import { Upload, Loader2 } from 'lucide-react';
 import { ProjectSchema, iconNames } from '@/lib/schemas';
 import { createProject, updateProject } from '@/lib/actions/projects';
-import { CldUploadButton } from 'next-cloudinary';
+import { CldUploadWidget } from 'next-cloudinary';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
@@ -188,17 +188,11 @@ export function ProjectEditorDialog({
                       </div>
                     )}
                   </div>
-                  <CldUploadButton
-                    options={{
-                      sources: ['local', 'url', 'unsplash'],
-                      styles: {
-                        zIndex: 99999,
-                      },
-                    }}
-                    type="button"
+                  <CldUploadWidget
                     uploadPreset="nairobi_techcreative"
                     onSuccess={handleUploadSuccess}
-                    onUpload={() => setIsUploading(true)}
+                    onUploadAdded={() => setIsUploading(true)}
+                    onClose={() => setIsUploading(false)}
                     onError={(error) => {
                       setIsUploading(false);
                       toast({
@@ -207,15 +201,26 @@ export function ProjectEditorDialog({
                         description: String((error as any).info),
                       });
                     }}
-                    className={cn(
-                      buttonVariants({ variant: 'outline' }),
-                      'w-full'
-                    )}
-                    disabled={isUploading}
+                    options={{
+                      sources: ['local', 'url', 'unsplash'],
+                      styles: { zIndex: 99999 },
+                    }}
                   >
-                    <Upload className="mr-2 h-4 w-4" />
-                    {isUploading ? 'Uploading...' : 'Upload Image'}
-                  </CldUploadButton>
+                    {({ open }) => {
+                      return (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="w-full"
+                          disabled={isUploading}
+                          onClick={() => open?.()}
+                        >
+                          <Upload className="mr-2 h-4 w-4" />
+                          {isUploading ? 'Uploading...' : 'Upload Image'}
+                        </Button>
+                      );
+                    }}
+                  </CldUploadWidget>
                 </FormItem>
 
                 <FormField
