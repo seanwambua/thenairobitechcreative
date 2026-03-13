@@ -1,11 +1,13 @@
-
 'use server';
 
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+import { auth } from '@/lib/auth';
+import { Role } from '@/lib/roles';
 import {
   ProjectSchema,
+  ProjectInputSchema,
   type ProjectInputSchemaType,
   type IconName,
 } from '@/lib/schemas';
@@ -14,7 +16,6 @@ export type Project = z.infer<typeof ProjectSchema>;
 
 /**
  * Fetches all projects from the database and validates them against the schema.
- * Handles the conversion of keyFeatures from a stored string to an array.
  */
 export async function getProjects(): Promise<Project[]> {
   try {
@@ -22,23 +23,15 @@ export async function getProjects(): Promise<Project[]> {
       orderBy: { createdAt: 'desc' },
     });
 
-    const validatedProjects = projectsData.map((p) => {
-      const parsed = ProjectSchema.safeParse({
+    return projectsData.map((p) => {
+      return {
         ...p,
         keyFeatures: (p.keyFeatures || '').split(',').map((s) => s.trim()),
         icon: p.icon as IconName,
         url: p.url || null,
         userId: p.userId || null,
-      });
-      
-      if (!parsed.success) {
-        console.error(`[VALIDATION_ERROR] Project ID ${p.id}:`, parsed.error.format());
-        return null;
-      }
-      return parsed.data;
-    }).filter((p): p is Project => p !== null);
-
-    return validatedProjects;
+      };
+    });
   } catch (error) {
     console.error('[GET_PROJECTS_ERROR]:', error);
     return [];
@@ -46,7 +39,7 @@ export async function getProjects(): Promise<Project[]> {
 }
 
 /**
- * Fetches only favorited projects for the homepage innovation suite.
+ * Fetches only favorited projects for the homepage.
  */
 export async function getFavoriteProjects(): Promise<Project[]> {
   try {
@@ -72,6 +65,11 @@ export async function getFavoriteProjects(): Promise<Project[]> {
 }
 
 export async function toggleProjectFavorite(id: number): Promise<{ success: boolean; error?: string }> {
+  const session = await auth();
+  if (session?.user?.role !== Role.ADMIN) {
+    return { success: false, error: 'Unauthorized' };
+  }
+
   try {
     const project = await prisma.project.findUnique({
       where: { id },
@@ -80,7 +78,6 @@ export async function toggleProjectFavorite(id: number): Promise<{ success: bool
 
     if (!project) return { success: false, error: 'Project not found' };
 
-    // If we are trying to favorite a project, check the limit
     if (!project.isFavorite) {
       const favoriteCount = await prisma.project.count({
         where: { isFavorite: true }
@@ -118,15 +115,15 @@ export async function upsertProject(
 export async function createProject(
   data: ProjectInputSchemaType
 ): Promise<Project> {
-  const validation = ProjectSchema.omit({
-    id: true,
-    createdAt: true,
-    updatedAt: true,
-    userId: true,
-  }).safeParse(data);
+  const session = await auth();
+  if (session?.user?.role !== Role.ADMIN) {
+    throw new Error('Unauthorized');
+  }
+
+  const validation = ProjectInputSchema.safeParse(data);
 
   if (!validation.success) {
-    throw new Error('Invalid project data.');
+    throw new Error('Invalid project data: ' + validation.error.message);
   }
 
   const { keyFeatures, ...rest } = validation.data;
@@ -136,6 +133,7 @@ export async function createProject(
       keyFeatures: keyFeatures.join(','),
       isFavorite: rest.isFavorite ?? false,
       url: validation.data.url,
+      userId: session.user.id,
     },
   });
 
@@ -159,13 +157,12 @@ export async function updateProject(
   id: number,
   data: ProjectInputSchemaType
 ): Promise<Project> {
-  // Use a partial schema for update validation to avoid forcing defaults
-  const validation = ProjectSchema.omit({
-    id: true,
-    createdAt: true,
-    updatedAt: true,
-    userId: true,
-  }).partial().safeParse(data);
+  const session = await auth();
+  if (session?.user?.role !== Role.ADMIN) {
+    throw new Error('Unauthorized');
+  }
+
+  const validation = ProjectInputSchema.partial().safeParse(data);
 
   if (!validation.success) {
     throw new Error('Invalid project data.');
@@ -173,7 +170,6 @@ export async function updateProject(
 
   const { keyFeatures, ...rest } = validation.data;
 
-  // We explicitly handle keyFeatures transformation if it exists
   const updateData: any = { ...rest };
   if (keyFeatures) {
     updateData.keyFeatures = keyFeatures.join(',');
@@ -201,6 +197,11 @@ export async function updateProject(
 }
 
 export async function deleteProject(id: number): Promise<void> {
+  const session = await auth();
+  if (session?.user?.role !== Role.ADMIN) {
+    throw new Error('Unauthorized');
+  }
+
   await prisma.project.delete({
     where: { id },
   });

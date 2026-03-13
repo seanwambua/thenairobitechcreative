@@ -4,6 +4,7 @@ import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import {
   TestimonialSchema,
+  TestimonialInputSchema,
   type TestimonialInputSchemaType,
 } from '@/lib/schemas';
 import type { Testimonial } from '@prisma/client';
@@ -32,11 +33,9 @@ export async function createTestimonial(data: TestimonialInputSchemaType) {
   if (!session?.user?.id) {
     throw new Error('You must be signed in to create a testimonial.');
   }
-  const validatedData = TestimonialSchema.omit({
-    id: true,
-    createdAt: true,
-    updatedAt: true,
-  }).parse(data);
+  
+  const validatedData = TestimonialInputSchema.parse(data);
+  
   const newTestimonial = await prisma.testimonial.create({
     data: {
       ...validatedData,
@@ -55,10 +54,15 @@ export async function updateTestimonial(testimonial: Testimonial) {
   if (session?.user?.role !== Role.ADMIN && session?.user?.id !== testimonial.userId) {
     throw new Error('You are not authorized to update this testimonial.');
   }
-  const { id, ...updateData } = TestimonialSchema.parse(testimonial);
+  
+  const { id, createdAt, updatedAt, userId, ...rest } = testimonial;
+  
+  // Validate rest of the fields
+  const validatedData = TestimonialInputSchema.parse(rest);
+  
   const updatedTestimonial = await prisma.testimonial.update({
     where: { id },
-    data: { ...updateData },
+    data: validatedData,
   });
 
   revalidatePath('/dashboard/testimonials');

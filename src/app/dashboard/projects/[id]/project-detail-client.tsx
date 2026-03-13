@@ -22,7 +22,6 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { createMilestone, deleteMilestone } from '@/lib/actions/milestones';
 import { createTask, deleteTask, updateTask } from '@/lib/actions/tasks';
-import { TaskStatus } from '@prisma/client';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
@@ -82,10 +81,10 @@ export function ProjectDetailClient({ project }: ProjectDetailClientProps) {
     }
   };
 
-  const handleToggleTask = async (taskId: number, currentStatus: TaskStatus) => {
-    const newStatus = currentStatus === 'DONE' ? TaskStatus.TODO : TaskStatus.DONE;
+  const handleToggleTask = async (taskId: number, currentStatus: string) => {
+    const newStatus = currentStatus === 'DONE' ? 'TODO' : 'DONE';
     try {
-      await updateTask(taskId, { status: newStatus });
+      await updateTask(taskId, { status: newStatus as any });
       router.refresh();
     } catch (e) {
       toast({ variant: 'destructive', title: 'Error', description: 'Failed to update task.' });

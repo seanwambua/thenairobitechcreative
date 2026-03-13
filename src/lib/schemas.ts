@@ -1,4 +1,3 @@
-
 import { z } from 'zod';
 
 export const iconNames = [
@@ -36,17 +35,19 @@ export const ProjectSchema = z.object({
   imageHint: z.string(),
   gridSpan: z.string(),
   icon: z.enum(iconNames),
-  isFavorite: z.boolean().optional(), // Made optional to prevent accidental resets during partial updates
+  isFavorite: z.boolean().optional(),
   createdAt: z.date(),
   updatedAt: z.date(),
   userId: z.string().nullable(),
 });
 
 // Used for create/update actions where some fields are not required.
+// Explicitly omit fields that are handled by the server.
 export const ProjectInputSchema = ProjectSchema.omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+  userId: true,
 });
 export type ProjectInputSchemaType = z.infer<typeof ProjectInputSchema>;
 
@@ -66,6 +67,7 @@ export const TestimonialInputSchema = TestimonialSchema.omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+  userId: true,
 });
 export type TestimonialInputSchemaType = z.infer<typeof TestimonialInputSchema>;
 
