@@ -98,10 +98,12 @@ export async function createPost(
     },
   });
 
+  revalidatePath('/dashboard');
   revalidatePath('/dashboard/content');
   revalidatePath('/dashboard/analytics');
   revalidatePath('/blog');
   revalidatePath(`/blog/${newPost.slug}`);
+  revalidatePath('/');
   return newPost;
 }
 
@@ -131,6 +133,7 @@ export async function updatePost(post: Post): Promise<Post> {
       data: dataToUpdate,
     });
 
+    revalidatePath('/dashboard');
     revalidatePath('/dashboard/content');
     revalidatePath('/dashboard/analytics');
     revalidatePath('/blog');
@@ -159,10 +162,12 @@ export async function deletePost(postId: number): Promise<void> {
   const post = await prisma.post.findUnique({ where: { id: postId } });
   if (post) {
     await prisma.post.delete({ where: { id: postId } });
+    revalidatePath('/dashboard');
     revalidatePath('/dashboard/content');
     revalidatePath('/dashboard/analytics');
     revalidatePath('/blog');
     revalidatePath(`/blog/${post.slug}`);
+    revalidatePath('/');
   }
 }
 

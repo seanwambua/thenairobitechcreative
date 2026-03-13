@@ -1,7 +1,9 @@
 import prisma from '@/lib/prisma';
 import DashboardView from './dashboard-view';
-import { Project } from '../../lib/actions/projects';
+import { type Project } from '@/lib/actions/projects';
 import type { IconName } from '@/lib/schemas';
+
+export const dynamic = 'force-dynamic';
 
 export default async function DashboardPage() {
   try {
@@ -24,6 +26,8 @@ export default async function DashboardPage() {
         .split(',')
         .map((feature) => feature.trim()),
       icon: p.icon as IconName,
+      url: p.url || null,
+      userId: p.userId || null,
     }));
 
     return (

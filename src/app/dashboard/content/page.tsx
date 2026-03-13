@@ -9,6 +9,8 @@ import { getPosts } from '@/lib/actions/posts';
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 
+export const dynamic = 'force-dynamic';
+
 export default async function ContentPage() {
   const session = await auth();
   const posts = await getPosts();
@@ -26,7 +28,6 @@ export default async function ContentPage() {
             Manage your articles and blog content.
           </CardDescription>
         </div>
-        {/* The button to open the sheet will be in the client component */}
       </CardHeader>
       <ContentClient initialPosts={posts} />
     </Card>

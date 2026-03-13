@@ -7,6 +7,8 @@ import {
 import { TestimonialsClient } from './testimonials-client';
 import { getAllTestimonials } from '@/lib/actions/testimonials';
 
+export const dynamic = 'force-dynamic';
+
 export default async function TestimonialsPage() {
   const testimonials = await getAllTestimonials();
 

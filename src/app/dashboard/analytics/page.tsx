@@ -11,6 +11,8 @@ import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { Role } from '@/lib/roles';
 
+export const dynamic = 'force-dynamic';
+
 export default async function AnalyticsPage() {
   const session = await auth();
   if (session?.user?.role !== Role.ADMIN) {

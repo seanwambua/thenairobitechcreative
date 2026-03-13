@@ -5,6 +5,8 @@ import { auth } from '@/lib/auth';
 import { Role } from '@/lib/roles';
 import { redirect } from 'next/navigation';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Project Detail Page (Server Component)
  * Fetches deep project structure and serializes data for client hydration.

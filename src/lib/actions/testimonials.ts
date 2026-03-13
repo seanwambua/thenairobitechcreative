@@ -43,6 +43,7 @@ export async function createTestimonial(data: TestimonialInputSchemaType) {
     },
   });
 
+  revalidatePath('/dashboard');
   revalidatePath('/dashboard/testimonials');
   revalidatePath('/dashboard/analytics');
   revalidatePath('/');
@@ -65,6 +66,7 @@ export async function updateTestimonial(testimonial: Testimonial) {
     data: validatedData,
   });
 
+  revalidatePath('/dashboard');
   revalidatePath('/dashboard/testimonials');
   revalidatePath('/dashboard/analytics');
   revalidatePath('/');
@@ -78,6 +80,7 @@ export async function deleteTestimonial(testimonialId: number) {
     throw new Error('You are not authorized to delete this testimonial.');
   }
   await prisma.testimonial.delete({ where: { id: testimonialId } });
+  revalidatePath('/dashboard');
   revalidatePath('/dashboard/testimonials');
   revalidatePath('/dashboard/analytics');
   revalidatePath('/');

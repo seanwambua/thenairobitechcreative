@@ -5,6 +5,8 @@ import { getQuotations } from '@/lib/actions/quotations';
 import { QuotationsClient } from './quotations-client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
+export const dynamic = 'force-dynamic';
+
 export default async function QuotationsPage() {
   const session = await auth();
   if (session?.user?.role !== Role.ADMIN) {

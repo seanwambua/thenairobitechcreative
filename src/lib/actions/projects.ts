@@ -94,6 +94,7 @@ export async function toggleProjectFavorite(id: number): Promise<{ success: bool
     });
 
     revalidatePath('/');
+    revalidatePath('/dashboard');
     revalidatePath('/dashboard/projects');
     return { success: true };
   } catch (error) {
@@ -147,6 +148,7 @@ export async function createProject(
 
   revalidatePath('/');
   revalidatePath('/projects');
+  revalidatePath('/dashboard');
   revalidatePath('/dashboard/projects');
   return newProject;
 }
@@ -190,6 +192,7 @@ export async function updateProject(
 
   revalidatePath('/');
   revalidatePath('/projects');
+  revalidatePath('/dashboard');
   revalidatePath('/dashboard/projects');
   return updatedProject;
 }
@@ -205,5 +208,6 @@ export async function deleteProject(id: number): Promise<void> {
   });
   revalidatePath('/');
   revalidatePath('/projects');
+  revalidatePath('/dashboard');
   revalidatePath('/dashboard/projects');
 }
