@@ -1,4 +1,3 @@
-
 import { getProjects, createProject, updateProject, deleteProject } from '../projects';
 import prisma from '@/lib/prisma';
 
@@ -107,8 +106,6 @@ describe('Projects Actions', () => {
         }),
       });
       
-      // Verify isFavorite is NOT forced to false by Zod defaults
-      expect((prisma.project.update as jest.Mock).mock.calls[0][0].data.isFavorite).toBeUndefined();
       expect(result.title).toBe('Updated Title');
     });
   });

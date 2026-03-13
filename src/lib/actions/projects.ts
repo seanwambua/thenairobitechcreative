@@ -131,8 +131,6 @@ export async function createProject(
     data: {
       ...rest,
       keyFeatures: keyFeatures.join(','),
-      isFavorite: rest.isFavorite ?? false,
-      url: validation.data.url,
       userId: session.user.id,
     },
   });

@@ -36,8 +36,8 @@ export const ProjectSchema = z.object({
   gridSpan: z.string(),
   icon: z.enum(iconNames),
   isFavorite: z.boolean().optional(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
   userId: z.string().nullable(),
 });
 
@@ -58,8 +58,8 @@ export const TestimonialSchema = z.object({
   title: z.string().min(3, 'Author title must be at least 3 characters.'),
   avatarUrl: z.string().url(),
   avatarHint: z.string(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
   userId: z.string().nullable(),
 });
 
