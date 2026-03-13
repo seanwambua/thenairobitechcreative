@@ -115,7 +115,7 @@ export function ProjectsClient({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6">
       <div className="flex justify-end">
         <Button onClick={handleCreateNew}>
           <PlusCircle className="mr-2 h-4 w-4" />

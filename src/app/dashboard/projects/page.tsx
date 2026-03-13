@@ -11,7 +11,7 @@ export default async function ProjectsPage() {
   const projects = await getProjects();
 
   return (
-    <Card>
+    <Card className="border-0 shadow-none p-0">
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
           <CardTitle>Portfolio Projects</CardTitle>

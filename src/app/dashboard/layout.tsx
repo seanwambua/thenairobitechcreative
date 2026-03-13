@@ -39,6 +39,14 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Logo } from '@/components/logo';
 
@@ -78,6 +86,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname();
   const { data: session } = useSession();
   const isMobile = useMediaQuery('(max-width: 768px)');
+
+  const pathSegments = pathname.split('/').filter(Boolean);
 
   const handleNavigation = () => {
     if (isMobile) {
@@ -187,7 +197,30 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <header className="flex h-16 shrink-0 items-center justify-between border-b px-4">
           <div className="flex items-center gap-2">
             <SidebarTrigger />
-            <h1 className="text-lg font-semibold">Dashboard</h1>
+            <Breadcrumb>
+              <BreadcrumbList>
+                {pathSegments.map((segment, index) => {
+                  const href = `/${pathSegments.slice(0, index + 1).join('/')}`;
+                  const isLast = index === pathSegments.length - 1;
+                  const label = segment.charAt(0).toUpperCase() + segment.slice(1);
+
+                  return (
+                    <React.Fragment key={href}>
+                      <BreadcrumbItem>
+                        {isLast ? (
+                          <BreadcrumbPage>{label}</BreadcrumbPage>
+                        ) : (
+                          <BreadcrumbLink asChild>
+                            <Link href={href}>{label}</Link>
+                          </BreadcrumbLink>
+                        )}
+                      </BreadcrumbItem>
+                      {!isLast && <BreadcrumbSeparator />}
+                    </React.Fragment>
+                  );
+                })}
+              </BreadcrumbList>
+            </Breadcrumb>
           </div>
           <div className="flex items-center gap-2">
             <Menubar className="border-none bg-transparent shadow-none">
@@ -206,7 +239,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </MenubarContent>
               </MenubarMenu>
             </Menubar>
-            <ThemeToggle />
+            
           </div>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 md:p-6">
