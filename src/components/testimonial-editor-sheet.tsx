@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -22,13 +21,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import type { Testimonial } from '@prisma/client';
 import placeholderImages from '@/lib/placeholder-images.json';
-import { Upload, Loader2 } from 'lucide-react';
+import { Upload, Loader2, User as UserIcon } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { TestimonialSchema } from '@/lib/schemas';
 import {
@@ -97,8 +97,8 @@ export function TestimonialEditorSheet({
     const secure_url = result.info.secure_url;
     setImagePreview(secure_url);
     toast({
-      title: 'Image Uploaded',
-      description: 'The avatar has been updated.',
+      title: 'Avatar Updated',
+      description: 'The author profile image has been uploaded successfully.',
     });
     setIsUploading(false);
   };
@@ -124,7 +124,7 @@ export function TestimonialEditorSheet({
 
       toast({
         title: `Testimonial ${testimonial ? 'Updated' : 'Created'}!`,
-        description: `The testimonial from "${values.author}" has been successfully saved.`,
+        description: `Your changes to the testimonial from "${values.author}" have been saved.`,
       });
       onSave();
     } catch (error) {
@@ -133,80 +133,80 @@ export function TestimonialEditorSheet({
         title: 'Error',
         description: `Failed to ${
           testimonial ? 'update' : 'create'
-        } testimonial.`,
+        } testimonial. Please try again.`,
       });
     } finally {
       setIsSaving(false);
     }
   }
 
+  const quoteValue = form.watch('quote') || '';
+
   return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen} modal={false}>
-      <SheetContent className="w-full overflow-y-auto sm:max-w-2xl">
-        <SheetHeader>
-          <SheetTitle>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+      <SheetContent className="w-full overflow-y-auto sm:max-w-2xl border-l shadow-2xl">
+        <SheetHeader className="mb-8">
+          <SheetTitle className="text-2xl font-bold">
             {testimonial ? 'Edit Testimonial' : 'Create New Testimonial'}
           </SheetTitle>
           <SheetDescription>
             {testimonial
-              ? 'Make changes to this testimonial.'
-              : 'Fill out the details for the new testimonial.'}
+              ? 'Refine the client story or update the profile details.'
+              : 'Add a new voice to your portfolio. Share how your work made an impact.'}
           </SheetDescription>
         </SheetHeader>
-        <div className="py-8">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormItem className="flex flex-col items-center text-center">
-                <FormLabel>Author Avatar</FormLabel>
-                <div className="relative">
-                  <Avatar className="h-32 w-32">
-                    {imagePreview && (
-                      <AvatarImage src={imagePreview} alt="Avatar preview" />
-                    )}
-                    <AvatarFallback>
-                      {form.getValues('author')?.charAt(0) || '?'}
-                    </AvatarFallback>
-                  </Avatar>
-                  {isUploading && (
-                    <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50">
-                      <Loader2 className="h-8 w-8 animate-spin text-white" />
-                    </div>
+        
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <div className="flex flex-col items-center justify-center p-6 rounded-xl bg-muted/30 border border-dashed border-border/60">
+              <div className="relative mb-4">
+                <Avatar className="h-24 w-24 border-4 border-background shadow-lg">
+                  <AvatarImage src={imagePreview ?? undefined} alt="Avatar preview" />
+                  <AvatarFallback className="bg-muted">
+                    <UserIcon className="h-10 w-10 text-muted-foreground" />
+                  </AvatarFallback>
+                </Avatar>
+                {isUploading && (
+                  <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 backdrop-blur-xs">
+                    <Loader2 className="h-6 w-6 animate-spin text-white" />
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-col items-center gap-2">
+                <CldUploadButton
+                  options={{
+                    sources: ['local', 'url', 'unsplash'],
+                    multiple: false,
+                    styles: {
+                      zIndex: 99999,
+                    },
+                  }}
+                  uploadPreset="nairobi_techcreative"
+                  onSuccess={handleUploadSuccess}
+                  onUploadAdded={() => setIsUploading(true)}
+                  onError={(error) => {
+                    setIsUploading(false);
+                    toast({
+                      variant: 'destructive',
+                      title: 'Upload Failed',
+                      description: 'Could not upload the image. Please try again.',
+                    });
+                  }}
+                  className={cn(
+                    buttonVariants({ variant: 'secondary', size: 'sm' }),
+                    isUploading && 'opacity-50 pointer-events-none'
                   )}
-                </div>
-                <span
-                  className={cn({
-                    'pointer-events-none opacity-50': isUploading,
-                  })}
                 >
-                  <CldUploadButton
-                    options={{
-                      sources: ['local', 'url', 'unsplash'],
-                      styles: {
-                        zIndex: 99999,
-                      },
-                    }}
-                    uploadPreset="nairobi_techcreative"
-                    onSuccess={handleUploadSuccess}
-                    onUpload={() => setIsUploading(true)}
-                    onError={(error) => {
-                      setIsUploading(false);
-                      toast({
-                        variant: 'destructive',
-                        title: 'Upload Failed',
-                        description: String((error as any).info),
-                      });
-                    }}
-                    className={cn(
-                      buttonVariants({ variant: 'outline' }),
-                      'mt-2'
-                    )}
-                  >
-                    <Upload className="mr-2 h-4 w-4" />
-                    {isUploading ? 'Uploading...' : 'Upload Image'}
-                  </CldUploadButton>
-                </span>
-              </FormItem>
+                  <Upload className="mr-2 h-3 w-3" />
+                  Change Avatar
+                </CldUploadButton>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-semibold">
+                  Recommended: 400x400 JPG/PNG
+                </p>
+              </div>
+            </div>
 
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <FormField
                 control={form.control}
                 name="author"
@@ -214,7 +214,7 @@ export function TestimonialEditorSheet({
                   <FormItem>
                     <FormLabel>Author Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter author's name" {...field} />
+                      <Input placeholder="e.g. Jane Doe" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -225,53 +225,66 @@ export function TestimonialEditorSheet({
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Author Title</FormLabel>
+                    <FormLabel>Professional Title</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., CEO, Founder" {...field} />
+                      <Input placeholder="e.g. CEO, TechLead" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="quote"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Quote</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Enter the testimonial quote here."
-                        className="resize-y"
-                        rows={5}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            </div>
 
-              <SheetFooter className="mt-4">
-                <SheetClose asChild>
-                  <Button type="button" variant="outline">
-                    Cancel
-                  </Button>
-                </SheetClose>
-                <Button
-                  type="submit"
-                  disabled={isUploading || isSaving}
-                  onClick={form.handleSubmit(onSubmit)}
-                >
-                  {(isUploading || isSaving) && (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  )}
-                  Save Testimonial
+            <FormField
+              control={form.control}
+              name="quote"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex items-center justify-between">
+                    <FormLabel>The Success Story</FormLabel>
+                    <span className={cn(
+                      "text-[10px] font-mono",
+                      quoteValue.length < 10 ? "text-destructive" : "text-muted-foreground"
+                    )}>
+                      {quoteValue.length} chars
+                    </span>
+                  </div>
+                  <FormControl>
+                    <Textarea
+                      placeholder="What did they say about the project?"
+                      className="min-h-[150px] resize-none focus-visible:ring-primary"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription className="text-xs">
+                    Testimonials work best when they focus on specific outcomes or the working experience.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <SheetFooter className="gap-3 sm:gap-0 pt-4 border-t">
+              <SheetClose asChild>
+                <Button type="button" variant="ghost">
+                  Discard
                 </Button>
-              </SheetFooter>
-            </form>
-          </Form>
-        </div>
+              </SheetClose>
+              <Button
+                type="submit"
+                disabled={isUploading || isSaving}
+                className="min-w-[140px]"
+              >
+                {isSaving ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <PlusCircle className="mr-2 h-4 w-4" />
+                )}
+                {testimonial ? 'Update Entry' : 'Publish Entry'}
+              </Button>
+            </SheetFooter>
+          </form>
+        </Form>
       </SheetContent>
     </Sheet>
   );
