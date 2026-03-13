@@ -104,7 +104,7 @@ export function ProjectsClient({
         });
       } finally {
         setDeleteDialogOpen(false);
-        setPostToDelete(null);
+        setProjectToDelete(null);
       }
     }
   };
