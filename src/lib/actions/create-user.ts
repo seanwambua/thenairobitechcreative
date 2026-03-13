@@ -1,17 +1,6 @@
-'use server';
-
-import prisma from '@/lib/prisma';
-import { Role } from '@/lib/roles';
-
-export async function createUser(id: string, name: string, email: string, role: Role) {
-  const user = await prisma.user.create({
-    data: {
-      id,
-      name,
-      email,
-      role,
-    },
-  });
-
-  return user;
-}
+/**
+ * @fileOverview This file is deprecated. 
+ * All user creation logic has been consolidated into src/lib/actions/users.ts 
+ * to ensure consistency and proper validation.
+ */
+export {};

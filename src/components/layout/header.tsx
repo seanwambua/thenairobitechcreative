@@ -8,7 +8,8 @@ import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { InquirySheet } from '../inquiry-sheet';
 import { navLinks } from '@/lib/data';
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,8 +24,15 @@ import { Role } from '@/lib/roles';
 export function Header({ logoUrl }: { logoUrl: string | null }) {
   const { data: session, status } = useSession();
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
   const visibleNavItems = navLinks.filter(() => true);
+
+  const handleSignOut = async () => {
+    await signOut({ redirect: false });
+    router.push('/');
+    router.refresh();
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-lg">
@@ -82,16 +90,16 @@ export function Header({ logoUrl }: { logoUrl: string | null }) {
                     </Link>
                   </DropdownMenuItem>
                 )}
-                <DropdownMenuItem
-                  onClick={() => signOut({ callbackUrl: '/login' })}
-                >
+                <DropdownMenuItem onClick={handleSignOut}>
                   <LogOut className="mr-2 h-4 w-4" />
                   Sign Out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button onClick={() => signIn('google')}>Sign In</Button>
+            <Button asChild>
+              <Link href="/login">Sign In</Link>
+            </Button>
           )}
         </div>
         <div className="flex items-center gap-2 md:hidden">

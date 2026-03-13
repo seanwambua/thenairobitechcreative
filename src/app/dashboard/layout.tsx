@@ -55,6 +55,7 @@ import {
   Wrench,
   PlusCircle,
   Users,
+  ClipboardList,
 } from 'lucide-react';
 
 const navItems = [
@@ -62,6 +63,7 @@ const navItems = [
   { href: '/dashboard/content', label: 'Content', icon: NotebookText, adminOnly: true },
   { href: '/dashboard/media', label: 'Media', icon: ImageIcon, adminOnly: true },
   { href: '/dashboard/projects', label: 'Projects', icon: Briefcase },
+  { href: '/dashboard/quotations', label: 'Quotations', icon: ClipboardList, adminOnly: true },
   { href: '/dashboard/testimonials', label: 'Testimonials', icon: Star },
   { href: '/dashboard/analytics', label: 'Analytics', icon: LineChart, adminOnly: true },
   { href: '/dashboard/users', label: 'Users', icon: Users, adminOnly: true },
@@ -93,6 +95,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     if (!isMobile) {
       setOpen(false);
     }
+  };
+
+  const handleSignOut = async () => {
+    await signOut({ redirect: false });
+    router.push('/login');
+    router.refresh();
   };
 
   React.useEffect(() => {
@@ -165,7 +173,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                      </Link>
                    </DropdownMenuItem>
                    <DropdownMenuSeparator />
-                   <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/login' })}>
+                   <DropdownMenuItem onClick={handleSignOut}>
                      <LogOut className="mr-2 h-4 w-4" /> Log out
                    </DropdownMenuItem>
                 </DropdownMenuContent>

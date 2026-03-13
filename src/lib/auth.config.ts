@@ -7,7 +7,6 @@ export const authConfig: NextAuthConfig = {
     signIn: routes.login,
     error: '/unauthorized',
   },
-  // Ensure middleware remains lightweight for Edge Runtime
   providers: [], 
   callbacks: {
     async authorized({ auth, request: { nextUrl } }) {
@@ -19,7 +18,7 @@ export const authConfig: NextAuthConfig = {
 
       // 1. Guard Dashboard: Explicitly check for both authentication and authorization
       if (isDashboardRoute) {
-        if (!isLoggedIn) return false; // Triggers redirect to sign-in page
+        if (!isLoggedIn) return false; 
         
         // Authorization: Only Admins can enter the dashboard
         if (userRole !== Role.ADMIN) {
@@ -39,20 +38,20 @@ export const authConfig: NextAuthConfig = {
       return true;
     },
 
-    // JWT strategy logic: Keep this minimal to avoid bloat in the session cookie
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
+        token.status = user.status;
       }
       return token;
     },
 
-    // Session synchronization: Ensure user object in Client Components stays up-to-date
     async session({ session, token }) {
       if (session.user && token) {
         session.user.id = token.id as string;
         session.user.role = token.role as Role;
+        session.user.status = token.status as string;
       }
       return session;
     },

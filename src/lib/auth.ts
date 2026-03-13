@@ -6,7 +6,6 @@ import bcrypt from 'bcryptjs';
 import { Role } from '@/lib/roles';
 import { authConfig } from '@/lib/auth.config';
 import { type Adapter } from 'next-auth/adapters';
-import { createUser } from '@/lib/actions/create-user';
 
 /**
  * Custom Error Class for granular UI feedback
@@ -18,20 +17,31 @@ class InvalidLoginError extends AuthError {
 
 declare module 'next-auth' {
   interface Session {
-    user: { id: string; role: Role } & DefaultSession['user'];
+    user: {
+      id: string;
+      role: Role;
+      status: string;
+    } & DefaultSession['user'];
   }
-  interface User { id: string; role: Role; }
+  interface User {
+    id: string;
+    role: Role;
+    status: string;
+  }
 }
 
 declare module 'next-auth/jwt' {
-  interface JWT { id: string; role: Role; }
+  interface JWT {
+    id: string;
+    role: Role;
+    status: string;
+  }
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   adapter: PrismaAdapter(prisma) as Adapter,
   providers: [
-    ...authConfig.providers,
     Credentials({
       name: 'Credentials',
       credentials: {
@@ -42,31 +52,28 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         try {
           if (!credentials?.email || !credentials.password) return null;
 
-          let user = await prisma.user.findUnique({
+          const user = await prisma.user.findUnique({
             where: { email: credentials.email as string },
           });
 
-          if (!user) {
-            const hashedPassword = await bcrypt.hash(credentials.password as string, 10);
-            user = await createUser(
-              Date.now().toString(), // Or a better way to generate a unique ID
-              'New User', // A default name
-              credentials.email as string,
-              Role.USER, // Default role
-            );
+          // Standard check: user must exist and have a password
+          if (!user || !user.hashedPassword) {
+             return null;
           }
 
-          if (!user.hashedPassword) {
-             throw new InvalidLoginError();
-          }
-
+          // Security check: Verify password
           const isPasswordCorrect = await bcrypt.compare(
             credentials.password as string,
             user.hashedPassword
           );
 
           if (!isPasswordCorrect) {
-            throw new InvalidLoginError();
+            return null;
+          }
+
+          // Approval check: Only APPROVED users can sign in
+          if (user.status !== 'APPROVED' && user.role !== Role.ADMIN) {
+            throw new Error("Your account is pending approval.");
           }
 
           return {
@@ -74,31 +81,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             name: user.name,
             email: user.email,
             role: user.role as Role,
+            status: user.status,
           };
         } catch (error) {
-          if (error instanceof AuthError) throw error;
+          if (error instanceof Error) throw error;
           console.error("[AUTH_CRITICAL_ERROR]:", error);
-          throw new Error("Internal Server Error");
+          return null;
         }
       },
     }),
   ],
   session: { strategy: 'jwt' },
-  callbacks: {
-    ...authConfig.callbacks,
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        token.role = user.role;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (token && session.user) {
-        session.user.id = token.id;
-        session.user.role = token.role;
-      }
-      return session;
-    },
-  },
 });
