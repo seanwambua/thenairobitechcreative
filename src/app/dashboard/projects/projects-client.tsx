@@ -62,12 +62,15 @@ export function ProjectsClient({
     setEditorOpen(true);
   };
 
-  const handleToggleFavorite = async (projectId: number) => {
-    setIsTogglingFavorite(projectId);
+  const handleToggleFavorite = async (e: React.MouseEvent, project: Project) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    setIsTogglingFavorite(project.id);
     try {
-      const result = await toggleProjectFavorite(projectId);
+      const result = await toggleProjectFavorite(project.id);
       if (result.success) {
-        toast({ title: 'Success', description: 'Project updated.' });
+        toast({ title: 'Success', description: `Project ${!project.isFavorite ? 'added to' : 'removed from'} favorites.` });
         router.refresh();
       } else {
         toast({ variant: 'destructive', title: 'Limit Reached', description: result.error });
@@ -142,7 +145,7 @@ export function ProjectsClient({
                 />
                 
                 {/* Favorite Toggle */}
-                <div className="absolute left-2 top-2">
+                <div className="absolute left-2 top-2 z-10">
                   <Button
                     size="icon"
                     variant="secondary"
@@ -150,14 +153,14 @@ export function ProjectsClient({
                       "h-8 w-8 backdrop-blur-sm shadow-sm transition-colors",
                       project.isFavorite ? "bg-yellow-400 text-yellow-900 hover:bg-yellow-500" : "bg-white/80 hover:bg-white text-muted-foreground"
                     )}
-                    onClick={() => handleToggleFavorite(project.id)}
+                    onClick={(e) => handleToggleFavorite(e, project)}
                     disabled={isTogglingFavorite === project.id}
                   >
                     <Star className={cn("h-4 w-4", project.isFavorite && "fill-current")} />
                   </Button>
                 </div>
 
-                <div className="absolute right-2 top-2">
+                <div className="absolute right-2 top-2 z-10">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button size="icon" variant="secondary" className="h-8 w-8 bg-white/80 backdrop-blur-sm hover:bg-white shadow-sm">

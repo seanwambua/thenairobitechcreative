@@ -15,15 +15,14 @@ import {
   CheckCircle2, 
   Circle, 
   Trash2, 
-  Clock, 
   Loader2,
   ChevronLeft
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { createMilestone, deleteMilestone, updateMilestone } from '@/lib/actions/milestones';
+import { createMilestone, deleteMilestone } from '@/lib/actions/milestones';
 import { createTask, deleteTask, updateTask } from '@/lib/actions/tasks';
-import { MilestoneStatus, TaskStatus } from '@prisma/client';
+import { TaskStatus } from '@prisma/client';
 import Link from 'next/link';
 
 interface ProjectDetailClientProps {
@@ -53,7 +52,10 @@ export function ProjectDetailClient({ project }: ProjectDetailClientProps) {
     }
   };
 
-  const handleDeleteMilestone = async (id: number) => {
+  const handleDeleteMilestone = async (e: React.MouseEvent, id: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     setIsLoading(`delete-ms-${id}`);
     try {
       await deleteMilestone(id);
@@ -99,7 +101,7 @@ export function ProjectDetailClient({ project }: ProjectDetailClientProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20">
       <div className="flex items-center justify-between">
         <Button variant="ghost" size="sm" asChild>
           <Link href="/dashboard/projects">
@@ -125,21 +127,21 @@ export function ProjectDetailClient({ project }: ProjectDetailClientProps) {
           ) : (
             <Accordion type="multiple" className="w-full space-y-4">
               {project.milestones.map((ms) => (
-                <AccordionItem key={ms.id} value={`ms-${ms.id}`} className="rounded-lg border px-4">
-                  <div className="flex items-center justify-between py-2">
-                    <div className="flex flex-1 items-center">
-                      <AccordionTrigger className="hover:no-underline">
+                <AccordionItem key={ms.id} value={`ms-${ms.id}`} className="rounded-lg border px-4 overflow-hidden">
+                  <div className="flex items-center justify-between py-2 gap-4">
+                    <AccordionTrigger className="hover:no-underline flex-1 py-4">
+                      <div className="flex items-center gap-4 text-left">
                         <span className="text-lg font-semibold">{ms.title}</span>
-                      </AccordionTrigger>
-                      <Badge variant="outline" className="ml-4">
-                        {ms.tasks.length} Tasks
-                      </Badge>
-                    </div>
+                        <Badge variant="secondary" className="hidden sm:inline-flex">
+                          {ms.tasks?.length || 0} Tasks
+                        </Badge>
+                      </div>
+                    </AccordionTrigger>
                     <Button 
                       variant="ghost" 
                       size="icon" 
-                      className="text-destructive hover:bg-destructive/10"
-                      onClick={() => handleDeleteMilestone(ms.id)}
+                      className="text-destructive hover:bg-destructive/10 shrink-0"
+                      onClick={(e) => handleDeleteMilestone(e, ms.id)}
                       disabled={isLoading === `delete-ms-${ms.id}`}
                     >
                       {isLoading === `delete-ms-${ms.id}` ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
@@ -148,17 +150,23 @@ export function ProjectDetailClient({ project }: ProjectDetailClientProps) {
                   <AccordionContent className="pb-6 pt-2">
                     <div className="space-y-4">
                       <div className="flex flex-col gap-2">
-                        {ms.tasks.map((task: any) => (
-                          <div key={task.id} className="flex items-center justify-between rounded-md border bg-muted/30 p-3">
+                        {ms.tasks?.map((task: any) => (
+                          <div key={task.id} className="flex items-center justify-between rounded-md border bg-muted/30 p-3 transition-colors hover:bg-muted/50">
                             <div className="flex items-center gap-3">
-                              <button onClick={() => handleToggleTask(task.id, task.status)}>
+                              <button 
+                                onClick={() => handleToggleTask(task.id, task.status)}
+                                className="transition-transform active:scale-90"
+                              >
                                 {task.status === 'DONE' ? (
                                   <CheckCircle2 className="h-5 w-5 text-green-500" />
                                 ) : (
                                   <Circle className="h-5 w-5 text-muted-foreground" />
                                 )}
                               </button>
-                              <span className={task.status === 'DONE' ? 'text-muted-foreground line-through' : ''}>
+                              <span className={cn(
+                                "text-sm",
+                                task.status === 'DONE' && 'text-muted-foreground line-through'
+                              )}>
                                 {task.title}
                               </span>
                             </div>
@@ -176,7 +184,7 @@ export function ProjectDetailClient({ project }: ProjectDetailClientProps) {
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="w-full border-dashed"
+                        className="w-full border-dashed mt-2"
                         onClick={() => handleAddTask(ms.id)}
                         disabled={isLoading === `task-${ms.id}`}
                       >
