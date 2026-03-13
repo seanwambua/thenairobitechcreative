@@ -113,7 +113,7 @@ export function LoginClient() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="name@example.com" {...field} autoComplete="email" />
+                    <Input placeholder="name@example.com" {...field} autoComplete="email" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -169,6 +169,15 @@ export function LoginClient() {
             </Button>
           </form>
         </Form>
+        <p className="px-8 text-center text-sm text-muted-foreground">
+          Don&apos;t have an account?{' '}
+          <Link
+            href="/signup"
+            className="underline underline-offset-4 hover:text-primary"
+          >
+            Sign Up
+          </Link>
+        </p>
       </div>
     </div>
   );
