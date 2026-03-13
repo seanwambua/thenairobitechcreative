@@ -12,22 +12,26 @@ export const authConfig: NextAuthConfig = {
     async authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const userRole = auth?.user?.role;
+      const userStatus = auth?.user?.status;
       
       const isDashboardRoute = nextUrl.pathname.startsWith(routes.admin.dashboard);
       const isLoginPage = nextUrl.pathname === routes.login;
 
-      // 1. Guard Dashboard: Explicitly check for both authentication and authorization
       if (isDashboardRoute) {
         if (!isLoggedIn) return false; 
         
-        // Authorization: Only Admins can enter the dashboard
-        if (userRole !== Role.ADMIN) {
+        // Block non-approved users from dashboard
+        if (userStatus !== 'APPROVED' && userRole !== Role.ADMIN) {
           return Response.redirect(new URL('/unauthorized', nextUrl));
+        }
+
+        // Dashboard is specifically for admins in this app's current logic
+        if (userRole !== Role.ADMIN) {
+          return Response.redirect(new URL('/', nextUrl));
         }
         return true;
       }
 
-      // 2. Prevent logged-in users from seeing the login page
       if (isLoginPage && isLoggedIn) {
         const redirectUrl = userRole === Role.ADMIN 
           ? routes.admin.dashboard 

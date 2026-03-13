@@ -33,6 +33,8 @@ import {
 } from '@/components/ui/select';
 import { services } from '@/lib/data';
 import { Logo } from './logo';
+import { createQuotation } from '@/lib/actions/quotations';
+import { Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -53,6 +55,7 @@ export function InquirySheet({ children, logoUrl }: InquirySheetProps) {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -69,14 +72,25 @@ export function InquirySheet({ children, logoUrl }: InquirySheetProps) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    toast({
-      title: 'Inquiry Sent!',
-      description: "Thanks for your interest. We'll get back to you shortly.",
-    });
-    form.reset();
-    setOpen(false);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsSubmitting(true);
+    try {
+      await createQuotation(values);
+      toast({
+        title: 'Inquiry Sent!',
+        description: "Thanks for your interest. We'll get back to you shortly.",
+      });
+      form.reset();
+      setOpen(false);
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to send inquiry. Please try again.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   if (!isMounted) {
@@ -194,7 +208,8 @@ export function InquirySheet({ children, logoUrl }: InquirySheetProps) {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full" size="lg">
+                <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
+                  {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Submit Inquiry
                 </Button>
               </form>
