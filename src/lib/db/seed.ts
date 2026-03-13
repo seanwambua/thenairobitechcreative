@@ -17,13 +17,14 @@ export async function seedDatabase() {
   await prisma.session.deleteMany({});
   await prisma.verificationToken.deleteMany({});
 
-  const hashedPassword = await bcrypt.hash('12345678', 16);
+  const hashedPassword = await bcrypt.hash('12345678', 12);
 
   const adminUser = await prisma.user.create({
     data: {
       email: 'seanwambua@gmail.com',
       name: 'Sean Wambua',
       role: Role.ADMIN,
+      status: 'APPROVED',
       hashedPassword: hashedPassword,
       image: placeholderImages.testimonial1Image.imageUrl,
     },
@@ -72,13 +73,13 @@ export async function seedDatabase() {
     data: [
       {
         title: 'QuantumLeap CRM',
-        description:
-          'AI-powered CRM for predictive analytics and customer insights.',
+        description: 'AI-powered CRM for predictive analytics and customer insights.',
         keyFeatures: 'AI Insights,Predictive Analytics,Custom Dashboards',
         imageUrl: placeholderImages.project1.imageUrl,
         imageHint: 'data analytics dashboard',
-        gridSpan: 'sm:col-span-2 lg:col-span-2',
+        gridSpan: 'col-span-12 lg:col-span-8',
         icon: 'Boxes',
+        isFavorite: true,
         userId: adminUser.id,
       },
       {
@@ -87,42 +88,42 @@ export async function seedDatabase() {
         keyFeatures: 'Decentralized Security,Blockchain,Threat Intelligence',
         imageUrl: placeholderImages.project2.imageUrl,
         imageHint: 'blockchain security',
-        gridSpan: 'col-span-1',
+        gridSpan: 'col-span-12 lg:col-span-4',
         icon: 'ShieldCheck',
+        isFavorite: true,
         userId: adminUser.id,
       },
       {
         title: 'InnovateU',
-        description:
-          'An e-learning platform that fosters innovation through collaborative projects and mentorship from industry leaders.',
+        description: 'An e-learning platform that fosters innovation through collaborative projects and mentorship from industry leaders.',
         keyFeatures: 'E-learning,Collaboration,Mentorship',
         imageUrl: placeholderImages.project3.imageUrl,
         imageHint: 'e-learning platform',
-        gridSpan: 'col-span-1',
+        gridSpan: 'col-span-12 lg:col-span-6',
         icon: 'BookOpen',
+        isFavorite: true,
         userId: adminUser.id,
       },
       {
         title: 'EcoTrack',
-        description:
-          'A mobile app that helps users track and reduce their carbon footprint through smart recommendations and community challenges.',
-        keyFeatures:
-          'Carbon Tracking,Smart Recommendations,Community Challenges',
+        description: 'A mobile app that helps users track and reduce their carbon footprint through smart recommendations and community challenges.',
+        keyFeatures: 'Carbon Tracking,Smart Recommendations,Community Challenges',
         imageUrl: placeholderImages.project4.imageUrl,
         imageHint: 'eco friendly app',
-        gridSpan: 'col-span-1',
+        gridSpan: 'col-span-12 lg:col-span-6',
         icon: 'Globe',
+        isFavorite: true,
         userId: adminUser.id,
       },
       {
         title: 'FinWiz',
-        description:
-          'A personal finance management app that leverages AI to provide personalized budgeting advice and investment opportunities.',
+        description: 'A personal finance management app that leverages AI to provide personalized budgeting advice and investment opportunities.',
         keyFeatures: 'AI Budgeting,Investment Tracking,Financial Planning',
         imageUrl: placeholderImages.project5.imageUrl,
         imageHint: 'finance app',
-        gridSpan: 'col-span-1 sm:col-span-2 lg:col-span-2',
+        gridSpan: 'col-span-12',
         icon: 'LineChart',
+        isFavorite: true,
         userId: adminUser.id,
       },
     ],

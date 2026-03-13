@@ -261,9 +261,10 @@ export function ProjectEditorDialog({
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="col-span-12">Full Width</SelectItem>
-                              <SelectItem value="sm:col-span-2 lg:col-span-2">Medium</SelectItem>
-                              <SelectItem value="col-span-1">Small</SelectItem>
+                              <SelectItem value="col-span-12">Full Width (1/1)</SelectItem>
+                              <SelectItem value="col-span-12 lg:col-span-8">Large (2/3)</SelectItem>
+                              <SelectItem value="col-span-12 lg:col-span-6">Medium (1/2)</SelectItem>
+                              <SelectItem value="col-span-12 lg:col-span-4">Small (1/3)</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />

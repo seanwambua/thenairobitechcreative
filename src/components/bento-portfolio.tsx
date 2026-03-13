@@ -75,14 +75,12 @@ export function BentoPortfolio({ projects }: BentoPortfolioProps) {
     if (project.url) {
       window.open(project.url, '_blank', 'noopener,noreferrer');
     } else {
-      // If there is a modal or detail page planned, this is where to trigger it.
-      // For now, we will just log to the console.
       console.log(`Card for ${project.title} clicked, but no URL is available.`);
     }
   };
 
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-12 gap-6">
       {validation.data.map((project, index) => {
         const Icon = icons[project.icon];
         const hasProjectImage = !!project.imageUrl;
@@ -94,7 +92,7 @@ export function BentoPortfolio({ projects }: BentoPortfolioProps) {
             className={cn(
               'group relative flex min-h-96 flex-col justify-end overflow-hidden rounded-2xl',
               project.gridSpan,
-              project.url && 'cursor-pointer' // Add cursor-pointer if URL exists
+              project.url && 'cursor-pointer'
             )}
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}

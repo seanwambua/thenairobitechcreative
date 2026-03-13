@@ -29,18 +29,10 @@ import {
 } from '@/components/ui/select';
 
 const gridSpanOptions = [
-  'col-span-1',
-  'col-span-2',
-  'col-span-3',
-  'col-span-4',
-  'col-span-5',
-  'col-span-6',
-  'col-span-7',
-  'col-span-8',
-  'col-span-9',
-  'col-span-10',
-  'col-span-11',
-  'col-span-12',
+  { label: 'Full Width (1/1)', value: 'col-span-12' },
+  { label: 'Large (2/3)', value: 'col-span-12 lg:col-span-8' },
+  { label: 'Medium (1/2)', value: 'col-span-12 lg:col-span-6' },
+  { label: 'Small (1/3)', value: 'col-span-12 lg:col-span-4' },
 ];
 
 const formSchema = ProjectSchema.omit({ 
@@ -170,7 +162,7 @@ export function ProjectForm({ project, onSave }: { project?: Project, onSave?: (
                 </FormControl>
                 <SelectContent>
                   {gridSpanOptions.map(option => (
-                    <SelectItem key={option} value={option}>{option}</SelectItem>
+                    <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
