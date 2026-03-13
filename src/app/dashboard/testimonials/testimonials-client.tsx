@@ -48,11 +48,13 @@ import { Role } from '@/lib/roles';
 import type { Testimonial } from '@prisma/client';
 import { cn } from '@/lib/utils';
 
+interface TestimonialsClientProps {
+  initialTestimonials: any[]; // Handle serialized objects
+}
+
 export function TestimonialsClient({
   initialTestimonials = [],
-}: {
-  initialTestimonials: Testimonial[];
-}) {
+}: TestimonialsClientProps) {
   const router = useRouter();
   const { data: session } = useSession();
   const [searchQuery, setSearchQuery] = useState('');
@@ -63,13 +65,13 @@ export function TestimonialsClient({
   const { toast } = useToast();
 
   const filteredTestimonials = useMemo(() => {
-    if (!Array.isArray(initialTestimonials)) return [];
-    return initialTestimonials.filter((t) => {
+    const list = Array.isArray(initialTestimonials) ? initialTestimonials : [];
+    return list.filter((t) => {
       const searchStr = searchQuery.toLowerCase();
       return (
-        t.author.toLowerCase().includes(searchStr) ||
-        t.title.toLowerCase().includes(searchStr) ||
-        t.quote.toLowerCase().includes(searchStr)
+        (t.author || '').toLowerCase().includes(searchStr) ||
+        (t.title || '').toLowerCase().includes(searchStr) ||
+        (t.quote || '').toLowerCase().includes(searchStr)
       );
     });
   }, [initialTestimonials, searchQuery]);
@@ -79,12 +81,12 @@ export function TestimonialsClient({
     setEditorOpen(true);
   };
 
-  const handleEdit = (testimonial: Testimonial) => {
+  const handleEdit = (testimonial: any) => {
     setEditingTestimonial(testimonial);
     setEditorOpen(true);
   };
 
-  const handleDeleteInitiate = (testimonial: Testimonial) => {
+  const handleDeleteInitiate = (testimonial: any) => {
     setTestimonialToDelete(testimonial);
     setDeleteDialogOpen(true);
   };
@@ -106,7 +108,7 @@ export function TestimonialsClient({
         });
       } finally {
         setDeleteDialogOpen(false);
-        setTestimonialToDelete(null);
+        setPostToDelete(null);
       }
     }
   };
@@ -116,7 +118,7 @@ export function TestimonialsClient({
     router.refresh();
   };
 
-  const isOwner = (testimonial: Testimonial) => {
+  const isOwner = (testimonial: any) => {
     return session?.user?.id === testimonial.userId;
   };
 
