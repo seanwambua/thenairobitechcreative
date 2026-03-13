@@ -7,6 +7,7 @@ import { getFavoriteProjects } from '@/lib/actions/projects';
 import { getAllTestimonials } from '@/lib/actions/testimonials';
 import { getSetting } from '@/lib/actions/settings';
 import { DbUninitializedError } from '@/components/db-uninitialized-error';
+import { ServicesSelector } from '@/components/services-selector';
 import placeholderImages from '@/lib/placeholder-images.json';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
@@ -64,31 +65,31 @@ export default async function Home() {
     <>
       <Hero heroImage={heroImage} logoUrl={logoUrl} />
 
-      <section id="portfolio" className="py-20 lg:py-32">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto mb-16 max-w-3xl text-center">
-            <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-              Innovation Suite
-            </h2>
-            <p className="mt-4 text-lg text-zinc-500">
-              A curated showcase of our most impactful digital transformations.
-            </p>
-          </div>
-          <div className="sm:p-4 md:p-6">
-            {projectsResult.status === 'fulfilled' ? (
+      {projectsResult.status === 'fulfilled' ? (
               projectsResult.value.length > 0 ? (
-                <BentoPortfolio projects={projectsResult.value} />
-              ) : (
-                <div className="text-center py-12 text-muted-foreground">
-                  No spotlight projects selected yet.
-                </div>
-              )
-            ) : (
-              <DataError sectionName="Portfolio" />
-            )}
-          </div>
+                <section id="portfolio" className="py-20 lg:py-32">
+                  <div className="container mx-auto px-4">
+                    <div className="mx-auto mb-16 max-w-3xl text-center">
+                      <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+                        Innovation Suite
+                      </h2>
+                      <p className="mt-4 text-lg text-zinc-500">
+                        A curated showcase of our most impactful digital transformations.
+                      </p>
+                    </div>
+                    <div className="sm:p-4 md:p-6">
+                      <BentoPortfolio projects={projectsResult.value} />   
+                    </div>
+                  </div>
+                </section>
+      ) : (
+        <div className="container mx-auto px-4 py-12 md:px-6 md:py-20">
+          <ServicesSelector />
         </div>
-      </section>
+      )
+    ) : (
+      <DataError sectionName="Portfolio" />
+    )}
 
       {testimonialsResult.status === 'fulfilled' &&
       testimonialsResult.value.length > 0 ? (

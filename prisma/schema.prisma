@@ -12,16 +12,16 @@ datasource db {
 }
 
 model User {
-  id             String    @id @default(cuid())
+  id             String        @id @default(cuid())
   name           String?
-  email          String?   @unique
+  email          String?       @unique
   emailVerified  DateTime?
   image          String?
   hashedPassword String?
-  role           Role      @default(USER)
-  status         UserStatus @default(PENDING)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  role           Role          @default(USER)
+  status         UserStatus    @default(PENDING)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
   accounts       Account[]
   sessions       Session[]
   posts          Post[]
@@ -65,7 +65,7 @@ model Project {
   id          Int         @id @default(autoincrement())
   title       String
   description String
-  keyFeatures String      // Stored as comma-separated string
+  keyFeatures String // Stored as comma-separated string
   imageUrl    String
   imageHint   String
   gridSpan    String

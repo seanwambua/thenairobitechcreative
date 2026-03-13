@@ -41,7 +41,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
     notFound();
   }
 
-  // Explicit Data Serialization: Convert to plain JS objects with string dates
+  // Explicit Data Serialization: Convert to plain JS objects
   // This prevents the "cannot pass Date object" issues in some environments/complex structures
   const serializedProject = {
     id: projectData.id,

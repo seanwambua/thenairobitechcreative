@@ -24,6 +24,7 @@ import { createMilestone, deleteMilestone } from '@/lib/actions/milestones';
 import { createTask, deleteTask, updateTask } from '@/lib/actions/tasks';
 import { TaskStatus } from '@prisma/client';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 interface ProjectDetailClientProps {
   project: {
@@ -120,7 +121,7 @@ export function ProjectDetailClient({ project }: ProjectDetailClientProps) {
           <CardDescription>Break down the project into manageable milestones and tasks.</CardDescription>
         </CardHeader>
         <CardContent>
-          {project.milestones.length === 0 ? (
+          {!project.milestones || project.milestones.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground">
               No milestones defined. Start by adding a milestone to your roadmap.
             </div>
