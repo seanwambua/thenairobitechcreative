@@ -94,7 +94,7 @@ export function MediaClient({
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="mb-8 text-3xl font-bold">Media Management</h1>
+      <h1 className="mb-8 text-3xl font-bold">Site Assets</h1>
       <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Hero Image</h2>

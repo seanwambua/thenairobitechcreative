@@ -67,16 +67,16 @@ import {
 } from 'lucide-react';
 
 const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutGrid, exact: true },
-  { href: '/dashboard/content', label: 'Content', icon: NotebookText, adminOnly: true },
-  { href: '/dashboard/media', label: 'Media', icon: ImageIcon, adminOnly: true },
-  { href: '/dashboard/projects', label: 'Projects', icon: Briefcase },
-  { href: '/dashboard/quotations', label: 'Quotations', icon: ClipboardList, adminOnly: true },
-  { href: '/dashboard/testimonials', label: 'Testimonials', icon: Star },
+  { href: '/dashboard', label: 'Overview', icon: LayoutGrid, exact: true },
   { href: '/dashboard/analytics', label: 'Analytics', icon: LineChart, adminOnly: true },
-  { href: '/dashboard/users', label: 'Users', icon: Users, adminOnly: true },
+  { href: '/dashboard/content', label: 'Blog Posts', icon: NotebookText, adminOnly: true },
+  { href: '/dashboard/projects', label: 'Projects', icon: Briefcase, adminOnly: true },
+  { href: '/dashboard/testimonials', label: 'Testimonials', icon: Star },
+  { href: '/dashboard/quotations', label: 'Inquiries', icon: ClipboardList, adminOnly: true },
+  { href: '/dashboard/media', label: 'Site Assets', icon: ImageIcon, adminOnly: true },
+  { href: '/dashboard/users', label: 'User Management', icon: Users, adminOnly: true },
   { href: '/dashboard/settings', label: 'Settings', icon: Settings },
-  { href: '/dashboard/troubleshooting', label: 'Troubleshooting', icon: Wrench, adminOnly: true },
+  { href: '/dashboard/troubleshooting', label: 'System Health', icon: Wrench, adminOnly: true },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
