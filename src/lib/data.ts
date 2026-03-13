@@ -22,6 +22,7 @@ export type PostSummary = Prisma.PostGetPayload<{
 export const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
+  { href: '/projects', label: 'Projects' },
   { href: '/services', label: 'Services' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/blog', label: 'Blog' },
