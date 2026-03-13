@@ -11,21 +11,31 @@ import {
 
 export type Project = z.infer<typeof ProjectSchema>;
 
+/**
+ * Fetches all projects from the database and validates them against the schema.
+ * Handles the conversion of keyFeatures from a stored string to an array.
+ */
 export async function getProjects(): Promise<Project[]> {
   try {
     const projectsData = await prisma.project.findMany({
       orderBy: { createdAt: 'desc' },
     });
 
-    const validatedProjects = ProjectSchema.array().parse(
-      projectsData.map((p) => ({
+    const validatedProjects = projectsData.map((p) => {
+      const parsed = ProjectSchema.safeParse({
         ...p,
         keyFeatures: (p.keyFeatures || '').split(',').map((s) => s.trim()),
         icon: p.icon as IconName,
         url: p.url || null,
         userId: p.userId || null,
-      }))
-    );
+      });
+      
+      if (!parsed.success) {
+        console.error(`[VALIDATION_ERROR] Project ID ${p.id}:`, parsed.error.format());
+        return null;
+      }
+      return parsed.data;
+    }).filter((p): p is Project => p !== null);
 
     return validatedProjects;
   } catch (error) {
@@ -47,18 +57,23 @@ export async function upsertProject(
 export async function createProject(
   data: ProjectInputSchemaType
 ): Promise<Project> {
-  const validatedData = ProjectSchema.omit({
+  const validation = ProjectSchema.omit({
     id: true,
     createdAt: true,
     updatedAt: true,
-  }).parse(data);
+    userId: true,
+  }).safeParse(data);
 
-  const { keyFeatures, ...rest } = validatedData;
+  if (!validation.success) {
+    throw new Error('Invalid project data.');
+  }
+
+  const { keyFeatures, ...rest } = validation.data;
   const newProjectData = await prisma.project.create({
     data: {
       ...rest,
       keyFeatures: keyFeatures.join(','),
-      url: validatedData.url,
+      url: validation.data.url,
     },
   });
 
@@ -74,6 +89,7 @@ export async function createProject(
 
   revalidatePath('/');
   revalidatePath('/projects');
+  revalidatePath('/dashboard/projects');
   return newProject;
 }
 
@@ -81,19 +97,25 @@ export async function updateProject(
   id: number,
   data: ProjectInputSchemaType
 ): Promise<Project> {
-  const validatedData = ProjectSchema.omit({
+  const validation = ProjectSchema.omit({
     id: true,
     createdAt: true,
     updatedAt: true,
-  }).parse(data);
-  const { keyFeatures, ...rest } = validatedData;
+    userId: true,
+  }).safeParse(data);
+
+  if (!validation.success) {
+    throw new Error('Invalid project data.');
+  }
+
+  const { keyFeatures, ...rest } = validation.data;
 
   const updatedProjectData = await prisma.project.update({
     where: { id },
     data: {
       ...rest,
       keyFeatures: keyFeatures.join(','),
-      url: validatedData.url,
+      url: validation.data.url,
     },
   });
 
@@ -109,6 +131,7 @@ export async function updateProject(
 
   revalidatePath('/');
   revalidatePath('/projects');
+  revalidatePath('/dashboard/projects');
   return updatedProject;
 }
 
@@ -118,4 +141,5 @@ export async function deleteProject(id: number): Promise<void> {
   });
   revalidatePath('/');
   revalidatePath('/projects');
+  revalidatePath('/dashboard/projects');
 }

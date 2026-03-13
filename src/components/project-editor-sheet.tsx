@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -35,19 +35,18 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import placeholderImages from '@/lib/placeholder-images.json';
 import { type Project } from '@/lib/actions/projects';
-import { Upload, Loader2 } from 'lucide-react';
+import { Upload, Loader2, Link as LinkIcon } from 'lucide-react';
 import { ProjectSchema, iconNames } from '@/lib/schemas';
 import { createProject, updateProject } from '@/lib/actions/projects';
 import { CldUploadWidget } from 'next-cloudinary';
-import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 const formSchema = ProjectSchema.pick({
   title: true,
   description: true,
-  keyFeatures: true,
   icon: true,
   gridSpan: true,
+  url: true,
 }).extend({
   keyFeatures: z.string().min(3, 'Please add at least one key feature.'),
 });
@@ -79,7 +78,8 @@ export function ProjectEditorDialog({
       description: '',
       keyFeatures: '',
       icon: 'Boxes',
-      gridSpan: 'col-span-1 lg:col-span-1',
+      gridSpan: 'col-span-12',
+      url: '',
     },
   });
 
@@ -92,6 +92,7 @@ export function ProjectEditorDialog({
           keyFeatures: project.keyFeatures.join(', '),
           icon: project.icon,
           gridSpan: project.gridSpan,
+          url: project.url || '',
         });
         setImagePreview(project.imageUrl);
       } else {
@@ -100,7 +101,8 @@ export function ProjectEditorDialog({
           description: '',
           keyFeatures: '',
           icon: 'Boxes',
-          gridSpan: 'col-span-1 lg:col-span-1',
+          gridSpan: 'col-span-12',
+          url: '',
         });
         setImagePreview(placeholderImages.enterpriseB.imageUrl);
       }
@@ -153,202 +155,179 @@ export function ProjectEditorDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="max-h-[90vh] w-full max-w-4xl p-0">
+      <DialogContent className="max-h-[95vh] w-full max-w-4xl p-0">
         <DialogHeader className="p-6 pb-0">
           <DialogTitle>
             {project ? 'Edit Project' : 'Create New Project'}
           </DialogTitle>
           <DialogDescription>
-            {project
-              ? 'Make changes to your existing project.'
-              : 'Fill out the details for your new portfolio project.'}
+            Configure the visual details and metadata for your portfolio item.
           </DialogDescription>
         </DialogHeader>
         <ScrollArea className="h-[70vh]">
-          <div className="px-6 py-4">
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-6"
-              >
-                <FormItem>
-                  <FormLabel>Project Image</FormLabel>
-                  <div className="relative aspect-video w-full overflow-hidden rounded-md">
-                    {imagePreview && (
-                      <Image
-                        src={imagePreview}
-                        alt="Project preview"
-                        fill
-                        className="object-cover"
-                      />
-                    )}
-                    {isUploading && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                        <Loader2 className="h-8 w-8 animate-spin text-white" />
-                      </div>
-                    )}
-                  </div>
-                  <CldUploadWidget
-                    uploadPreset="nairobi_techcreative"
-                    onSuccess={handleUploadSuccess}
-                    onUploadAdded={() => setIsUploading(true)}
-                    onClose={() => setIsUploading(false)}
-                    onError={(error) => {
-                      setIsUploading(false);
-                      toast({
-                        variant: 'destructive',
-                        title: 'Upload Failed',
-                        description: String((error as any).info),
-                      });
-                    }}
-                    options={{
-                      sources: ['local', 'url', 'unsplash'],
-                      styles: { zIndex: 99999 },
-                    }}
-                  >
-                    {({ open }) => {
-                      return (
+          <div className="grid grid-cols-1 gap-8 px-6 py-4 lg:grid-cols-2">
+            <div className="space-y-6">
+              <FormItem>
+                <FormLabel>Cover Image</FormLabel>
+                <div className="group relative aspect-video w-full overflow-hidden rounded-xl border bg-muted shadow-inner">
+                  {imagePreview && (
+                    <Image
+                      src={imagePreview}
+                      alt="Project preview"
+                      fill
+                      className="object-cover transition-opacity group-hover:opacity-90"
+                    />
+                  )}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
+                    <CldUploadWidget
+                      uploadPreset="nairobi_techcreative"
+                      onSuccess={handleUploadSuccess}
+                      onUploadAdded={() => setIsUploading(true)}
+                      onClose={() => setIsUploading(false)}
+                      options={{ sources: ['local', 'url', 'unsplash'] }}
+                    >
+                      {({ open }) => (
                         <Button
                           type="button"
-                          variant="outline"
-                          className="w-full"
-                          disabled={isUploading}
+                          variant="secondary"
                           onClick={() => open?.()}
+                          disabled={isUploading}
                         >
-                          <Upload className="mr-2 h-4 w-4" />
-                          {isUploading ? 'Uploading...' : 'Upload Image'}
+                          <Upload className="mr-2 h-4 w-4" /> Change Image
                         </Button>
-                      );
-                    }}
-                  </CldUploadWidget>
-                </FormItem>
-
-                <FormField
-                  control={form.control}
-                  name="title"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Title</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter project title" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                      )}
+                    </CldUploadWidget>
+                  </div>
+                  {isUploading && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                      <Loader2 className="h-8 w-8 animate-spin text-white" />
+                    </div>
                   )}
-                />
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Description</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Enter a short summary of the project"
-                          className="resize-none"
-                          rows={3}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="keyFeatures"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Key Features</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Enter features, separated by commas"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="icon"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Icon</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select an icon" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {iconNames.map((iconName) => (
-                              <SelectItem key={iconName} value={iconName}>
-                                {iconName}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="gridSpan"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Grid Span</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select grid span" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="col-span-1 lg:col-span-1">
-                              Small
-                            </SelectItem>
-                            <SelectItem value="col-span-1 lg:col-span-2">
-                              Medium
-                            </SelectItem>
-                            <SelectItem value="col-span-1 lg:col-span-3">
-                              Large
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                 </div>
-              </form>
-            </Form>
+              </FormItem>
+
+              <Form {...form}>
+                <form className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="url"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Project URL (optional)</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <LinkIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                            <Input placeholder="https://example.com" className="pl-9" {...field} />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="icon"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Display Icon</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select icon" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {iconNames.map((name) => (
+                                <SelectItem key={name} value={name}>{name}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="gridSpan"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Size</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select size" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="col-span-12">Full Width</SelectItem>
+                              <SelectItem value="sm:col-span-2 lg:col-span-2">Medium</SelectItem>
+                              <SelectItem value="col-span-1">Small</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </form>
+              </Form>
+            </div>
+
+            <div className="space-y-6">
+              <Form {...form}>
+                <form className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Project Title</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter title" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Description</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="What was this project about?" rows={5} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="keyFeatures"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Key Features</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Feature 1, Feature 2, Feature 3" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </form>
+              </Form>
+            </div>
           </div>
         </ScrollArea>
         <DialogFooter className="border-t p-6">
           <DialogClose asChild>
-            <Button type="button" variant="outline">
-              Cancel
-            </Button>
+            <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button
-            type="submit"
-            disabled={isUploading || isSaving}
-            onClick={form.handleSubmit(onSubmit)}
-          >
-            {(isUploading || isSaving) && (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            )}
-            Save Project
+          <Button onClick={form.handleSubmit(onSubmit)} disabled={isSaving}>
+            {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Save Changes
           </Button>
         </DialogFooter>
       </DialogContent>

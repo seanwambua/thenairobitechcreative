@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "../src/app/generated/prisma"
 }
 
 datasource db {
@@ -7,35 +8,113 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  USER
-  ADMIN
+model Post {
+  id               Int       @id @default(autoincrement())
+  slug             String    @unique
+  title            String
+  description      String
+  content          String    @db.Text
+  imageUrl         String
+  imageHint        String
+  author           String
+  authorAvatarUrl  String
+  authorAvatarHint String
+  likes            Like[]
+  comments         Comment[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  user             User?     @relation(fields: [userId], references: [id])
+  userId           String?
 }
 
-enum UserStatus {
+model Project {
+  id          Int         @id @default(autoincrement())
+  title       String
+  description String      @db.Text
+  keyFeatures String      @db.Text // Comma separated values
+  imageUrl    String
+  imageHint   String
+  gridSpan    String      @default("col-span-12")
+  icon        String      @default("Boxes")
+  url         String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  user        User?       @relation(fields: [userId], references: [id])
+  userId      String?
+  milestones  Milestone[]
+}
+
+model Milestone {
+  id          Int             @id @default(autoincrement())
+  title       String
+  description String?         @db.Text
+  status      MilestoneStatus @default(PENDING)
+  project     Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId   Int
+  tasks       Task[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+enum MilestoneStatus {
   PENDING
-  APPROVED
-  REJECTED
+  IN_PROGRESS
+  COMPLETED
 }
 
-model User {
-  id             String    @id @default(cuid())
-  name           String?
-  email          String?   @unique
-  emailVerified  DateTime?
-  image          String?
-  hashedPassword String?
-  role           Role      @default(USER)
-  status         UserStatus @default(PENDING)
-  accounts       Account[]
-  sessions       Session[]
-  posts          Post[]
-  projects       Project[]
-  testimonials   Testimonial[]
-  comments       Comment[]
-  likes          Like[]
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+model Task {
+  id          Int        @id @default(autoincrement())
+  title       String
+  status      TaskStatus @default(TODO)
+  milestone   Milestone  @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
+  milestoneId Int
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+model Testimonial {
+  id         Int      @id @default(autoincrement())
+  quote      String   @db.Text
+  author     String
+  title      String
+  avatarUrl  String
+  avatarHint String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User?    @relation(fields: [userId], references: [id])
+  userId     String?
+}
+
+model Settings {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String?  @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Quotation {
+  id        Int             @id @default(autoincrement())
+  name      String
+  email     String
+  company   String?
+  service   String?
+  message   String          @db.Text
+  status    QuotationStatus @default(PENDING)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+}
+
+enum QuotationStatus {
+  PENDING
+  CONTACTED
+  CLOSED
 }
 
 model Account {
@@ -44,12 +123,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String?
-  access_token      String?
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String?
+  id_token          String? @db.Text
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -64,143 +143,59 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model User {
+  id             String        @id @default(cuid())
+  name           String?
+  email          String?       @unique
+  emailVerified  DateTime?
+  image          String?
+  hashedPassword String?
+  role           Role          @default(USER)
+  status         UserStatus    @default(PENDING)
+  accounts       Account[]
+  sessions       Session[]
+  posts          Post[]
+  projects       Project[]
+  testimonials   Testimonial[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum UserStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, postId])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String   @db.Text
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
 model VerificationToken {
   identifier String
   token      String   @unique
   expires    DateTime
 
   @@unique([identifier, token])
-}
-
-model Post {
-  id               Int       @id @default(autoincrement())
-  slug             String    @unique
-  title            String
-  description      String
-  content          String
-  imageUrl         String
-  imageHint        String
-  author           String
-  authorAvatarUrl  String
-  authorAvatarHint String
-  userId           String?
-  user             User?     @relation(fields: [userId], references: [id])
-  comments         Comment[]
-  likes            Like[]
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-}
-
-model Comment {
-  id        Int      @id @default(autoincrement())
-  content   String
-  postId    Int
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Like {
-  id        Int      @id @default(autoincrement())
-  postId    Int
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-
-  @@unique([userId, postId])
-}
-
-model Project {
-  id          Int         @id @default(autoincrement())
-  title       String
-  description String
-  keyFeatures String
-  imageUrl    String
-  imageHint   String
-  gridSpan    String
-  icon        String
-  url         String?
-  userId      String?
-  user        User?       @relation(fields: [userId], references: [id])
-  milestones  Milestone[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-}
-
-enum MilestoneStatus {
-  PENDING
-  IN_PROGRESS
-  COMPLETED
-}
-
-model Milestone {
-  id          Int             @id @default(autoincrement())
-  projectId   Int
-  project     Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  title       String
-  description String?
-  status      MilestoneStatus @default(PENDING)
-  order       Int             @default(0)
-  tasks       Task[]
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-}
-
-enum TaskStatus {
-  TODO
-  IN_PROGRESS
-  DONE
-}
-
-model Task {
-  id          Int       @id @default(autoincrement())
-  milestoneId Int
-  milestone   Milestone @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
-  title       String
-  status      TaskStatus @default(TODO)
-  order       Int       @default(0)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-}
-
-model Testimonial {
-  id         Int      @id @default(autoincrement())
-  quote      String
-  author     String
-  title      String
-  avatarUrl  String
-  avatarHint String
-  userId     String?
-  user       User?    @relation(fields: [userId], references: [id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-}
-
-model Settings {
-  id        Int      @id @default(autoincrement())
-  key       String   @unique
-  value     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-enum QuotationStatus {
-  PENDING
-  CONTACTED
-  CLOSED
-}
-
-model Quotation {
-  id        Int             @id @default(autoincrement())
-  name      String
-  email     String
-  company   String?
-  service   String?
-  message   String
-  status    QuotationStatus @default(PENDING)
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
 }
