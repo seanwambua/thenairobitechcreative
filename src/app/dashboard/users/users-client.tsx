@@ -28,13 +28,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { format } from 'date-fns';
 
-export function UsersClient({ initialUsers }: { initialUsers: User[] }) {
+export function UsersClient({ initialUsers }: { initialUsers: User[] | null }) {
   const router = useRouter();
   const { toast } = useToast();
   const [search, setSearch] = useState('');
 
   const filteredUsers = useMemo(() => {
-    return initialUsers.filter(user => 
+    const list = Array.isArray(initialUsers) ? initialUsers : [];
+    return list.filter(user => 
       user.name?.toLowerCase().includes(search.toLowerCase()) ||
       user.email?.toLowerCase().includes(search.toLowerCase())
     );

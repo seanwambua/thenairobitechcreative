@@ -267,3 +267,7 @@ export function TestimonialsClient({
     </div>
   );
 }
+
+function setPostToDelete(arg0: null) {
+  throw new Error('Function not implemented.');
+}

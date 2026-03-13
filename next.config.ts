@@ -6,7 +6,7 @@ import type { NextConfig } from 'next';
 const nextConfig = {
   allowedDevOrigins: [
     'http://localhost:3000',
-    '9003-firebase-studio-1766518736913.cluster-lu4mup47g5gm4rtyvhzpwbfadi.cloudworkstations.dev',
+    '9000-firebase-studio-1766518736913.cluster-lu4mup47g5gm4rtyvhzpwbfadi.cloudworkstations.dev',
   ],
   images: {
     remotePatterns: [

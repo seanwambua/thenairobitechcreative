@@ -28,7 +28,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import type { Testimonial } from '@prisma/client';
 import placeholderImages from '@/lib/placeholder-images.json';
-import { Upload, Loader2, User as UserIcon } from 'lucide-react';
+import { Upload, Loader2, User as UserIcon, PlusCircle } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { TestimonialSchema } from '@/lib/schemas';
 import {
