@@ -44,6 +44,66 @@ export async function getProjects(): Promise<Project[]> {
   }
 }
 
+/**
+ * Fetches only favorited projects for the homepage innovation suite.
+ */
+export async function getFavoriteProjects(): Promise<Project[]> {
+  try {
+    const projectsData = await prisma.project.findMany({
+      where: { isFavorite: true },
+      orderBy: { createdAt: 'desc' },
+      take: 6,
+    });
+
+    return projectsData.map((p) => {
+      return {
+        ...p,
+        keyFeatures: (p.keyFeatures || '').split(',').map((s) => s.trim()),
+        icon: p.icon as IconName,
+        url: p.url || null,
+        userId: p.userId || null,
+      };
+    });
+  } catch (error) {
+    console.error('[GET_FAVORITE_PROJECTS_ERROR]:', error);
+    return [];
+  }
+}
+
+export async function toggleProjectFavorite(id: number): Promise<{ success: boolean; error?: string }> {
+  try {
+    const project = await prisma.project.findUnique({
+      where: { id },
+      select: { isFavorite: true }
+    });
+
+    if (!project) return { success: false, error: 'Project not found' };
+
+    // If we are trying to favorite a project, check the limit
+    if (!project.isFavorite) {
+      const favoriteCount = await prisma.project.count({
+        where: { isFavorite: true }
+      });
+
+      if (favoriteCount >= 6) {
+        return { success: false, error: 'Maximum of 6 favorited projects allowed.' };
+      }
+    }
+
+    await prisma.project.update({
+      where: { id },
+      data: { isFavorite: !project.isFavorite }
+    });
+
+    revalidatePath('/');
+    revalidatePath('/dashboard/projects');
+    return { success: true };
+  } catch (error) {
+    console.error('[TOGGLE_FAVORITE_ERROR]:', error);
+    return { success: false, error: 'Failed to update favorite status.' };
+  }
+}
+
 export async function upsertProject(
   data: ProjectInputSchemaType & { id?: number }
 ): Promise<Project> {

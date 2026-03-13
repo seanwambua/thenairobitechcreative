@@ -1,3 +1,6 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -18,24 +21,6 @@ enum UserStatus {
   REJECTED
 }
 
-enum MilestoneStatus {
-  PENDING
-  IN_PROGRESS
-  COMPLETED
-}
-
-enum TaskStatus {
-  TODO
-  IN_PROGRESS
-  DONE
-}
-
-enum QuotationStatus {
-  PENDING
-  CONTACTED
-  CLOSED
-}
-
 model User {
   id             String    @id @default(cuid())
   name           String?
@@ -45,15 +30,15 @@ model User {
   hashedPassword String?
   role           Role      @default(USER)
   status         UserStatus @default(PENDING)
-  accounts       Account[]
-  sessions       Session[]
-  posts          Post[]
-  projects       Project[]
-  comments       Comment[]
-  likes          Like[]
-  testimonials   Testimonial[]
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
+
+  accounts     Account[]
+  sessions     Session[]
+  posts        Post[]
+  comments     Comment[]
+  likes        Like[]
+  projects     Project[]
 }
 
 model Account {
@@ -62,14 +47,15 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String?
-  access_token      String?
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String?
+  id_token          String? @db.Text
   session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -95,100 +81,98 @@ model Post {
   slug             String    @unique
   title            String
   description      String
-  content          String
+  content          String    @db.Text
   imageUrl         String
   imageHint        String
   author           String
   authorAvatarUrl  String
   authorAvatarHint String
-  userId           String?
-  user             User?     @relation(fields: [userId], references: [id])
-  comments         Comment[]
-  likes            Like[]
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
+  userId           String?
+  user             User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  comments         Comment[]
+  likes            Like[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
 }
 
 model Project {
-  id          Int         @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   title       String
   description String
-  keyFeatures String
+  keyFeatures String   @db.Text
   imageUrl    String
   imageHint   String
   gridSpan    String
   icon        String
   url         String?
+  isFavorite  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   userId      String?
-  user        User?       @relation(fields: [userId], references: [id])
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   milestones  Milestone[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+}
+
+enum MilestoneStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
 }
 
 model Milestone {
   id          Int             @id @default(autoincrement())
-  projectId   Int
-  project     Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
   title       String
-  description String?
+  description String?         @db.Text
   status      MilestoneStatus @default(PENDING)
-  tasks       Task[]
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
+  projectId   Int
+  project     Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tasks       Task[]
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
 }
 
 model Task {
   id          Int        @id @default(autoincrement())
-  milestoneId Int
-  milestone   Milestone  @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
   title       String
   status      TaskStatus @default(TODO)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+  milestoneId Int
+  milestone   Milestone  @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
 }
 
-model Comment {
-  id        Int      @id @default(autoincrement())
-  content   String
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  postId    Int
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Like {
-  id        Int      @id @default(autoincrement())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  postId    Int
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-
-  @@unique([userId, postId])
-}
-
-model Testimonial {
-  id         Int      @id @default(autoincrement())
-  quote      String
-  author     String
-  title      String
-  avatarUrl  String
-  avatarHint String
-  userId     String?
-  user       User?    @relation(fields: [userId], references: [id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-}
-
-model Settings {
-  id        Int      @id @default(autoincrement())
-  key       String   @unique
-  value     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+enum QuotationStatus {
+  PENDING
+  CONTACTED
+  CLOSED
 }
 
 model Quotation {
@@ -197,8 +181,16 @@ model Quotation {
   email     String
   company   String?
   service   String?
-  message   String
+  message   String          @db.Text
   status    QuotationStatus @default(PENDING)
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
+}
+
+model Settings {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String?  @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

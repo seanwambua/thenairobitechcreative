@@ -22,13 +22,22 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { MoreHorizontal, PlusCircle, LayoutDashboard, Pencil, Trash2, ExternalLink } from 'lucide-react';
+import { 
+  MoreHorizontal, 
+  PlusCircle, 
+  LayoutDashboard, 
+  Pencil, 
+  Trash2, 
+  ExternalLink,
+  Star
+} from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ProjectEditorDialog } from '@/components/project-editor-sheet';
 import type { Project } from '@/lib/actions/projects';
-import { deleteProject } from '@/lib/actions/projects';
+import { deleteProject, toggleProjectFavorite } from '@/lib/actions/projects';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 export function ProjectsClient({
   initialProjects,
@@ -40,6 +49,7 @@ export function ProjectsClient({
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
+  const [isTogglingFavorite, setIsTogglingFavorite] = useState<number | null>(null);
   const { toast } = useToast();
 
   const handleCreateNew = () => {
@@ -50,6 +60,23 @@ export function ProjectsClient({
   const handleEdit = (project: Project) => {
     setEditingProject(project);
     setEditorOpen(true);
+  };
+
+  const handleToggleFavorite = async (projectId: number) => {
+    setIsTogglingFavorite(projectId);
+    try {
+      const result = await toggleProjectFavorite(projectId);
+      if (result.success) {
+        toast({ title: 'Success', description: 'Project updated.' });
+        router.refresh();
+      } else {
+        toast({ variant: 'destructive', title: 'Limit Reached', description: result.error });
+      }
+    } catch (e) {
+      toast({ variant: 'destructive', title: 'Error', description: 'Action failed.' });
+    } finally {
+      setIsTogglingFavorite(null);
+    }
   };
 
   const handleDeleteInitiate = (project: Project) => {
@@ -113,6 +140,23 @@ export function ProjectsClient({
                   className="object-cover transition-transform group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
+                
+                {/* Favorite Toggle */}
+                <div className="absolute left-2 top-2">
+                  <Button
+                    size="icon"
+                    variant="secondary"
+                    className={cn(
+                      "h-8 w-8 backdrop-blur-sm shadow-sm transition-colors",
+                      project.isFavorite ? "bg-yellow-400 text-yellow-900 hover:bg-yellow-500" : "bg-white/80 hover:bg-white text-muted-foreground"
+                    )}
+                    onClick={() => handleToggleFavorite(project.id)}
+                    disabled={isTogglingFavorite === project.id}
+                  >
+                    <Star className={cn("h-4 w-4", project.isFavorite && "fill-current")} />
+                  </Button>
+                </div>
+
                 <div className="absolute right-2 top-2">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>

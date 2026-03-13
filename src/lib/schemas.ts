@@ -35,6 +35,7 @@ export const ProjectSchema = z.object({
   imageHint: z.string(),
   gridSpan: z.string(),
   icon: z.enum(iconNames),
+  isFavorite: z.boolean().default(false),
   createdAt: z.date(),
   updatedAt: z.date(),
   userId: z.string().nullable(),

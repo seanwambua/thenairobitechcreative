@@ -1,24 +1,15 @@
 'use server';
 import { Hero } from '@/components/hero';
-import { ProspectsBanner } from '@/components/prospects-banner';
 import { BentoPortfolio } from '@/components/bento-portfolio';
-import { faqs } from '@/lib/data';
 import { Cta } from '@/components/cta';
 import { Testimonials as TestimonialsComponent } from '@/components/testimonials';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-import { getProjects } from '@/lib/actions/projects';
+import { getFavoriteProjects } from '@/lib/actions/projects';
 import { getAllTestimonials } from '@/lib/actions/testimonials';
 import { getSetting } from '@/lib/actions/settings';
 import { DbUninitializedError } from '@/components/db-uninitialized-error';
 import placeholderImages from '@/lib/placeholder-images.json';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
-import { ServicesSelector } from '@/components/services-selector';
 
 function DataError({ sectionName }: { sectionName: string }) {
   return (
@@ -43,7 +34,7 @@ export default async function Home() {
   try {
     [projectsResult, testimonialsResult, settingsResult, logoUrlResult] =
       await Promise.allSettled([
-        getProjects(),
+        getFavoriteProjects(),
         getAllTestimonials(),
         getSetting('heroImage'),
         getSetting('logo'),
@@ -72,55 +63,32 @@ export default async function Home() {
   return (
     <>
       <Hero heroImage={heroImage} logoUrl={logoUrl} />
-      {/* <ProspectsBanner logoUrl={logoUrl} /> */}
 
       <section id="portfolio" className="py-20 lg:py-32">
         <div className="container mx-auto px-4">
           <div className="mx-auto mb-16 max-w-3xl text-center">
             <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-              Latest Innovation Suite
+              Innovation Suite
             </h2>
             <p className="mt-4 text-lg text-zinc-500">
-              Showcasing our next generation of digital solutions.
+              A curated showcase of our most impactful digital transformations.
             </p>
           </div>
           <div className="sm:p-4 md:p-6">
             {projectsResult.status === 'fulfilled' ? (
-              <BentoPortfolio projects={projectsResult.value} />
+              projectsResult.value.length > 0 ? (
+                <BentoPortfolio projects={projectsResult.value} />
+              ) : (
+                <div className="text-center py-12 text-muted-foreground">
+                  No spotlight projects selected yet.
+                </div>
+              )
             ) : (
               <DataError sectionName="Portfolio" />
             )}
           </div>
         </div>
       </section>
-
-      {/* <section id="faq" className="border-t bg-background py-20 lg:py-32">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto mb-16 max-w-3xl text-center">
-            <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-              Frequently Asked Questions
-            </h2>
-            <p className="mt-4 text-muted-foreground">
-              Have questions? We have got answers. If you can&apos;t find what
-              you&apos;re looking for, feel free to contact us.
-            </p>
-          </div>
-          <div className="mx-auto.max-w-3xl">
-            <Accordion type="single" collapsible className="w-full">
-              {faqs.map((faq,index) => (
-                <AccordionItem key={index} value={`item-${index}`}>
-                  <AccordionTrigger className="text-left font-semibold hover:no-underline">
-                    {faq.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
-                    {faq.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
-        </div>
-      </section> */}
 
       {testimonialsResult.status === 'fulfilled' &&
       testimonialsResult.value.length > 0 ? (
