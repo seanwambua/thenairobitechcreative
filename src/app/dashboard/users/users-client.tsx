@@ -19,7 +19,7 @@ import {
   DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { MoreHorizontal, ShieldCheck, User as UserIcon, Trash2, CheckCircle2, XCircle } from 'lucide-react';
+import { MoreHorizontal, ShieldCheck, User as UserIcon, Trash2, CheckCircle2, XCircle, PlusCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { updateUserStatus, updateUserRole, deleteUser } from '@/lib/actions/admin';
@@ -27,11 +27,13 @@ import { Role, UserStatus, User } from '@prisma/client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { format } from 'date-fns';
+import { UserEditorDialog } from '@/components/user-editor-dialog';
 
 export function UsersClient({ initialUsers }: { initialUsers: User[] | null }) {
   const router = useRouter();
   const { toast } = useToast();
   const [search, setSearch] = useState('');
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
   const filteredUsers = useMemo(() => {
     const list = Array.isArray(initialUsers) ? initialUsers : [];
@@ -141,13 +143,18 @@ export function UsersClient({ initialUsers }: { initialUsers: User[] | null }) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
-        <div className="w-full max-w-sm">
-          <Input 
-            placeholder="Search by name or email..." 
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
+        <Button onClick={() => setIsCreateDialogOpen(true)}>
+          <PlusCircle className="mr-2 h-4 w-4" />
+          Add User
+        </Button>
+      </div>
+
+      <div className="w-full max-w-sm">
+        <Input 
+          placeholder="Search by name or email..." 
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
       </div>
 
       <Tabs defaultValue="all">
@@ -171,6 +178,11 @@ export function UsersClient({ initialUsers }: { initialUsers: User[] | null }) {
           <UserTable users={pendingUsers} />
         </TabsContent>
       </Tabs>
+
+      <UserEditorDialog 
+        isOpen={isCreateDialogOpen} 
+        onOpenChange={setIsCreateDialogOpen} 
+      />
     </div>
   );
 }

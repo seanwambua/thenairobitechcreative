@@ -3,7 +3,8 @@
 import prisma from '@/lib/prisma';
 import { UserStatus, Role } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
-import { auth } from '@/lib/auth'; // Ensure this points to your NextAuth export
+import { auth } from '@/lib/auth';
+import bcrypt from 'bcryptjs';
 
 // 1. Standardized Action Response Type
 type ActionResponse<T = any> = 
@@ -44,6 +45,45 @@ export async function getUsers(): Promise<ActionResponse<any[]>> {
   } catch (error) {
     console.error('[GET_USERS_ERROR]:', error);
     return { success: false, error: 'Failed to fetch users list.' };
+  }
+}
+
+export async function adminCreateUser(data: {
+  name: string;
+  email: string;
+  password: string;
+  role: Role;
+  status: UserStatus;
+}): Promise<ActionResponse> {
+  const authCheck = await validateAdmin();
+  if (!authCheck.authorized) return { success: false, error: authCheck.error! };
+
+  try {
+    const existingUser = await prisma.user.findUnique({
+      where: { email: data.email },
+    });
+
+    if (existingUser) {
+      return { success: false, error: 'A user with this email already exists.' };
+    }
+
+    const hashedPassword = await bcrypt.hash(data.password, 12);
+
+    await prisma.user.create({
+      data: {
+        name: data.name,
+        email: data.email,
+        hashedPassword,
+        role: data.role,
+        status: data.status,
+      },
+    });
+
+    revalidatePath('/dashboard/users');
+    return { success: true, data: null, message: 'User created successfully.' };
+  } catch (error) {
+    console.error('[ADMIN_CREATE_USER_ERROR]:', error);
+    return { success: false, error: 'Failed to create user.' };
   }
 }
 
