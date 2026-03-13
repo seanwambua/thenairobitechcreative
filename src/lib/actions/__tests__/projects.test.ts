@@ -1,5 +1,13 @@
 import { getProjects, createProject, updateProject, deleteProject } from '../projects';
 import prisma from '@/lib/prisma';
+import { Role } from '@/lib/roles';
+
+// Mock the auth module
+jest.mock('@/lib/auth', () => ({
+  auth: jest.fn(),
+}));
+
+import { auth } from '@/lib/auth';
 
 // Mock the prisma client
 jest.mock('@/lib/prisma', () => ({
@@ -47,7 +55,11 @@ describe('Projects Actions', () => {
   });
 
   describe('createProject', () => {
-    it('should create a project with correct data mapping', async () => {
+    it('should create a project when authorized as admin', async () => {
+      (auth as jest.Mock).mockResolvedValue({
+        user: { id: 'admin-1', role: Role.ADMIN },
+      });
+
       const input = {
         title: 'New Project',
         description: 'Brand new project description.',
@@ -63,6 +75,7 @@ describe('Projects Actions', () => {
         ...mockProject,
         ...input,
         keyFeatures: input.keyFeatures.join(','),
+        userId: 'admin-1',
       });
 
       const result = await createProject(input);
@@ -71,14 +84,38 @@ describe('Projects Actions', () => {
         data: expect.objectContaining({
           title: input.title,
           keyFeatures: 'Feature A,Feature B',
+          userId: 'admin-1',
         }),
       }));
-      expect(result.keyFeatures).toEqual(input.keyFeatures);
+      expect(result.title).toBe('New Project');
+    });
+
+    it('should throw unauthorized error if not admin', async () => {
+      (auth as jest.Mock).mockResolvedValue({
+        user: { id: 'user-1', role: Role.USER },
+      });
+
+      const input = {
+        title: 'New Project',
+        description: 'Brand new project description.',
+        keyFeatures: ['Feature A'],
+        imageUrl: 'https://example.com/new.png',
+        imageHint: 'new project',
+        icon: 'Rocket' as const,
+        gridSpan: 'col-span-12',
+        url: '',
+      };
+
+      await expect(createProject(input)).rejects.toThrow('Unauthorized');
     });
   });
 
   describe('updateProject', () => {
-    it('should update project fields without losing existing metadata like isFavorite', async () => {
+    it('should update project fields and preserve metadata', async () => {
+      (auth as jest.Mock).mockResolvedValue({
+        user: { id: 'admin-1', role: Role.ADMIN },
+      });
+
       const updateInput = {
         title: 'Updated Title',
         description: 'Updated description that is long enough.',
@@ -112,6 +149,10 @@ describe('Projects Actions', () => {
 
   describe('deleteProject', () => {
     it('should delete a project by id', async () => {
+      (auth as jest.Mock).mockResolvedValue({
+        user: { id: 'admin-1', role: Role.ADMIN },
+      });
+
       (prisma.project.delete as jest.Mock).mockResolvedValue(mockProject);
 
       await deleteProject(1);

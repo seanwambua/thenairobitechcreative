@@ -1,4 +1,3 @@
-
 'use client';
 import {
   Card,
@@ -59,6 +58,7 @@ function DashboardView({
                 Published blog articles
               </p>
             </CardContent>
+          </Card>
         </motion.div>
         <motion.div
           variants={cardVariants}
@@ -79,6 +79,7 @@ function DashboardView({
                 Portfolio projects managed
               </p>
             </CardContent>
+          </Card>
         </motion.div>
         <motion.div
           variants={cardVariants}
@@ -99,6 +100,7 @@ function DashboardView({
                 Customer testimonials featured
               </p>
             </CardContent>
+          </Card>
         </motion.div>
       </div>
 

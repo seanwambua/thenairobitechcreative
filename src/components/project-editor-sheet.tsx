@@ -164,50 +164,51 @@ export function ProjectEditorDialog({
             Configure the visual details and metadata for your portfolio item.
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="h-[70vh]">
-          <div className="grid grid-cols-1 gap-8 px-6 py-4 lg:grid-cols-2">
-            <div className="space-y-6">
-              <FormItem>
-                <FormLabel>Cover Image</FormLabel>
-                <div className="group relative aspect-video w-full overflow-hidden rounded-xl border bg-muted shadow-inner">
-                  {imagePreview && (
-                    <Image
-                      src={imagePreview}
-                      alt="Project preview"
-                      fill
-                      className="object-cover transition-opacity group-hover:opacity-90"
-                    />
-                  )}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
-                    <CldUploadWidget
-                      uploadPreset="nairobi_techcreative"
-                      onSuccess={handleUploadSuccess}
-                      onUploadAdded={() => setIsUploading(true)}
-                      onClose={() => setIsUploading(false)}
-                      options={{ sources: ['local', 'url', 'unsplash'] }}
-                    >
-                      {({ open }) => (
-                        <Button
-                          type="button"
-                          variant="secondary"
-                          onClick={() => open?.()}
-                          disabled={isUploading}
-                        >
-                          <Upload className="mr-2 h-4 w-4" /> Change Image
-                        </Button>
+        
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <ScrollArea className="h-[70vh]">
+              <div className="grid grid-cols-1 gap-8 px-6 py-4 lg:grid-cols-2">
+                <div className="space-y-6">
+                  <FormItem>
+                    <FormLabel>Cover Image</FormLabel>
+                    <div className="group relative aspect-video w-full overflow-hidden rounded-xl border bg-muted shadow-inner">
+                      {imagePreview && (
+                        <Image
+                          src={imagePreview}
+                          alt="Project preview"
+                          fill
+                          className="object-cover transition-opacity group-hover:opacity-90"
+                        />
                       )}
-                    </CldUploadWidget>
-                  </div>
-                  {isUploading && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                      <Loader2 className="h-8 w-8 animate-spin text-white" />
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
+                        <CldUploadWidget
+                          uploadPreset="nairobi_techcreative"
+                          onSuccess={handleUploadSuccess}
+                          onUploadAdded={() => setIsUploading(true)}
+                          onClose={() => setIsUploading(false)}
+                          options={{ sources: ['local', 'url', 'unsplash'] }}
+                        >
+                          {({ open }) => (
+                            <Button
+                              type="button"
+                              variant="secondary"
+                              onClick={() => open?.()}
+                              disabled={isUploading}
+                            >
+                              <Upload className="mr-2 h-4 w-4" /> Change Image
+                            </Button>
+                          )}
+                        </CldUploadWidget>
+                      </div>
+                      {isUploading && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                          <Loader2 className="h-8 w-8 animate-spin text-white" />
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              </FormItem>
+                  </FormItem>
 
-              <Form {...form}>
-                <form className="space-y-4">
                   <FormField
                     control={form.control}
                     name="url"
@@ -270,13 +271,9 @@ export function ProjectEditorDialog({
                       )}
                     />
                   </div>
-                </form>
-              </Form>
-            </div>
+                </div>
 
-            <div className="space-y-6">
-              <Form {...form}>
-                <form className="space-y-4">
+                <div className="space-y-6">
                   <FormField
                     control={form.control}
                     name="title"
@@ -316,20 +313,22 @@ export function ProjectEditorDialog({
                       </FormItem>
                     )}
                   />
-                </form>
-              </Form>
-            </div>
-          </div>
-        </ScrollArea>
-        <DialogFooter className="border-t p-6">
-          <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DialogClose>
-          <Button onClick={form.handleSubmit(onSubmit)} disabled={isSaving}>
-            {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Save Changes
-          </Button>
-        </DialogFooter>
+                </div>
+              </div>
+            </ScrollArea>
+            <DialogFooter className="border-t p-6">
+              <DialogClose asChild>
+                <Button type="button" variant="outline">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button type="submit" disabled={isSaving}>
+                {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );
