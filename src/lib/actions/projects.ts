@@ -1,3 +1,4 @@
+
 'use server';
 
 import prisma from '@/lib/prisma';
@@ -133,6 +134,7 @@ export async function createProject(
     data: {
       ...rest,
       keyFeatures: keyFeatures.join(','),
+      isFavorite: rest.isFavorite ?? false,
       url: validation.data.url,
     },
   });
@@ -157,12 +159,13 @@ export async function updateProject(
   id: number,
   data: ProjectInputSchemaType
 ): Promise<Project> {
+  // Use a partial schema for update validation to avoid forcing defaults
   const validation = ProjectSchema.omit({
     id: true,
     createdAt: true,
     updatedAt: true,
     userId: true,
-  }).safeParse(data);
+  }).partial().safeParse(data);
 
   if (!validation.success) {
     throw new Error('Invalid project data.');
@@ -170,13 +173,15 @@ export async function updateProject(
 
   const { keyFeatures, ...rest } = validation.data;
 
+  // We explicitly handle keyFeatures transformation if it exists
+  const updateData: any = { ...rest };
+  if (keyFeatures) {
+    updateData.keyFeatures = keyFeatures.join(',');
+  }
+
   const updatedProjectData = await prisma.project.update({
     where: { id },
-    data: {
-      ...rest,
-      keyFeatures: keyFeatures.join(','),
-      url: validation.data.url,
-    },
+    data: updateData,
   });
 
   const updatedProject: Project = {

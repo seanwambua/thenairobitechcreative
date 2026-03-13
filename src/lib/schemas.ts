@@ -1,3 +1,4 @@
+
 import { z } from 'zod';
 
 export const iconNames = [
@@ -35,7 +36,7 @@ export const ProjectSchema = z.object({
   imageHint: z.string(),
   gridSpan: z.string(),
   icon: z.enum(iconNames),
-  isFavorite: z.boolean().default(false),
+  isFavorite: z.boolean().optional(), // Made optional to prevent accidental resets during partial updates
   createdAt: z.date(),
   updatedAt: z.date(),
   userId: z.string().nullable(),

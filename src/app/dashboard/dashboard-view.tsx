@@ -1,3 +1,4 @@
+
 'use client';
 import {
   Card,
@@ -14,9 +15,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Briefcase, NotebookText, Star } from 'lucide-react';
+import { Briefcase, NotebookText, Star, ArrowUpRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { Project } from '@/lib/actions/projects';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 const cardVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -56,7 +59,6 @@ function DashboardView({
                 Published blog articles
               </p>
             </CardContent>
-          </Card>
         </motion.div>
         <motion.div
           variants={cardVariants}
@@ -77,7 +79,6 @@ function DashboardView({
                 Portfolio projects managed
               </p>
             </CardContent>
-          </Card>
         </motion.div>
         <motion.div
           variants={cardVariants}
@@ -98,7 +99,6 @@ function DashboardView({
                 Customer testimonials featured
               </p>
             </CardContent>
-          </Card>
         </motion.div>
       </div>
 
@@ -112,7 +112,7 @@ function DashboardView({
           <CardHeader>
             <CardTitle>Recent Projects</CardTitle>
             <CardDescription>
-              A list of the most recent projects.
+              A list of the most recent projects and their status.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -120,17 +120,32 @@ function DashboardView({
               <TableHeader>
                 <TableRow>
                   <TableHead>Project</TableHead>
-                  <TableHead>Description</TableHead>
+                  <TableHead className="hidden md:table-cell">Description</TableHead>
+                  <TableHead className="text-right">Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {recentProjects.map((project) => (
                   <TableRow key={project.id}>
                     <TableCell className="font-medium">
-                      {project.title}
+                      <div className="flex flex-col">
+                        <span>{project.title}</span>
+                        {project.isFavorite && (
+                          <span className="flex items-center gap-1 text-[10px] text-yellow-600">
+                            <Star className="h-2 w-2 fill-current" /> Favorite
+                          </span>
+                        )}
+                      </div>
                     </TableCell>
-                    <TableCell className="max-w-[200px] truncate">
+                    <TableCell className="hidden max-w-[300px] truncate md:table-cell">
                       {project.description}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button variant="ghost" size="sm" asChild>
+                        <Link href={`/dashboard/projects/${project.id}`}>
+                          Manage <ArrowUpRight className="ml-1 h-3 w-3" />
+                        </Link>
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
