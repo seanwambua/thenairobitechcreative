@@ -8,6 +8,7 @@ import { redirect } from 'next/navigation';
 /**
  * Project Detail Page (Server Component)
  * Fetches deep project structure and serializes data for client hydration.
+ * Optimized to prevent hydration errors with deep date objects.
  */
 export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
@@ -40,19 +41,22 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
     notFound();
   }
 
-  // Data Serialization: Convert Date objects to strings for Client Component stability
+  // Explicit Data Serialization: Convert to plain JS objects with string dates
+  // This prevents the "cannot pass Date object" issues in some environments/complex structures
   const serializedProject = {
-    ...projectData,
-    createdAt: projectData.createdAt.toISOString(),
-    updatedAt: projectData.updatedAt.toISOString(),
+    id: projectData.id,
+    title: projectData.title,
+    description: projectData.description,
+    isFavorite: projectData.isFavorite,
     milestones: projectData.milestones.map(ms => ({
-      ...ms,
-      createdAt: ms.createdAt.toISOString(),
-      updatedAt: ms.updatedAt.toISOString(),
+      id: ms.id,
+      title: ms.title,
+      description: ms.description,
+      status: ms.status,
       tasks: ms.tasks.map(t => ({
-        ...t,
-        createdAt: t.createdAt.toISOString(),
-        updatedAt: t.updatedAt.toISOString(),
+        id: t.id,
+        title: t.title,
+        status: t.status,
       }))
     }))
   };
