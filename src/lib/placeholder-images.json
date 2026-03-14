@@ -1,7 +1,7 @@
 {
   "blog1Image": {
     "id": "blog1",
-    "imageUrl": "https://picsum.photos/seed/blog1/1200/630",
+    "imageUrl": "https://res.cloudinary.com/dm1bn7vkd/image/upload/v1769188669/nairobi_techcreative/1769188621878_kgkj5u.png",
     "imageHint": "Placeholder blog post image"
   },
   "testimonial1Image": {
@@ -11,12 +11,12 @@
   },
   "founderImage": {
     "id": "founder",
-    "imageUrl": "https://picsum.photos/seed/founder/400/400",
+    "imageUrl": "https://res.cloudinary.com/dm1bn7vkd/image/upload/v1769189197/nairobi_techcreative/IMG_20260123_202554_at0rca.jpg",
     "imageHint": "Placeholder founder image"
   },
   "hero": {
     "id": "hero",
-    "imageUrl": "https://picsum.photos/seed/hero/1920/1080",
+    "imageUrl": "https://res.cloudinary.com/dm1bn7vkd/image/upload/v1769188669/nairobi_techcreative/1769188621878_kgkj5u.png",
     "imageHint": "Placeholder hero image"
   },
   "logo": {
@@ -26,28 +26,23 @@
   },
   "project1": {
     "id": "project1",
-    "imageUrl": "https://picsum.photos/seed/project1/800/600",
-    "imageHint": "data analytics dashboard"
+    "imageUrl": "https://res.cloudinary.com/dm1bn7vkd/image/upload/v1769188669/nairobi_techcreative/1769188621878_kgkj5u.png",
+    "imageHint": "ntc logo"
   },
   "project2": {
     "id": "project2",
-    "imageUrl": "https://picsum.photos/seed/project2/800/600",
-    "imageHint": "blockchain security"
+    "imageUrl": "https://res.cloudinary.com/dm1bn7vkd/image/upload/v1769188669/nairobi_techcreative/1769188621878_kgkj5u.png",
+    "imageHint": "ntc logo"
   },
   "project3": {
     "id": "project3",
-    "imageUrl": "https://picsum.photos/seed/project3/800/600",
-    "imageHint": "e-learning platform"
+    "imageUrl": "https://res.cloudinary.com/dm1bn7vkd/image/upload/v1769188669/nairobi_techcreative/1769188621878_kgkj5u.png",
+    "imageHint": "ntc logo"
   },
   "project4": {
     "id": "project4",
-    "imageUrl": "https://picsum.photos/seed/project4/800/600",
-    "imageHint": "eco friendly app"
-  },
-  "project5": {
-    "id": "project5",
-    "imageUrl": "https://picsum.photos/seed/project5/800/600",
-    "imageHint": "finance app"
+    "imageUrl": "https://res.cloudinary.com/dm1bn7vkd/image/upload/v1769188669/nairobi_techcreative/1769188621878_kgkj5u.png",
+    "imageHint": "ntc logo"
   },
   "enterpriseB": {
     "id": "enterpriseB",

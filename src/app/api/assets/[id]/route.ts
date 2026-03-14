@@ -1,9 +1,7 @@
-import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { NextRequest, NextResponse } from 'next/server';
+import prisma from '@/lib/prisma';
 
-const prisma = new PrismaClient();
-
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const asset = await prisma.asset.findUnique({
       where: { id: parseInt(params.id, 10) },
@@ -18,12 +16,12 @@ export async function GET(request: Request, { params }: { params: { id: string }
   }
 }
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const { name, alt } = await request.json();
+    const { name, alt, url } = await request.json();
     const updatedAsset = await prisma.asset.update({
       where: { id: parseInt(params.id, 10) },
-      data: { name, alt },
+      data: { name, alt, url },
     });
     return NextResponse.json(updatedAsset);
   } catch (error) {
@@ -31,8 +29,16 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const asset = await prisma.asset.findUnique({
+      where: { id: parseInt(params.id, 10) },
+    });
+
+    if (!asset) {
+      return NextResponse.json({ error: 'Asset not found' }, { status: 404 });
+    }
+
     await prisma.asset.delete({
       where: { id: parseInt(params.id, 10) },
     });

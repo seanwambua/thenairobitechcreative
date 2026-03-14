@@ -147,6 +147,7 @@ exports.Prisma.PostScalarFieldEnum = {
   authorAvatarHint: 'authorAvatarHint',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
   userId: 'userId'
 };
 
@@ -212,8 +213,10 @@ exports.Prisma.QuotationScalarFieldEnum = {
 exports.Prisma.CommentScalarFieldEnum = {
   id: 'id',
   content: 'content',
+  isPinned: 'isPinned',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
   userId: 'userId',
   postId: 'postId'
 };
@@ -223,6 +226,15 @@ exports.Prisma.LikeScalarFieldEnum = {
   createdAt: 'createdAt',
   userId: 'userId',
   postId: 'postId'
+};
+
+exports.Prisma.AssetScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  url: 'url',
+  alt: 'alt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SettingsScalarFieldEnum = {
@@ -314,6 +326,7 @@ exports.Prisma.ModelName = {
   Quotation: 'Quotation',
   Comment: 'Comment',
   Like: 'Like',
+  Asset: 'Asset',
   Settings: 'Settings',
   Account: 'Account',
   Session: 'Session',

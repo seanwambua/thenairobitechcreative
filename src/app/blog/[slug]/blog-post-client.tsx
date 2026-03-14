@@ -4,12 +4,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
-import { PostInteractions } from '@/components/post-interactions';
+
 import { Comments } from '@/components/comments';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Terminal, ArrowLeft } from 'lucide-react';
-import type { Post, Comment as CommentType, User, Reaction } from '@prisma/client';
+import type { Post, Comment as CommentType, User} from '@prisma/client';
 
 export function BlogPostClient({
   postData,
@@ -19,7 +19,7 @@ export function BlogPostClient({
   currentUser,
   error,
 }: {
-  postData: (Post & { reactions: Reaction[] }) | null;
+  postData: (Post) | null;
   comments: (CommentType & { user: User })[];
   likes: number;
   userHasLiked: boolean;
@@ -101,14 +101,6 @@ export function BlogPostClient({
       </div>
 
       <Separator className="my-12" />
-
-      <PostInteractions
-        post={postData}
-        likes={likes}
-        hasLiked={userHasLiked}
-        commentsCount={comments.length}
-        currentUser={currentUser}
-      />
 
       <Comments 
         postId={postData.id} 

@@ -10,9 +10,21 @@ export default async function MediaPage() {
     redirect('/unauthorized');
   }
 
-  const assets = await prisma.asset.findMany({
+  let assets = await prisma.asset.findMany({
     orderBy: { createdAt: 'desc' }
   });
+
+  if (assets.length === 0) {
+    const settings = await prisma.settings.findMany();
+    assets = settings.map(setting => ({
+      id: setting.id,
+      name: setting.key,
+      url: setting.value ?? '',
+      alt: `Image for ${setting.key}`,
+      createdAt: setting.createdAt,
+      updatedAt: setting.updatedAt,
+    }));
+  }
 
   return <MediaClient assets={assets} />;
 }

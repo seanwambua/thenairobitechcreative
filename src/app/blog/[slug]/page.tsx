@@ -1,9 +1,7 @@
-import { getPostBySlug } from '@/lib/actions/posts';
-import { getComments } from '@/lib/actions/comments';
 import { getLikes, hasLiked } from '@/lib/actions/likes';
 import { DbUninitializedError } from '@/lib/errors';
 import { BlogPostClient } from './blog-post-client';
-import type { Post, Comment, User, Reaction } from '@prisma/client';
+import type { Post, Comment, User } from '@prisma/client';
 import { DbUninitializedError as DbUninitializedErrorComponent } from '@/components/db-uninitialized-error';
 import { notFound } from 'next/navigation';
 import prisma from '@/lib/prisma';
@@ -11,9 +9,12 @@ import { auth } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
+// Define the intersection type for clarity
+type CommentWithUser = Comment & { user: User };
+
 async function getPageData(slug: string): Promise<{
-  post: (Post & { reactions: Reaction[] }) | null;
-  comments: (Comment & { user: User })[];
+  post: Post | null;
+  comments: CommentWithUser[];
   likes: number;
   userHasLiked: boolean;
   currentUser: User | null;
@@ -21,11 +22,10 @@ async function getPageData(slug: string): Promise<{
 }> {
   try {
     const session = await auth();
+    
+    // 1. Fetch Post first to get ID for subsequent parallel calls
     const post = await prisma.post.findUnique({
-      where: { slug },
-      include: {
-        reactions: true,
-      }
+      where: { slug }
     });
 
     if (!post) {
@@ -39,15 +39,20 @@ async function getPageData(slug: string): Promise<{
       };
     }
 
-    const [comments, likes, userHasLiked] = await Promise.all([
-      getComments(post.id),
+    // 2. Parallel fetch for related data
+    // We fetch comments directly here with 'include' to satisfy the User relation requirement
+    const [comments, likes, userHasLiked, currentUser] = await Promise.all([
+      prisma.comment.findMany({
+        where: { postId: post.id },
+        include: { user: true }, // Crucial: Fixes the TS2322 error
+        orderBy: { createdAt: 'desc' }
+      }) as Promise<CommentWithUser[]>,
       getLikes(post.id),
       hasLiked(post.id),
+      session?.user?.id 
+        ? prisma.user.findUnique({ where: { id: session.user.id } })
+        : Promise.resolve(null)
     ]);
-
-    const currentUser = session?.user?.id 
-      ? await prisma.user.findUnique({ where: { id: session.user.id } })
-      : null;
 
     return { 
       post, 
@@ -57,10 +62,15 @@ async function getPageData(slug: string): Promise<{
       currentUser,
       error: null 
     };
-  } catch (error: any) {
+
+  } catch (error) {
     console.error('[QA Database Error]:', error);
 
-    if (error.message?.includes('no such table') || error.code === 'P2021') {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorCode = (error as any)?.code;
+
+    // Handle uninitialized database (Infrastructure check)
+    if (errorMessage.includes('no such table') || errorCode === 'P2021') {
       return {
         post: null,
         comments: [],
@@ -77,7 +87,7 @@ async function getPageData(slug: string): Promise<{
       likes: 0,
       userHasLiked: false,
       currentUser: null,
-      error: error as Error,
+      error: error instanceof Error ? error : new Error('An unexpected error occurred.'),
     };
   }
 }
@@ -91,6 +101,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   const { post, comments, likes, userHasLiked, currentUser, error } = await getPageData(slug);
 
+  // QA Check: Priority error handling for Infrastructure state
   if (error instanceof DbUninitializedError) {
     return <DbUninitializedErrorComponent />;
   }

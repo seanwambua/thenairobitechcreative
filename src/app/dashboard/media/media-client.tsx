@@ -8,6 +8,7 @@ import { Asset } from '@prisma/client';
 import { AssetList } from './asset-list';
 import { AssetForm } from './asset-form';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import FounderMessage from '@/components/founder-message';
 
 export function MediaClient({ assets: initialAssets }: { assets: Asset[] }) {
   const [assets, setAssets] = useState(initialAssets);
@@ -52,7 +53,8 @@ export function MediaClient({ assets: initialAssets }: { assets: Asset[] }) {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-8">
+      <FounderMessage />
+      <div className="flex items-center justify-between my-8">
         <h1 className="text-3xl font-bold">Site Assets</h1>
         <Button onClick={openSheetForNew}><Plus className="mr-2 h-4 w-4" /> Add Asset</Button>
       </div>
