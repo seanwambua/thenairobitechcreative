@@ -8,24 +8,13 @@ module.exports = {
         tsconfig: 'tsconfig.test.json',
       },
     ],
-    '^.+\\.m?js$': [
-      'ts-jest',
-      {
-        tsconfig: 'tsconfig.test.json',
-      },
-    ],
-    '/node_modules/(lucide-react|next-auth)/.*\\.js$': [
-      'ts-jest',
-      {
-        tsconfig: 'tsconfig.test.json',
-      },
-    ],
   },
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^@/lib/prisma$': '<rootDir>/src/lib/__mocks__/prisma.ts',
   },
   transformIgnorePatterns: [
-    '/node_modules/(?!lucide-react|next-auth)',
+    '/node_modules/(?!next-auth/)',
   ],
   testPathIgnorePatterns: ['/node_modules/', '/.next/'],
   collectCoverage: true,

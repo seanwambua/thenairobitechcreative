@@ -25,7 +25,7 @@ export const navLinks = [
   { href: '/services', label: 'Services' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/blog', label: 'Blog' },
-  { href: '/contact', label: 'Contact' },
+  { href: 'https://nairobitechcreative.zohobookings.com/#/nairobitechcreative', label: 'Book a session' },
 ];
 
 export const services = [

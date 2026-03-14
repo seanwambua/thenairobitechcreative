@@ -108,6 +108,32 @@ function DashboardView({
         variants={cardVariants}
         initial="hidden"
         animate="visible"
+        transition={{ delay: 0.4 }}
+      >
+        <Card>
+          <CardHeader>
+            <CardTitle>A Message from Our Founder</CardTitle>
+          </CardHeader>
+          <CardContent className="flex items-center gap-4">
+            <img
+              src="/founder-avatar.png" // Placeholder image
+              alt="Founder's Name"
+              className="h-16 w-16 rounded-full"
+            />
+            <div>
+              <h3 className="text-lg font-semibold">Founder's Name</h3>
+              <p className="text-sm text-muted-foreground">
+                "Your success is our priority. We're here to help you achieve your goals."
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      <motion.div
+        variants={cardVariants}
+        initial="hidden"
+        animate="visible"
         transition={{ delay: 0.6 }}
       >
         <Card>

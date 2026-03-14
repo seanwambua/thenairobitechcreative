@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import {
@@ -31,25 +31,25 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { 
-  MoreHorizontal, 
-  PlusCircle, 
-  Search, 
-  Quote, 
-  User as UserIcon, 
-  Pencil, 
+import {
+  MoreHorizontal,
+  PlusCircle,
+  Search,
+  Quote,
+  User as UserIcon,
+  Pencil,
   Trash2,
-  MessageSquare
+  MessageSquare,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { TestimonialEditorSheet } from '@/components/testimonial-editor-sheet';
-import { deleteTestimonial } from '@/lib/actions/testimonials';
+import { deleteTestimonial, getAllTestimonials } from '@/lib/actions/testimonials';
 import { Role } from '@/lib/roles';
 import type { Testimonial } from '@prisma/client';
 import { cn } from '@/lib/utils';
 
 interface TestimonialsClientProps {
-  initialTestimonials: any[]; // Handle serialized objects
+  initialTestimonials: Testimonial[];
 }
 
 export function TestimonialsClient({
@@ -57,6 +57,7 @@ export function TestimonialsClient({
 }: TestimonialsClientProps) {
   const router = useRouter();
   const { data: session } = useSession();
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(initialTestimonials);
   const [searchQuery, setSearchQuery] = useState('');
   const [isEditorOpen, setEditorOpen] = useState(false);
   const [editingTestimonial, setEditingTestimonial] = useState<Testimonial | null>(null);
@@ -64,9 +65,12 @@ export function TestimonialsClient({
   const [testimonialToDelete, setTestimonialToDelete] = useState<Testimonial | null>(null);
   const { toast } = useToast();
 
+  useEffect(() => {
+    setTestimonials(initialTestimonials);
+  }, [initialTestimonials]);
+
   const filteredTestimonials = useMemo(() => {
-    const list = Array.isArray(initialTestimonials) ? initialTestimonials : [];
-    return list.filter((t) => {
+    return testimonials.filter((t) => {
       const searchStr = searchQuery.toLowerCase();
       return (
         (t.author || '').toLowerCase().includes(searchStr) ||
@@ -74,19 +78,19 @@ export function TestimonialsClient({
         (t.quote || '').toLowerCase().includes(searchStr)
       );
     });
-  }, [initialTestimonials, searchQuery]);
+  }, [testimonials, searchQuery]);
 
   const handleCreateNew = () => {
     setEditingTestimonial(null);
     setEditorOpen(true);
   };
 
-  const handleEdit = (testimonial: any) => {
+  const handleEdit = (testimonial: Testimonial) => {
     setEditingTestimonial(testimonial);
     setEditorOpen(true);
   };
 
-  const handleDeleteInitiate = (testimonial: any) => {
+  const handleDeleteInitiate = (testimonial: Testimonial) => {
     setTestimonialToDelete(testimonial);
     setDeleteDialogOpen(true);
   };
@@ -95,7 +99,8 @@ export function TestimonialsClient({
     if (testimonialToDelete) {
       try {
         await deleteTestimonial(testimonialToDelete.id);
-        router.refresh();
+        const updatedTestimonials = testimonials.filter(t => t.id !== testimonialToDelete.id);
+        setTestimonials(updatedTestimonials);
         toast({
           title: 'Testimonial Deleted',
           description: `The testimonial from "${testimonialToDelete.author}" has been removed.`,
@@ -108,17 +113,27 @@ export function TestimonialsClient({
         });
       } finally {
         setDeleteDialogOpen(false);
-        setPostToDelete(null);
+        setTestimonialToDelete(null);
       }
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setEditorOpen(false);
-    router.refresh();
+    try {
+      const updatedTestimonials = await getAllTestimonials();
+      const testimonials = JSON.parse(JSON.stringify(updatedTestimonials));
+      setTestimonials(testimonials);
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Could not refresh testimonials. Please refresh the page.',
+      });
+    }
   };
 
-  const isOwner = (testimonial: any) => {
+  const isOwner = (testimonial: Testimonial) => {
     return session?.user?.id === testimonial.userId;
   };
 
@@ -163,8 +178,8 @@ export function TestimonialsClient({
             {filteredTestimonials.map((testimonial) => {
               const userOwns = isOwner(testimonial);
               return (
-                <Card 
-                  key={testimonial.id} 
+                <Card
+                  key={testimonial.id}
                   className={cn(
                     "relative flex flex-col transition-all hover:shadow-md",
                     userOwns && "border-primary/50 bg-primary/5 shadow-sm"
@@ -184,7 +199,7 @@ export function TestimonialsClient({
                           </span>
                         </div>
                       </div>
-                      
+
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -198,7 +213,7 @@ export function TestimonialsClient({
                                 <Pencil className="mr-2 h-4 w-4" /> Edit
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
-                              <DropdownMenuItem 
+                              <DropdownMenuItem
                                 onClick={() => handleDeleteInitiate(testimonial)}
                                 className="text-destructive focus:bg-destructive focus:text-destructive-foreground"
                               >
@@ -213,7 +228,7 @@ export function TestimonialsClient({
                       </DropdownMenu>
                     </div>
                   </CardHeader>
-                  
+
                   <CardContent className="p-6 pt-2 flex-1">
                     <div className="relative">
                       <Quote className="absolute -left-2 -top-2 h-8 w-8 text-primary/10 -z-0" />
@@ -266,8 +281,4 @@ export function TestimonialsClient({
       </AlertDialog>
     </div>
   );
-}
-
-function setPostToDelete(arg0: null) {
-  throw new Error('Function not implemented.');
 }

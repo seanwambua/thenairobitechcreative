@@ -5,7 +5,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { TestimonialsClient } from './testimonials-client';
-import { getTestimonials } from '@/lib/actions/testimonials';
+import { getAllTestimonials } from '@/lib/actions/testimonials';
 import { DbUninitializedError as DbUninitializedErrorComponent } from '@/components/db-uninitialized-error';
 import { DbUninitializedError } from '@/lib/errors';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -15,7 +15,7 @@ export const dynamic = 'force-dynamic';
 
 async function getPageData() {
   try {
-    const rawTestimonials = await getTestimonials();
+    const rawTestimonials = await getAllTestimonials();
     
     // Explicit Serialization: Convert Date objects to strings for Client Component hydration
     const testimonials = JSON.parse(JSON.stringify(rawTestimonials));

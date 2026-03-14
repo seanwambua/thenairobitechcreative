@@ -68,7 +68,7 @@ export function Hero({
             className="mt-6 max-w-[600px] text-lg text-muted-foreground md:text-xl"
             variants={textItemVariants}
           >
-            We build innovative products that empower businesses and
+            Innovation that empowers businesses and
             communities across the continent and beyond.
           </motion.p>
           <motion.div
@@ -76,13 +76,13 @@ export function Hero({
             variants={textItemVariants}
           >
             <Button size="lg" asChild>
-              <Link href="#portfolio">Explore Our Work</Link>
+            <Link href="#portfolio">Explore Our Work</Link>
             </Button>
-            <InquirySheet logoUrl={logoUrl}>
-              <Button size="lg" variant="outline">
-                Contact Us <ChevronRight className="ml-2 h-4 w-4" />
+            {/* <InquirySheet logoUrl={logoUrl}> */}
+              <Button size="lg" variant={"outline"} asChild>
+                <Link className="items-center gap-0 hover:decoration-orange-400 hover:decoration-solid" href="https://nairobitechcreative.zohobookings.com/#/nairobitechcreative">Book a session<ChevronRight className="ml-2 h-4 w-4" /></Link>
               </Button>
-            </InquirySheet>
+            {/* </InquirySheet> */}
           </motion.div>
         </div>
         <motion.div

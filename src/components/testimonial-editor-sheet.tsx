@@ -117,7 +117,7 @@ export function TestimonialEditorSheet({
 
     try {
       if (testimonial) {
-        await updateTestimonial({ ...testimonial, ...testimonialData });
+        await updateTestimonial(testimonial.id, testimonialData);
       } else {
         await createTestimonial(testimonialData);
       }

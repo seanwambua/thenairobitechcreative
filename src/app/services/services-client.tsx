@@ -63,7 +63,7 @@ export default function ServicesClient() {
                   whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
                   className="h-full"
                 >
-                  <Card className="h-full bg-background/60 backdrop-blur-sm border-border/20 shadow-lg border-[1px] hover:shadow-[0_20px_25px_-5px_rgba(249,115,22,0.4),_0_8px_10px_-6px_rgba(249,115,22,0.4)] transition-shadow duration-300">
+                  <Card className="h-full  backdrop-blur-sm border-border/20 shadow-md border-[1px] hover:shadow-[0_20px_25px_-5px_rgba(249,115,22,0.4),_0_8px_10px_-6px_rgba(249,115,22,0.4)] transition-shadow duration-300">
                     <CardHeader className="flex flex-row items-center gap-4">
                       <Avatar className="w-12 h-12">
                         <AvatarImage src={partner.logo} alt={`${partner.name} logo`} />

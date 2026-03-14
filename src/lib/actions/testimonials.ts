@@ -1,120 +1,49 @@
 'use server';
 
+import { z } from 'zod';
 import prisma from '@/lib/prisma';
+import { TestimonialSchema } from '@/lib/schemas';
 import { revalidatePath } from 'next/cache';
-import {
-  TestimonialSchema,
-  TestimonialInputSchema,
-  type TestimonialInputSchemaType,
-} from '@/lib/schemas';
-import type { Testimonial } from '@prisma/client';
 import { auth } from '@/lib/auth';
-import { Role } from '@/lib/roles';
+import type { Testimonial } from '@prisma/client';
 
-/**
- * Fetches all testimonials. Used for the public homepage.
- */
-export async function getAllTestimonials() {
-  try {
-    const results = await prisma.testimonial.findMany({
-      orderBy: { createdAt: 'desc' },
-    });
-    return results;
-  } catch (error) {
-    console.error('[GET_ALL_TESTIMONIALS_ERROR]:', error);
-    return [];
-  }
+const TestimonialInput = TestimonialSchema.omit({ id: true, createdAt: true, updatedAt: true, userId: true });
+
+export async function getAllTestimonials(): Promise<Testimonial[]> {
+  return prisma.testimonial.findMany();
 }
 
-/**
- * Fetches testimonials for the dashboard. 
- * Admins see all, users see only their own.
- */
-export async function getTestimonials() {
+// Create testimonial
+export async function createTestimonial(data: z.infer<typeof TestimonialInput>) {
   const session = await auth();
-  if (!session?.user?.id) return [];
+  const userId = session?.user?.id;
+  if (!userId) throw new Error('Unauthorized');
 
-  const where = session.user.role === Role.ADMIN ? {} : { userId: session.user.id };
-  
-  try {
-    const results = await prisma.testimonial.findMany({
-      where,
-      orderBy: { createdAt: 'desc' },
-    });
-    return results;
-  } catch (error) {
-    console.error('[GET_TESTIMONIALS_ERROR]:', error);
-    return [];
-  }
-}
-
-export async function createTestimonial(data: TestimonialInputSchemaType) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    throw new Error('You must be signed in to create a testimonial.');
-  }
-  
-  const validatedData = TestimonialInputSchema.parse(data);
-  
-  const newTestimonial = await prisma.testimonial.create({
-    data: {
-      ...validatedData,
-      userId: session.user.id,
-    },
-  });
-
-  revalidatePath('/dashboard');
-  revalidatePath('/dashboard/testimonials');
-  revalidatePath('/dashboard/analytics');
+  const validatedData = TestimonialInput.parse(data);
+  const testimonial = await prisma.testimonial.create({ data: { ...validatedData, userId } });
   revalidatePath('/');
-  return newTestimonial;
+  return testimonial;
 }
 
-export async function updateTestimonial(testimonial: Testimonial) {
+// Update testimonial
+export async function updateTestimonial(id: number, data: z.infer<typeof TestimonialInput>) {
   const session = await auth();
-  if (!session?.user?.id) {
-    throw new Error('Unauthorized: Session expired.');
-  }
+  const userId = session?.user?.id;
+  if (!userId) throw new Error('Unauthorized');
 
-  const existing = await prisma.testimonial.findUnique({ where: { id: testimonial.id } });
-  if (!existing) throw new Error('Testimonial not found.');
-
-  if (session.user.role !== Role.ADMIN && session.user.id !== existing.userId) {
-    throw new Error('You are not authorized to update this testimonial.');
-  }
-  
-  const { id, createdAt, updatedAt, userId, ...rest } = testimonial;
-  const validatedData = TestimonialInputSchema.parse(rest);
-  
-  const updatedTestimonial = await prisma.testimonial.update({
-    where: { id },
-    data: validatedData,
-  });
-
-  revalidatePath('/dashboard');
-  revalidatePath('/dashboard/testimonials');
-  revalidatePath('/dashboard/analytics');
+  const validatedData = TestimonialInput.parse(data);
+  const testimonial = await prisma.testimonial.update({ where: { id }, data: { ...validatedData, userId } });
   revalidatePath('/');
-  return updatedTestimonial;
+  return testimonial;
 }
 
-export async function deleteTestimonial(testimonialId: number) {
+// Delete testimonial
+export async function deleteTestimonial(id: number) {
   const session = await auth();
-  if (!session?.user?.id) {
-    throw new Error('Unauthorized: Session expired.');
-  }
-
-  const testimonial = await prisma.testimonial.findUnique({ where: { id: testimonialId } });
-  if (!testimonial) return;
-
-  if (session.user.role !== Role.ADMIN && session.user.id !== testimonial.userId) {
-    throw new Error('You are not authorized to delete this testimonial.');
-  }
-
-  await prisma.testimonial.delete({ where: { id: testimonialId } });
+  const userId = session?.user?.id;
+  if (!userId) throw new Error('Unauthorized');
   
-  revalidatePath('/dashboard');
-  revalidatePath('/dashboard/testimonials');
-  revalidatePath('/dashboard/analytics');
+  const testimonial = await prisma.testimonial.delete({ where: { id } });
   revalidatePath('/');
+  return testimonial;
 }

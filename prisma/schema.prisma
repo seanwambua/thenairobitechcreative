@@ -206,3 +206,12 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+model Asset {
+  id        Int      @id @default(autoincrement())
+  name      String
+  alt       String?
+  url       String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -218,7 +218,7 @@ export function ProjectEditorDialog({
                         <FormControl>
                           <div className="relative">
                             <LinkIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="https://example.com" className="pl-9" {...field} />
+                            <Input placeholder="https://example.com" className="pl-9" {...field} value={field.value ?? ''} />
                           </div>
                         </FormControl>
                         <FormMessage />

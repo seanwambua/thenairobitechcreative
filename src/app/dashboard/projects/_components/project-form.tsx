@@ -177,7 +177,7 @@ export function ProjectForm({ project, onSave }: { project?: Project, onSave?: (
             <FormItem>
               <FormLabel>Project URL</FormLabel>
               <FormControl>
-                <Input placeholder="https://example.com" {...field} />
+                <Input placeholder="https://example.com" {...field} value={field.value ?? ''} />
               </FormControl>
               <FormMessage />
             </FormItem>
