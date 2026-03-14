@@ -26,7 +26,14 @@ export async function createComment(data: z.infer<typeof CommentInputSchema>) {
     },
   });
 
-  revalidatePath(`/blog/${newComment.postId}`);
+  const post = await prisma.post.findUnique({
+    where: { id: newComment.postId },
+    select: { slug: true }
+  });
+
+  if (post) {
+    revalidatePath(`/blog/${post.slug}`);
+  }
   return newComment;
 }
 
@@ -53,7 +60,14 @@ export async function updateComment(commentId: number, content: string) {
     data: { content },
   });
 
-  revalidatePath(`/blog/${updatedComment.postId}`);
+  const post = await prisma.post.findUnique({
+    where: { id: updatedComment.postId },
+    select: { slug: true }
+  });
+
+  if (post) {
+    revalidatePath(`/blog/${post.slug}`);
+  }
   return updatedComment;
 }
 
@@ -79,8 +93,47 @@ export async function deleteComment(commentId: number) {
     where: { id: commentId },
   });
 
-  revalidatePath(`/blog/${deletedComment.postId}`);
+  const post = await prisma.post.findUnique({
+    where: { id: deletedComment.postId },
+    select: { slug: true }
+  });
+
+  if (post) {
+    revalidatePath(`/blog/${post.slug}`);
+  }
   return deletedComment;
+}
+
+export async function togglePinComment(commentId: number) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    throw new Error('You must be signed in.');
+  }
+
+  const comment = await prisma.comment.findUnique({
+    where: { id: commentId },
+    include: { post: true }
+  });
+
+  if (!comment) {
+    throw new Error('Comment not found.');
+  }
+
+  // Only post author or admin can pin
+  const isPostAuthor = comment.post.userId === session.user.id;
+  const isAdmin = session.user.role === Role.ADMIN;
+
+  if (!isPostAuthor && !isAdmin) {
+    throw new Error('Unauthorized to pin this comment.');
+  }
+
+  const updatedComment = await prisma.comment.update({
+    where: { id: commentId },
+    data: { isPinned: !comment.isPinned }
+  });
+
+  revalidatePath(`/blog/${comment.post.slug}`);
+  return updatedComment;
 }
 
 export async function getComments(postId: number) {
@@ -89,8 +142,9 @@ export async function getComments(postId: number) {
     include: {
       user: true,
     },
-    orderBy: {
-      createdAt: 'desc',
-    },
+    orderBy: [
+      { isPinned: 'desc' },
+      { createdAt: 'desc' }
+    ],
   });
 }

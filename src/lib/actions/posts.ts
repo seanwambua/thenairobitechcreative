@@ -95,6 +95,7 @@ export async function createPost(
         validatedData.authorAvatarUrl ??
         placeholderImages.testimonial1Image.imageUrl,
       authorAvatarHint: placeholderImages.testimonial1Image.imageHint,
+      userId: session.user.id,
     },
   });
 
@@ -115,9 +116,8 @@ export async function updatePost(post: Post): Promise<Post> {
 
   try {
     const validatedData = PostSchema.parse(post);
-    const { id, slug } = validatedData; // Keep original slug for revalidation
+    const { id, slug } = validatedData; 
 
-    // Prepare data for update, excluding immutable and relational fields
     const {
       id: _id,
       slug: _slug,
@@ -137,17 +137,15 @@ export async function updatePost(post: Post): Promise<Post> {
     revalidatePath('/dashboard/content');
     revalidatePath('/dashboard/analytics');
     revalidatePath('/blog');
-    revalidatePath(`/blog/${slug}`); // Use the original, immutable slug
+    revalidatePath(`/blog/${slug}`); 
     revalidatePath('/');
     return updatedPost;
   } catch (error) {
     if (error instanceof z.ZodError) {
-      // Handle validation errors
       throw new Error(
         `Validation failed: ${error.errors.map((e) => e.message).join(', ')}`
       );
     } else {
-      // Handle other potential errors (e.g., database connection)
       throw new Error('Failed to update post due to a server error.');
     }
   }
@@ -171,52 +169,44 @@ export async function deletePost(postId: number): Promise<void> {
   }
 }
 
-export async function likePost(postId: number): Promise<Post> {
+export async function toggleReaction(postId: number, emoji: string) {
   const session = await auth();
   if (!session?.user?.id) {
-    throw new Error('Unauthorized');
+    throw new Error('You must be signed in to react.');
   }
+
   const userId = session.user.id;
 
-  const like = await prisma.like.findUnique({
+  const existingReaction = await prisma.reaction.findUnique({
     where: {
-      userId_postId: {
+      userId_postId_emoji: {
         userId,
         postId,
+        emoji,
       },
     },
   });
 
-  if (like) {
-    await prisma.like.delete({
-      where: {
-        userId_postId: {
-          userId,
-          postId,
-        },
-      },
+  if (existingReaction) {
+    await prisma.reaction.delete({
+      where: { id: existingReaction.id },
     });
   } else {
-    await prisma.like.create({
+    await prisma.reaction.create({
       data: {
         userId,
         postId,
+        emoji,
       },
     });
   }
 
   const post = await prisma.post.findUnique({
     where: { id: postId },
-    include: {
-      likes: true,
-      comments: true,
-    },
+    select: { slug: true }
   });
 
-  if (!post) {
-    throw new Error('Post not found');
+  if (post) {
+    revalidatePath(`/blog/${post.slug}`);
   }
-
-  revalidatePath(`/blog/${post.slug}`);
-  return post;
 }

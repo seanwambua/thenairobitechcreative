@@ -9,23 +9,24 @@ import { Comments } from '@/components/comments';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Terminal, ArrowLeft } from 'lucide-react';
-import type { Post, Comment as CommentType, User } from '@prisma/client';
+import type { Post, Comment as CommentType, User, Reaction } from '@prisma/client';
 
 export function BlogPostClient({
   postData,
   comments,
   likes,
   userHasLiked,
+  currentUser,
   error,
 }: {
-  postData: Post | null;
+  postData: (Post & { reactions: Reaction[] }) | null;
   comments: (CommentType & { user: User })[];
   likes: number;
   userHasLiked: boolean;
+  currentUser: User | null;
   error: Error | null;
 }) {
   if (error) {
-    // Generic error for other data fetching issues
     return (
       <article className="container flex-1 py-20 text-center">
         <Alert variant="destructive" className="mx-auto max-w-lg text-left">
@@ -48,10 +49,11 @@ export function BlogPostClient({
     );
   }
 
-  // Handle case where post is not found or slug was invalid.
   if (!postData) {
-    return null; // The page will show a 404 from notFound()
+    return null;
   }
+
+  const isPostAuthor = currentUser?.id === postData.userId;
 
   return (
     <article className="container mx-auto max-w-4xl px-4 py-12">
@@ -64,7 +66,6 @@ export function BlogPostClient({
             <AvatarImage
               src={postData.authorAvatarUrl}
               alt={postData.author}
-              data-ai-hint={postData.authorAvatarHint}
             />
             <AvatarFallback>{postData.author.charAt(0)}</AvatarFallback>
           </Avatar>
@@ -88,7 +89,6 @@ export function BlogPostClient({
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, 50vw"
-          data-ai-hint={postData.imageHint}
           priority
         />
       </div>
@@ -107,9 +107,14 @@ export function BlogPostClient({
         likes={likes}
         hasLiked={userHasLiked}
         commentsCount={comments.length}
+        currentUser={currentUser}
       />
 
-      <Comments postId={postData.id} comments={comments} />
+      <Comments 
+        postId={postData.id} 
+        comments={comments} 
+        postAuthorId={postData.userId ?? ''}
+      />
     </article>
   );
 }

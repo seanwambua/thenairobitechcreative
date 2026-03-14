@@ -1,8 +1,8 @@
-import { getSettings } from '@/lib/actions/settings';
-import { MediaClient } from './media-client';
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { Role } from '@/lib/roles';
+import { MediaClient } from './media-client';
+import prisma from '@/lib/prisma';
 
 export default async function MediaPage() {
   const session = await auth();
@@ -10,13 +10,9 @@ export default async function MediaPage() {
     redirect('/unauthorized');
   }
 
-  const settings = await getSettings(['heroImage', 'logo', 'founderImage']);
+  const assets = await prisma.asset.findMany({
+    orderBy: { createdAt: 'desc' }
+  });
 
-  const initialSettings = {
-    heroImage: settings.heroImage || null,
-    logo: settings.logo || null,
-    founderImage: settings.founderImage || null,
-  };
-
-  return <MediaClient initialSettings={initialSettings} />;
+  return <MediaClient assets={assets} />;
 }

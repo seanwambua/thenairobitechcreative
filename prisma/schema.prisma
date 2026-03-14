@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../src/app/generated/prisma"
 }
 
 datasource db {
@@ -28,6 +29,7 @@ model User {
   comments       Comment[]
   likes          Like[]
   testimonials   Testimonial[]
+  reactions      Reaction[]
 }
 
 enum Role {
@@ -58,6 +60,7 @@ model Post {
   user             User?     @relation(fields: [userId], references: [id])
   comments         Comment[]
   likes            Like[]
+  reactions        Reaction[]
 }
 
 model Project {
@@ -146,6 +149,7 @@ enum QuotationStatus {
 model Comment {
   id        Int      @id @default(autoincrement())
   content   String
+  isPinned  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    String
@@ -163,6 +167,27 @@ model Like {
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@unique([userId, postId])
+}
+
+model Reaction {
+  id        Int      @id @default(autoincrement())
+  emoji     String
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId, emoji])
+}
+
+model Asset {
+  id        Int      @id @default(autoincrement())
+  name      String
+  url       String
+  alt       String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Settings {
@@ -205,13 +230,4 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
-}
-
-model Asset {
-  id        Int      @id @default(autoincrement())
-  name      String
-  alt       String?
-  url       String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
