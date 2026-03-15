@@ -16,10 +16,17 @@ const poppins = Poppins({
   variable: '--font-poppins',
 });
 
-export const metadata: Metadata = {
-  title: 'The Nairobi Tech Creative Hub',
-  description: 'African Solutions, Global Problems.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const logoUrl = await getSetting('logo');
+
+  return {
+    title: 'The Nairobi Tech Creative Hub',
+    description: 'African Solutions, Global Problems.',
+    icons: {
+      icon: logoUrl ?? '/favicon.ico',
+    },
+  };
+}
 
 export default async function RootLayout({
   children,
