@@ -1,7 +1,7 @@
 import { Cta } from '@/components/cta';
 import { PricingClient } from './pricing-client';
 import { DbUninitializedError as DbUninitializedErrorComponent } from '@/components/db-uninitialized-error';
-import { getSetting } from '@/app/actions/settings';
+import { getSetting } from '@/lib/actions/settings';
 import { DbUninitializedError } from '@/lib/errors';
 
 async function getPageData() {

@@ -30,20 +30,24 @@ export const ProjectSchema = z.object({
   keyFeatures: z
     .array(z.string())
     .min(1, 'Please add at least one key feature.'),
+  url: z.string().url().or(z.literal('')).nullable(),
   imageUrl: z.string().url(),
   imageHint: z.string(),
   gridSpan: z.string(),
   icon: z.enum(iconNames),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-  userId: z.string().optional(),
+  isFavorite: z.boolean().optional(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  userId: z.string().nullable(),
 });
 
 // Used for create/update actions where some fields are not required.
-const ProjectInputSchema = ProjectSchema.omit({
+// Explicitly omit fields that are handled by the server.
+export const ProjectInputSchema = ProjectSchema.omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+  userId: true,
 });
 export type ProjectInputSchemaType = z.infer<typeof ProjectInputSchema>;
 
@@ -54,12 +58,12 @@ export const TestimonialSchema = z.object({
   title: z.string().min(3, 'Author title must be at least 3 characters.'),
   avatarUrl: z.string().url(),
   avatarHint: z.string(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-  userId: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  userId: z.string().nullable(),
 });
 
-const TestimonialInputSchema = TestimonialSchema.omit({
+export const TestimonialInputSchema = TestimonialSchema.omit({
   id: true,
   createdAt: true,
   updatedAt: true,
@@ -87,29 +91,11 @@ export const PostSchema = PostInputSchema.extend({
   imageHint: z.string(),
   authorAvatarUrl: z.string().url(),
   authorAvatarHint: z.string(),
-  likes: z.number(),
-  comments: z.string(),
+  likes: z.number().optional(),
+  comments: z.string().optional(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-  userId: z.string().optional(),
+  userId: z.string().nullable(),
 });
-
-export const PostSummarySchema = PostSchema.pick({
-  id: true,
-  slug: true,
-  title: true,
-  description: true,
-  imageUrl: true,
-  imageHint: true,
-  author: true,
-  authorAvatarUrl: true,
-  authorAvatarHint: true,
-  likes: true,
-  comments: true,
-  createdAt: true,
-  updatedAt: true,
-});
-
-export type PostSummary = z.infer<typeof PostSummarySchema>;
 
 export type PostSchemaType = z.infer<typeof PostSchema>;

@@ -1,4 +1,5 @@
-import { Role } from '@/generated/client';
+
+import { Role } from '@/lib/roles';
 import NextAuth, { type DefaultSession } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 
@@ -7,6 +8,7 @@ declare module 'next-auth' {
     user: {
       id: string;
       role: Role;
+      status: string;
     } & DefaultSession['user'];
   }
   interface User {
@@ -16,6 +18,7 @@ declare module 'next-auth' {
 
 declare module 'next-auth/jwt' {
   interface JWT {
+    id: string;
     role: Role;
   }
 }

@@ -1,28 +1,24 @@
-
 'use server';
 import { Hero } from '@/components/hero';
-import { ProspectsBanner } from '@/components/prospects-banner';
 import { BentoPortfolio } from '@/components/bento-portfolio';
-import { faqs } from '@/lib/data';
 import { Cta } from '@/components/cta';
 import { Testimonials as TestimonialsComponent } from '@/components/testimonials';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-import { getProjects } from '@/app/actions/projects';
-import { getTestimonials } from '@/app/actions/testimonials';
-import { getSetting } from '@/app/actions/settings';
+import { getFavoriteProjects } from '@/lib/actions/projects';
+import { getAllTestimonials } from '@/lib/actions/testimonials';
+import { getSetting } from '@/lib/actions/settings';
 import { DbUninitializedError } from '@/components/db-uninitialized-error';
-import placeholderImages from '@/app/lib/placeholder-images.json';
+import { ServicesSelector } from '@/components/services-selector';
+import placeholderImages from '@/lib/placeholder-images.json';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
 
 function DataError({ sectionName }: { sectionName: string }) {
   return (
-    <Alert variant="destructive" className="mx-auto max-w-4xl">
+    <Alert
+      variant="destructive"
+      className="mx-auto max-w-4xl"
+      key={sectionName}
+    >
       <Terminal className="h-4 w-4" />
       <AlertTitle>Error Loading {sectionName}</AlertTitle>
       <AlertDescription>
@@ -39,8 +35,8 @@ export default async function Home() {
   try {
     [projectsResult, testimonialsResult, settingsResult, logoUrlResult] =
       await Promise.allSettled([
-        getProjects(),
-        getTestimonials(),
+        getFavoriteProjects(),
+        getAllTestimonials(),
         getSetting('heroImage'),
         getSetting('logo'),
       ]);
@@ -68,60 +64,37 @@ export default async function Home() {
   return (
     <>
       <Hero heroImage={heroImage} logoUrl={logoUrl} />
-      <ProspectsBanner logoUrl={logoUrl} />
 
-      <section id="portfolio" className="py-20 lg:py-32">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto mb-16 max-w-3xl text-center">
-            <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-              Latest Innovation Suite
-            </h2>
-            <p className="mt-4 text-lg text-zinc-500">
-              Showcasing our next generation of digital solutions.
-            </p>
-          </div>
-          <div className="sm:p-4 md:p-6">
-            {projectsResult.status === 'fulfilled' ? (
-              <BentoPortfolio projects={projectsResult.value} />
-            ) : (
-              <DataError sectionName="Portfolio" />
-            )}
-          </div>
+      {projectsResult.status === 'fulfilled' ? (
+              projectsResult.value.length > 0 ? (
+                <section id="portfolio" className="py-20 lg:py-32">
+                  <div className="container mx-auto px-4">
+                    <div className="mx-auto mb-16 max-w-3xl text-center">
+                      <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+                        Innovation Suite
+                      </h2>
+                      <p className="mt-4 text-lg text-zinc-500">
+                        A curated showcase of our most impactful digital transformations.
+                      </p>
+                    </div>
+                    <div className="sm:p-4 md:p-6">
+                      <BentoPortfolio projects={projectsResult.value} />   
+                    </div>
+                  </div>
+                </section>
+      ) : (
+        <div className="container mx-auto px-4 py-12 md:px-6 md:py-20">
+          <ServicesSelector />
         </div>
-      </section>
+      )
+    ) : (
+      <DataError sectionName="Portfolio" />
+    )}
 
       {testimonialsResult.status === 'fulfilled' &&
       testimonialsResult.value.length > 0 ? (
         <TestimonialsComponent testimonials={testimonialsResult.value} />
       ) : null}
-
-      <section id="faq" className="border-t bg-background py-20 lg:py-32">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto mb-16 max-w-3xl text-center">
-            <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-              Frequently Asked Questions
-            </h2>
-            <p className="mt-4 text-muted-foreground">
-              Have questions? We have got answers. If you can&apos;t find what
-              you&apos;re looking for, feel free to contact us.
-            </p>
-          </div>
-          <div className="mx-auto max-w-3xl">
-            <Accordion type="single" collapsible className="w-full">
-              {faqs.map((faq) => (
-                <AccordionItem key={faq.id} value={`item-${faq.id}`}>
-                  <AccordionTrigger className="text-left font-semibold hover:no-underline">
-                    {faq.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
-                    {faq.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
-        </div>
-      </section>
 
       <Cta logoUrl={logoUrl} />
     </>

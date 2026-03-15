@@ -16,6 +16,7 @@ import {
   Palette,
   Users,
   Settings as SettingsIcon,
+  Info,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { revalidatePath } from 'next/cache';
@@ -23,9 +24,10 @@ import prisma from '@/lib/prisma';
 import { seedDatabase } from '@/lib/db/seed';
 import { Badge } from '@/components/ui/badge';
 import { iconNames } from '@/lib/schemas';
-import { auth } from '@/auth';
+import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { Role } from '@/lib/roles';
+import { checkDatabaseConnection, getSystemInfo } from '@/lib/system';
 
 async function reinitializeDatabase() {
   'use server';
@@ -51,22 +53,17 @@ async function runSystemChecks(): Promise<CheckResult[]> {
   const checks: CheckResult[] = [];
 
   // 1. Database Connection
-  try {
-    await prisma.$queryRaw`SELECT 1`;
-    checks.push({
-      name: 'Database Connection',
-      status: 'ok',
-      message: 'Successfully connected to the database.',
-      category: 'Database',
-    });
-  } catch (e: any) {
-    checks.push({
-      name: 'Database Connection',
-      status: 'error',
-      message: e.message || 'Failed to connect to the database.',
-      category: 'Database',
-    });
-    // If connection fails, no point in checking tables
+  const dbConnection = await checkDatabaseConnection();
+  checks.push({
+    name: 'Database Connection',
+    status: dbConnection.status as 'ok' | 'error' | 'warning',
+    message: dbConnection.error
+      ? `${dbConnection.message} Details: ${dbConnection.error}`
+      : dbConnection.message,
+    category: 'Database',
+  });
+
+  if (dbConnection.status === 'error') {
     return checks;
   }
 
@@ -74,7 +71,7 @@ async function runSystemChecks(): Promise<CheckResult[]> {
   const tables = ['post', 'project', 'testimonial', 'settings'] as const;
   for (const table of tables) {
     try {
-      const count = await prisma[table].count();
+      const count = await (prisma[table] as any).count();
       checks.push({
         name: `Table: ${table}`,
         status: 'ok',
@@ -93,7 +90,6 @@ async function runSystemChecks(): Promise<CheckResult[]> {
   }
 
   // 3. Data Integrity Checks
-  // Posts
   const invalidPosts = await prisma.post.count({
     where: { OR: [{ title: '' }, { slug: '' }, { content: '' }] },
   });
@@ -107,7 +103,6 @@ async function runSystemChecks(): Promise<CheckResult[]> {
     category: 'Data Integrity',
   });
 
-  // Projects
   const allProjects = await prisma.project.findMany();
   const invalidProjects = allProjects.filter(
     (p) => !p.title || !p.description || !iconNames.includes(p.icon as any)
@@ -122,7 +117,6 @@ async function runSystemChecks(): Promise<CheckResult[]> {
     category: 'Data Integrity',
   });
 
-  // Testimonials
   const invalidTestimonials = await prisma.testimonial.count({
     where: { OR: [{ author: '' }, { quote: '' }] },
   });
@@ -136,7 +130,6 @@ async function runSystemChecks(): Promise<CheckResult[]> {
     category: 'Data Integrity',
   });
 
-  // Settings
   const requiredSettings = ['heroImage', 'founderImage'];
   const settings = await prisma.settings.findMany({
     where: { key: { in: requiredSettings } },
@@ -184,6 +177,7 @@ export default async function TroubleshootingPage() {
   }
 
   const systemChecks = await runSystemChecks();
+  const systemInfo = await getSystemInfo();
   const isSystemHealthy = systemChecks.every((check) => check.status === 'ok');
   const hasWarnings = systemChecks.some((check) => check.status === 'warning');
   const hasErrors = systemChecks.some((check) => check.status === 'error');
@@ -301,7 +295,7 @@ export default async function TroubleshootingPage() {
                 Database Actions
               </CardTitle>
               <CardDescription className="text-destructive/80">
-                Manage the state of your application&apos;s database. These are
+                Manage the state of your application's database. These are
                 powerful actions intended for development and testing.
               </CardDescription>
             </CardHeader>
@@ -329,16 +323,26 @@ export default async function TroubleshootingPage() {
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
-                <ShieldCheck className="h-5 w-5" />
-                <CardTitle>Session & Authentication</CardTitle>
+                <Info className="h-5 w-5" />
+                <CardTitle>System Information</CardTitle>
               </div>
+               <CardDescription>
+                Details about the application environment.
+              </CardDescription>
             </CardHeader>
-            <CardContent>
-              <p className="rounded-lg border-2 border-dashed p-4 text-center text-sm text-muted-foreground">
-                Authentication is not yet implemented. Session and user data
-                checks will be available here once Firebase Authentication is
-                integrated.
-              </p>
+            <CardContent className="space-y-2 text-sm">
+               <div className="flex justify-between">
+                <span className="text-muted-foreground">Node.js Version:</span>
+                <span className="font-medium">{systemInfo.nodeVersion}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Next.js Version:</span>
+                <span className="font-medium">{systemInfo.nextVersion}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">App URL:</span>
+                <span className="font-medium">{systemInfo.appUrl}</span>
+              </div>
             </CardContent>
           </Card>
         </div>

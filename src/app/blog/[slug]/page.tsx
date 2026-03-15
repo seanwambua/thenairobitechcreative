@@ -1,28 +1,30 @@
-import { getPostBySlug } from '@/app/actions/posts';
-import { getComments } from '@/app/actions/comments';
-import { getLikes, hasLiked } from '@/app/actions/likes';
+import { getLikes, hasLiked } from '@/lib/actions/likes';
 import { DbUninitializedError } from '@/lib/errors';
 import { BlogPostClient } from './blog-post-client';
-import type { Post, Comment, User } from '@/app/generated/prisma';
+import type { Post, User } from '@prisma/client';
+import { CommentWithUser } from '@/lib/definitions'; // Import the new type
 import { DbUninitializedError as DbUninitializedErrorComponent } from '@/components/db-uninitialized-error';
 import { notFound } from 'next/navigation';
+import prisma from '@/lib/prisma';
+import { auth } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
-/**
- * Data fetching helper with explicit error catching.
- * This prevents the server from crashing and allows us to show
- * specific UI for database configuration issues.
- */
 async function getPageData(slug: string): Promise<{
   post: Post | null;
-  comments: (Comment & { user: User })[];
+  comments: CommentWithUser[];
   likes: number;
   userHasLiked: boolean;
+  currentUser: User | null;
   error: Error | null;
 }> {
   try {
-    const post = await getPostBySlug(slug);
+    const session = await auth();
+    
+    // 1. Fetch Post first to get ID for subsequent parallel calls
+    const post = await prisma.post.findUnique({
+      where: { slug }
+    });
 
     if (!post) {
       return {
@@ -30,30 +32,48 @@ async function getPageData(slug: string): Promise<{
         comments: [],
         likes: 0,
         userHasLiked: false,
+        currentUser: null,
         error: null,
       };
     }
 
-    const [comments, likes, userHasLiked] = await Promise.all([
-      getComments(post.id),
+    // 2. Parallel fetch for related data
+    const [comments, likes, userHasLiked, currentUser] = await Promise.all([
+      prisma.comment.findMany({
+        where: { postId: post.id },
+        include: { user: true },
+        orderBy: { createdAt: 'desc' }
+      }) as Promise<CommentWithUser[]>,
       getLikes(post.id),
       hasLiked(post.id),
+      session?.user?.id 
+        ? prisma.user.findUnique({ where: { id: session.user.id } })
+        : Promise.resolve(null)
     ]);
 
-    // QA Debug: If this logs 'null', your database doesn't have a post with this slug
-    console.log(`[QA Blog Search] Slug: "${slug}" | Found: ${!!post}`);
+    return { 
+      post, 
+      comments, 
+      likes, 
+      userHasLiked, 
+      currentUser,
+      error: null 
+    };
 
-    return { post, comments, likes, userHasLiked, error: null };
-  } catch (error: any) {
+  } catch (error) {
     console.error('[QA Database Error]:', error);
 
-    // Specifically catch missing table errors (common in SQLite/Prisma setups)
-    if (error.message?.includes('no such table') || error.code === 'P2021') {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorCode = (error as any)?.code;
+
+    // Handle uninitialized database (Infrastructure check)
+    if (errorMessage.includes('no such table') || errorCode === 'P2021') {
       return {
         post: null,
         comments: [],
         likes: 0,
         userHasLiked: false,
+        currentUser: null,
         error: new DbUninitializedError(),
       };
     }
@@ -63,7 +83,8 @@ async function getPageData(slug: string): Promise<{
       comments: [],
       likes: 0,
       userHasLiked: false,
-      error: error as Error,
+      currentUser: null,
+      error: error instanceof Error ? error : new Error('An unexpected error occurred.'),
     };
   }
 }
@@ -73,19 +94,15 @@ interface PageProps {
 }
 
 export default async function BlogPostPage({ params }: PageProps) {
-  // 1. In Next.js 15, params MUST be awaited.
-  // If not awaited, slug will be undefined, causing a 404.
   const { slug } = await params;
 
-  // 2. Fetch data using our wrapper
-  const { post, comments, likes, userHasLiked, error } = await getPageData(slug);
+  const { post, comments, likes, userHasLiked, currentUser, error } = await getPageData(slug);
 
-  // 3. Handle Database Initialization errors (DX/UX)
+  // QA Check: Priority error handling for Infrastructure state
   if (error instanceof DbUninitializedError) {
     return <DbUninitializedErrorComponent />;
   }
 
-  // 4. Handle generic errors (Passes the error to the client component)
   if (error) {
     return (
       <BlogPostClient
@@ -93,24 +110,23 @@ export default async function BlogPostPage({ params }: PageProps) {
         comments={[]}
         likes={0}
         userHasLiked={false}
+        currentUser={null}
         error={error}
       />
     );
   }
 
-  // 5. Handle "Not Found" (If post is null after a successful query)
-  // This triggers your not-found.tsx file
   if (!post) {
     notFound();
   }
 
-  // 6. Success State
   return (
     <BlogPostClient
       postData={post}
       comments={comments}
       likes={likes}
       userHasLiked={userHasLiked}
+      currentUser={currentUser}
       error={null}
     />
   );

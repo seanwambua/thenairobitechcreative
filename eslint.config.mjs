@@ -15,6 +15,6 @@ const compat = new FlatCompat({
 
 export default defineConfig([
   {
-    extends: [...nextCoreWebVitals, ...compat.extends('prettier')],
+    extends: [...nextCoreWebVitals, ...compat.extends("prettier")],
   },
 ]);

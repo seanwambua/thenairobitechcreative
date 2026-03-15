@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { auth } from '@/lib/auth';
 import { SettingsClient } from './settings-client';
 import { redirect } from 'next/navigation';
 

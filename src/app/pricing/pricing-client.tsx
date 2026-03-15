@@ -30,7 +30,7 @@ export function PricingClient({ logoUrl }: { logoUrl: string | null }) {
             options to get you started.
           </p>
         </div>
-        <div className="mx-auto grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-2">
+        <div className="mx-auto max-w-lg grid-cols-3 gap-8 md:grid-cols-2">
           {pricingPlans.map((plan, index) => (
             <motion.div
               key={plan.id}
@@ -45,7 +45,7 @@ export function PricingClient({ logoUrl }: { logoUrl: string | null }) {
               >
                 <CardHeader className="p-0">
                   <CardTitle className="font-headline text-xl font-semibold text-foreground">
-                    {plan.title}
+                    {plan.name}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-1 flex-col p-0 pt-4">

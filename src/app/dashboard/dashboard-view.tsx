@@ -14,9 +14,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Briefcase, NotebookText, Star } from 'lucide-react';
+import { Briefcase, NotebookText, Star, ArrowUpRight } from 'lucide-react';
 import { motion } from 'framer-motion';
-import type { Project } from '@/app/actions/projects';
+import type { Project } from '@/lib/actions/projects';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 const cardVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -106,13 +108,39 @@ function DashboardView({
         variants={cardVariants}
         initial="hidden"
         animate="visible"
+        transition={{ delay: 0.4 }}
+      >
+        <Card>
+          <CardHeader>
+            <CardTitle>A Message from Our Founder</CardTitle>
+          </CardHeader>
+          <CardContent className="flex items-center gap-4">
+            <img
+              src="/founder-avatar.png" // Placeholder image
+              alt="Founder's Name"
+              className="h-16 w-16 rounded-full"
+            />
+            <div>
+              <h3 className="text-lg font-semibold">Founder's Name</h3>
+              <p className="text-sm text-muted-foreground">
+                "Your success is our priority. We're here to help you achieve your goals."
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      <motion.div
+        variants={cardVariants}
+        initial="hidden"
+        animate="visible"
         transition={{ delay: 0.6 }}
       >
         <Card>
           <CardHeader>
             <CardTitle>Recent Projects</CardTitle>
             <CardDescription>
-              A list of the most recent projects.
+              A list of the most recent projects and their status.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -120,17 +148,32 @@ function DashboardView({
               <TableHeader>
                 <TableRow>
                   <TableHead>Project</TableHead>
-                  <TableHead>Description</TableHead>
+                  <TableHead className="hidden md:table-cell">Description</TableHead>
+                  <TableHead className="text-right">Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {recentProjects.map((project) => (
                   <TableRow key={project.id}>
                     <TableCell className="font-medium">
-                      {project.title}
+                      <div className="flex flex-col">
+                        <span>{project.title}</span>
+                        {project.isFavorite && (
+                          <span className="flex items-center gap-1 text-[10px] text-yellow-600">
+                            <Star className="h-2 w-2 fill-current" /> Favorite
+                          </span>
+                        )}
+                      </div>
                     </TableCell>
-                    <TableCell className="max-w-[200px] truncate">
+                    <TableCell className="hidden max-w-[300px] truncate md:table-cell">
                       {project.description}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button variant="ghost" size="sm" asChild>
+                        <Link href={`/dashboard/projects/${project.id}`}>
+                          Manage <ArrowUpRight className="ml-1 h-3 w-3" />
+                        </Link>
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}

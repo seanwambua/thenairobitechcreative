@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
-import { createUser } from '@/app/actions/users';
+import { createUser } from '@/lib/actions/users';
 import Link from 'next/link';
 
 const formSchema = z.object({
@@ -46,7 +46,19 @@ export function SignupClient() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
-      await createUser(values);
+      const response = await createUser(values);
+      
+      if (!response.success) {
+        toast({
+          variant: 'destructive',
+          title: 'Sign Up Failed',
+          description: response.error,
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      // If user creation succeeded, attempt to sign in
       const result = await signIn('credentials', {
         redirect: false,
         email: values.email,
@@ -57,13 +69,15 @@ export function SignupClient() {
         toast({
           variant: 'destructive',
           title: 'Login Failed',
-          description: 'Something went wrong during sign in.',
+          description: 'Account created, but could not sign in automatically. Please log in manually.',
         });
+        router.push('/login');
       } else if (result?.ok) {
         toast({
           title: 'Account Created!',
           description: "You've been successfully signed in.",
         });
+        router.refresh();
         router.push('/dashboard');
       }
     } catch (error: any) {

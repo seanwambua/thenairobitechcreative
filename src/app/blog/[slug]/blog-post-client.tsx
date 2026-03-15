@@ -4,28 +4,30 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
-import { PostInteractions } from '@/components/post-interactions';
+
 import { Comments } from '@/components/comments';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Terminal, ArrowLeft } from 'lucide-react';
-import type { Post, Comment as CommentType, User } from '@/app/generated/prisma';
+import type { Post, User } from '@prisma/client';
+import { CommentWithUser } from '@/lib/definitions'; // Import the new type
 
 export function BlogPostClient({
   postData,
   comments,
   likes,
   userHasLiked,
+  currentUser,
   error,
 }: {
-  postData: Post | null;
-  comments: (CommentType & { user: User })[];
+  postData: (Post) | null;
+  comments: CommentWithUser[];
   likes: number;
   userHasLiked: boolean;
+  currentUser: User | null;
   error: Error | null;
 }) {
   if (error) {
-    // Generic error for other data fetching issues
     return (
       <article className="container flex-1 py-20 text-center">
         <Alert variant="destructive" className="mx-auto max-w-lg text-left">
@@ -48,10 +50,11 @@ export function BlogPostClient({
     );
   }
 
-  // Handle case where post is not found or slug was invalid.
   if (!postData) {
-    return null; // The page will show a 404 from notFound()
+    return null;
   }
+
+  const isPostAuthor = currentUser?.id === postData.userId;
 
   return (
     <article className="container mx-auto max-w-4xl px-4 py-12">
@@ -64,7 +67,6 @@ export function BlogPostClient({
             <AvatarImage
               src={postData.authorAvatarUrl}
               alt={postData.author}
-              data-ai-hint={postData.authorAvatarHint}
             />
             <AvatarFallback>{postData.author.charAt(0)}</AvatarFallback>
           </Avatar>
@@ -88,7 +90,6 @@ export function BlogPostClient({
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, 50vw"
-          data-ai-hint={postData.imageHint}
           priority
         />
       </div>
@@ -102,14 +103,11 @@ export function BlogPostClient({
 
       <Separator className="my-12" />
 
-      <PostInteractions
-        post={postData}
-        likes={likes}
-        hasLiked={userHasLiked}
-        commentsCount={comments.length}
+      <Comments 
+        postId={postData.id} 
+        comments={comments} 
+        postAuthorId={postData.userId ?? ''}
       />
-
-      <Comments postId={postData.id} comments={comments} />
     </article>
   );
 }

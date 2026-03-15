@@ -1,0 +1,57 @@
+{
+  "blog1Image": {
+    "id": "blog1",
+    "imageUrl": "https://res.cloudinary.com/dm1bn7vkd/image/upload/v1769188669/nairobi_techcreative/1769188621878_kgkj5u.png",
+    "imageHint": "Placeholder blog post image"
+  },
+  "testimonial1Image": {
+    "id": "testimonial1",
+    "imageUrl": "https://picsum.photos/seed/avatar1/40/40",
+    "imageHint": "Placeholder testimonial author avatar"
+  },
+  "founderImage": {
+    "id": "founder",
+    "imageUrl": "https://res.cloudinary.com/dm1bn7vkd/image/upload/v1769189197/nairobi_techcreative/IMG_20260123_202554_at0rca.jpg",
+    "imageHint": "Placeholder founder image"
+  },
+  "hero": {
+    "id": "hero",
+    "imageUrl": "https://res.cloudinary.com/dm1bn7vkd/image/upload/v1769188669/nairobi_techcreative/1769188621878_kgkj5u.png",
+    "imageHint": "Placeholder hero image"
+  },
+  "logo": {
+    "id": "logo",
+    "imageUrl": "https://placehold.co/100x40",
+    "imageHint": "Placeholder logo"
+  },
+  "project1": {
+    "id": "project1",
+    "imageUrl": "https://res.cloudinary.com/dm1bn7vkd/image/upload/v1769188669/nairobi_techcreative/1769188621878_kgkj5u.png",
+    "imageHint": "ntc logo"
+  },
+  "project2": {
+    "id": "project2",
+    "imageUrl": "https://res.cloudinary.com/dm1bn7vkd/image/upload/v1769188669/nairobi_techcreative/1769188621878_kgkj5u.png",
+    "imageHint": "ntc logo"
+  },
+  "project3": {
+    "id": "project3",
+    "imageUrl": "https://res.cloudinary.com/dm1bn7vkd/image/upload/v1769188669/nairobi_techcreative/1769188621878_kgkj5u.png",
+    "imageHint": "ntc logo"
+  },
+  "project4": {
+    "id": "project4",
+    "imageUrl": "https://res.cloudinary.com/dm1bn7vkd/image/upload/v1769188669/nairobi_techcreative/1769188621878_kgkj5u.png",
+    "imageHint": "ntc logo"
+  },
+  "enterpriseB": {
+    "id": "enterpriseB",
+    "imageUrl": "https://picsum.photos/seed/enterpriseB/800/600",
+    "imageHint": "abstract network"
+  },
+  "testimonial1": {
+    "id": "testimonial1",
+    "imageUrl": "https://picsum.photos/seed/testimonial1/100/100",
+    "imageHint": "new user"
+  }
+}

@@ -1,156 +1,138 @@
-import { FAQ, NavLink, SocialLink, Service, FooterLink, PricingPlan, ProcessStep } from './definitions';
+import { Prisma } from '@prisma/client';
 
-export const navLinks: NavLink[] = [
-  { href: '/#portfolio', label: 'Portfolio' },
+export type PostSummary = Prisma.PostGetPayload<{
+  select: {
+    id: true;
+    slug: true;
+    title: true;
+    description: true;
+    imageUrl: true;
+    imageHint: true;
+    author: true;
+    authorAvatarUrl: true;
+    authorAvatarHint: true;
+    createdAt: true;
+    updatedAt: true;
+    _count: {
+      select: { likes: true; comments: true };
+    };
+  };
+}>;
+
+export const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/about', label: 'About' },
   { href: '/services', label: 'Services' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/blog', label: 'Blog' },
-  { href: '/#testimonials', label: 'Testimonials' },
-  { href: '/#contact', label: 'Contact' },
+  { href: 'https://nairobitechcreative.zohobookings.com/#/nairobitechcreative', label: 'Book a session' },
 ];
 
-export const socialLinks: SocialLink[] = [
-  { href: 'https://twitter.com/example', icon: 'Twitter' },
-  { href: 'https://facebook.com/example', icon: 'Facebook' },
-  { href: 'https://instagram.com/example', icon: 'Instagram' },
-];
-
-export const services: Service[] = [
+export const services = [
   {
-    id: 1,
-    title: 'Strategy & Discovery',
-    icon: 'ScanSearch',
+    id: 'strategy',
+    title: 'Business Strategy & Tech Consulting',
     description:
-      'We help you refine your vision and create a solid technical and business strategy.',
+      'Aligning technology with your business goals. Ideal for founders and SMEs who need a technical IT partner.',
   },
   {
-    id: 2,
-    title: 'Design & Development',
-    icon: 'LayoutTemplate',
+    id: 'development',
+    title: 'Product Development',
     description:
-      'We design and build beautiful, scalable, and user-centric digital products.',
+      'Taking your idea from concept to shipped product. We help you define the right MVP, build it iteratively, and validate with real users before scaling.',
   },
   {
-    id: 3,
-    title: 'Launch & Scale',
-    icon: 'Rocket',
+    id: 'devops',
+    title: 'DevOps & Infrastructure',
     description:
-      'We ensure a smooth launch and provide ongoing support to help you grow.',
+      'Setting up and managing CI/CD pipelines, cloud servers, VPS environments, and monitoring systems. Less downtime, faster deployments, and infrastructure that scales with your business.',
+  },
+  {
+    id: 'process',
+    title: 'Business Process Development',
+    description:
+      'Mapping, streamlining, and automating the workflows that run your business. From helpdesk systems to internal tooling, we turn chaotic processes into repeatable, efficient systems.',
+  },
+  {
+    id: 'support',
+    title: 'Technical Support',
+    description: 'Reliable remote technical support to ensure your systems are always running smoothly. We offer fast and efficient solutions to keep your business operational.',
+  },
+  {
+    id: 'training',
+    title: 'User Training',
+    description: 'Empowering your team with the skills to effectively use your software and systems. We provide comprehensive training sessions tailored to your needs.',
   }
 ];
 
-export const footerLinks: FooterLink[] = [
+export const partners = [
   {
-    title: 'Company',
-    links: [
-      { href: '/about', label: 'About' },
-      { href: '/projects', label: 'Projects' },
-      { href: '/blog', label: 'Blog' },
-      { href: '/contact', label: 'Contact' },
-    ],
+    name: 'Imani financial services (IFS-KE).',
+    description: 'A leading provider of innovative tech solutions, we partner with Innovate Inc. to deliver cutting-edge products.',
+    logo: '',
+    url: 'https://imanifinancialservices.vercel.app/'
   },
   {
-    title: 'Social',
-    links: [
-      { href: 'https://twitter.com/example', label: 'Twitter' },
-      { href: 'https://facebook.com/example', label: 'Facebook' },
-      { href: 'https://instagram.com/example', label: 'Instagram' },
-    ],
+    name: 'The Global Grid.',
+    description: 'Experts in system integration, Synergy Systems helps us provide seamless and unified solutions for our clients.',
+    logo: '',
+    url: 'https://globalgrid.vercel.app/'
   },
   {
-    title: 'Legal',
-    links: [
-      { href: '/privacy', label: 'Privacy Policy' },
-      { href: '/terms', label: 'Terms of Service' },
-    ],
-  },
+    name: 'Whyte Interior Designs.',
+    description: 'Specializing in business growth strategies, Growth Catalysts works with us to help our clients scale effectively.',
+    logo: '',
+    url: 'https://whyteinteriordesigns.vercel.app/'
+  }
 ];
 
-export const faqs: FAQ[] = [
+export const processSteps = [
   {
-    id: 1,
-    question: 'What is the typical timeline for a project?',
-    answer:
-      'Project timelines vary depending on the scope and complexity. A typical project discovery and design phase takes 2-4 weeks, followed by development sprints of 2-3 months. We work closely with you to establish a detailed timeline upfront.',
-  },
-  {
-    id: 2,
-    question: 'How do you handle project management and communication?',
-    answer:
-      "We use an agile project management approach with regular check-ins and demos. You\'ll have a dedicated project manager and direct access to the team through collaborative tools like Slack and Asana to ensure clear communication and transparency.",
-  },
-  {
-    id: 3,
-    question: 'Can you work with existing codebases or systems?',
-    answer:
-      'Absolutely. We can audit your existing systems, identify areas for improvement, and integrate new features or build on top of your current infrastructure. Our goal is to enhance your technology, not necessarily replace it.',
-  },
-  {
-    id: 4,
-    question: 'What kind of post-launch support do you offer?',
-    answer:
-      'We offer various levels of ongoing support and maintenance retainers to ensure your product remains secure, up-to-date, and optimized for performance. We can also provide support for future feature development and scaling.',
-  },
-  {
-    id: 5,
-    question: 'How do you ensure the quality of the final product?',
-    answer:
-      'Quality is at the core of our process. We conduct rigorous testing at every stage, including unit testing, integration testing, and user acceptance testing (UAT). We also perform security audits and performance profiling before launch.',
-  },
-];
-
-export const pricingPlans: PricingPlan[] = [
-  {
-    id: 1,
-    title: 'Initial Consult',
+    title: 'Discovery & Strategy',
     description:
-      'One-on-one guidance to refine your idea, define your strategy, and create a clear roadmap for your project.',
+      'We start by understanding your goals and planning the project.',
+  },
+  {
+    title: 'Design & Prototyping',
+    description: 'We create wireframes and prototypes for your approval.',
+  },
+  {
+    title: 'Development & Testing',
+    description: 'We build and rigorously test your application.',
+  },
+  {
+    title: 'Deployment & Support',
+    description: 'We launch your project and provide ongoing support.',
+  },
+];
+
+export const pricingPlans = [
+  {
+    id:1,
+    name: 'Business Strategy & Tech Consultation',
+    priceSuffix:'KES',
     price: '3,500',
-    priceSuffix: '',
-    features: [
-      '2-Hour Intensive Strategy Session',
-      'Actionable Project Roadmap',
-    ],
+    description: ['Remote | In-person'],
+    features: ['1 Hr Session'],
+    isFeatured: true,
   },
-  {
-    id: 2,
-    title: 'Custom Solution',
-    description:
-      'End-to-end design and development of a bespoke digital product, tailored to your specific business needs and built to scale.',
-    price: 'Custom',
-    priceSuffix: '',
-    features: [
-      'Full Project Lifecycle (Strategy to Scale)',
-      'Dedicated Project Team',
-      'Custom UI/UX and System Architecture',
-      'Ongoing Support & Maintenance',
-    ],
-  },
+  
 ];
 
-export const processSteps: ProcessStep[] = [
+export const faqs = [
   {
-    icon: 'ScanSearch',
-    title: '1. Discover',
-    description:
-      'We kick off with collaborative workshops to dive deep into your business goals, target audience, and challenges.',
+    question: 'What is your development process?',
+    answer:
+      'We follow a four-step process: Discovery & Strategy, Design & Prototyping, Development & Testing, and Deployment & Support.',
   },
   {
-    icon: 'LayoutTemplate',
-    title: '2. Define',
-    description:
-      'We translate insights into a concrete plan, creating user journeys, wireframes, and a technical roadmap.',
+    question: 'How long does a project typically take?',
+    answer:
+      "The timeline varies depending on the project's complexity, but we always provide a detailed schedule upfront.",
   },
   {
-    icon: 'Rocket',
-    title: '3. Develop',
-    description:
-      'Our agile team builds your product in iterative sprints with regular demos and feedback sessions.',
-  },
-  {
-    icon: 'Scaling',
-    title: '4. Deploy',
-    description:
-      'We manage a seamless launch and transition to a support phase, ensuring your product thrives and evolves.',
+    question: 'Do you offer support after the project is launched?',
+    answer:
+      'Yes, we offer various support and maintenance packages to ensure your project runs smoothly post-launch.',
   },
 ];

@@ -1,6 +1,6 @@
 import { BlogClient } from './blog-client';
 import { DbUninitializedError as DbUninitializedErrorComponent } from '@/components/db-uninitialized-error';
-import { getPostSummaries } from '@/app/actions/posts';
+import { getPostSummaries } from '@/lib/actions/posts';
 import type { PostSummary } from '@/lib/data';
 import { DbUninitializedError } from '@/lib/errors';
 

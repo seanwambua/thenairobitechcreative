@@ -4,10 +4,11 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import { Providers } from '@/components/providers';
-import { auth } from '@/auth';
+import { auth } from '@/lib/auth';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { getSetting } from './actions/settings';
+import { getSetting } from '../lib/actions/settings';
+import { WhatsAppFAB } from '@/components/whatsapp-fab';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -27,6 +28,7 @@ export default async function RootLayout({
 }>) {
   const session = await auth();
   const logoUrl = await getSetting('logo');
+  const phoneNumber = process.env.WHATSAPP_PHONE_NUMBER ?? ''
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn('font-body antialiased', poppins.variable)}>
@@ -42,6 +44,7 @@ export default async function RootLayout({
             <main className="flex-1">{children}</main>
             <Footer />
           </div>
+          <WhatsAppFAB phoneNumber={phoneNumber} />
           <Toaster />
         </Providers>
       </body>

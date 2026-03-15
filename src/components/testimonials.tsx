@@ -1,9 +1,9 @@
 'use client';
-import { motion } from 'framer-motion';
+
+import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import type { Testimonial } from '@/lib/data';
-import { Quote } from 'lucide-react';
+import type { Testimonial } from '@prisma/client';
+
 import {
   Carousel,
   CarouselContent,
@@ -12,90 +12,43 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 
-interface TestimonialsProps {
-  testimonials: Testimonial[];
-}
-
-export function Testimonials({ testimonials }: TestimonialsProps) {
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-      },
-    },
-  };
-
+export function Testimonials({ testimonials }: { testimonials: Testimonial[] }) {
+  if (!testimonials || testimonials.length === 0) {
+    return null;
+  }
+  
   return (
-    <section id="testimonials" className="bg-background py-20 lg:py-32">
-      <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.5 }}
-          className="mx-auto mb-16 max-w-3xl text-center"
-        >
-          <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-            Trusted by Innovators
-          </h2>
-          <p className="mt-4 text-lg text-muted-foreground">
-            Hear from the leaders who have partnered with us to build the
-            future.
-          </p>
-        </motion.div>
-
-        <Carousel
-          opts={{
-            align: 'start',
-            loop: true,
-          }}
-          className="w-full"
-        >
-          <CarouselContent>
-            {testimonials.map((testimonial) => (
-              <CarouselItem key={testimonial.id} className="md:basis-1/2">
-                <motion.div variants={itemVariants} className="p-2">
-                  <Card className="flex h-full flex-col justify-between overflow-hidden rounded-xl bg-card shadow-lg transition-all hover:shadow-primary/20">
-                    <CardContent className="flex flex-1 flex-col p-6 md:p-8">
-                      <Quote className="h-8 w-8 text-primary" />
-                      <blockquote className="mt-4 flex-1 font-body text-base italic text-foreground">
-                        &quot;{testimonial.quote}&quot;
-                      </blockquote>
-                      <footer className="mt-6">
-                        <div className="flex items-center gap-4">
-                          <Avatar className="h-12 w-12 border-2 border-primary md:h-14 md:w-14">
-                            <AvatarImage
-                              src={testimonial.avatarUrl}
-                              alt={testimonial.author}
-                              data-ai-hint={testimonial.avatarHint}
-                            />
-                            <AvatarFallback>
-                              {testimonial.author.charAt(0)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <p className="font-headline text-base font-semibold text-foreground">
-                              {testimonial.author}
-                            </p>
-                            <p className="text-sm text-muted-foreground">
-                              {testimonial.title}
-                            </p>
-                          </div>
-                        </div>
-                      </footer>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious className="left-4 md:-left-12" />
-          <CarouselNext className="right-4 md:-right-12" />
-        </Carousel>
-      </div>
-    </section>
+    <Carousel
+      opts={{        
+        align: 'start',
+        loop: true,
+      }}
+      className="mx-auto w-full max-w-4xl"
+    >
+      <CarouselContent>
+        {testimonials.map((testimonial: Testimonial, index: number) => (
+          <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+            <div className="p-1">
+              <Card className="h-full">
+                <CardContent className="flex flex-col items-center justify-center p-6 text-center">
+                  <Image
+                    className="mb-4 h-20 w-20 rounded-full object-cover"
+                    src={testimonial.avatarUrl}
+                    alt={testimonial.author}
+                    width={80}
+                    height={80}
+                  />
+                  <p className="mb-2 text-lg font-semibold">{testimonial.author}</p>
+                  <p className="mb-4 text-sm text-muted-foreground">{testimonial.title}</p>
+                  <p className="italic">{`\"${testimonial.quote}\"`}</p>
+                </CardContent>
+              </Card>
+            </div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
   );
 }

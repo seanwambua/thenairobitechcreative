@@ -1,0 +1,188 @@
+'use server';
+
+import prisma from '@/lib/prisma';
+import { revalidatePath } from 'next/cache';
+import { PostSchema, PostInputSchema } from '@/lib/schemas';
+import type { Post } from '@prisma/client';
+import type { PostSummary } from '@/lib/data';
+import placeholderImages from '@/lib/placeholder-images.json';
+import { z } from 'zod';
+import { auth } from '@/lib/auth';
+import { Role } from '@/lib/roles';
+
+export async function getPosts(): Promise<Post[]> {
+  const results = await prisma.post.findMany({
+    orderBy: { createdAt: 'desc' },
+  });
+  return results;
+}
+
+export async function getPostSummaries(): Promise<PostSummary[]> {
+  return prisma.post.findMany({
+    select: {
+      id: true,
+      slug: true,
+      title: true,
+      description: true,
+      imageUrl: true,
+      imageHint: true,
+      author: true,
+      authorAvatarUrl: true,
+      authorAvatarHint: true,
+      createdAt: true,
+      updatedAt: true,
+      _count: {
+        select: { likes: true, comments: true },
+      },
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+}
+
+export async function getPostBySlug(slug: string): Promise<Post | null> {
+  const result = await prisma.post.findUnique({
+    where: { slug },
+  });
+  return result;
+}
+
+// Helper function to generate a URL-friendly slug
+function generateSlug(title: string): string {
+  return String(title || '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '') // remove non-word chars, but keep spaces and hyphens
+    .replace(/[\s_-]+/g, '-') // collapse whitespace and underscores to a single hyphen
+    .replace(/^-+|-+$/g, ''); // trim leading/trailing hyphens
+}
+
+// Helper function to ensure slug is unique
+async function generateUniqueSlug(title: string): Promise<string> {
+  const baseSlug = generateSlug(title);
+  let uniqueSlug = baseSlug;
+  let counter = 1;
+
+  // Check if the slug already exists and append a number if it does
+  while (await prisma.post.findUnique({ where: { slug: uniqueSlug } })) {
+    uniqueSlug = `${baseSlug}-${counter}`;
+    counter++;
+  }
+  return uniqueSlug;
+}
+
+export async function createPost(
+  data: z.infer<typeof PostInputSchema>
+): Promise<Post> {
+  const session = await auth();
+  if (session?.user?.role !== Role.ADMIN) {
+    throw new Error('Unauthorized');
+  }
+
+  const validatedData = PostInputSchema.parse(data);
+  const uniqueSlug = await generateUniqueSlug(validatedData.title);
+
+  const newPost = await prisma.post.create({
+    data: {
+      ...validatedData,
+      title: validatedData.title,
+      description: validatedData.description,
+      content: validatedData.content,
+      author: validatedData.author,
+      slug: uniqueSlug,
+      imageUrl: validatedData.imageUrl ?? placeholderImages.blog1Image.imageUrl,
+      imageHint: placeholderImages.blog1Image.imageHint,
+      authorAvatarUrl:
+        validatedData.authorAvatarUrl ??
+        placeholderImages.testimonial1Image.imageUrl,
+      authorAvatarHint: placeholderImages.testimonial1Image.imageHint,
+      userId: session.user.id,
+    },
+  });
+
+  revalidatePath('/dashboard');
+  revalidatePath('/dashboard/content');
+  revalidatePath('/dashboard/analytics');
+  revalidatePath('/blog');
+  revalidatePath(`/blog/${newPost.slug}`);
+  revalidatePath('/');
+  return newPost;
+}
+
+export async function updatePost(post: Post): Promise<Post> {
+  const session = await auth();
+  if (session?.user?.role !== Role.ADMIN) {
+    throw new Error('Unauthorized');
+  }
+
+  try {
+    const validatedData = PostSchema.parse(post);
+    const { id, slug } = validatedData; 
+
+    const {
+      id: _id,
+      slug: _slug,
+      createdAt: _createdAt,
+      userId: _userId,
+      likes: _likes,
+      comments: _comments,
+      ...dataToUpdate
+    } = validatedData;
+
+    const updatedPost = await prisma.post.update({
+      where: { id },
+      data: dataToUpdate,
+    });
+
+    revalidatePath('/dashboard');
+    revalidatePath('/dashboard/content');
+    revalidatePath('/dashboard/analytics');
+    revalidatePath('/blog');
+    revalidatePath(`/blog/${slug}`); 
+    revalidatePath('/');
+    return updatedPost;
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      throw new Error(
+        `Validation failed: ${error.errors.map((e) => e.message).join(', ')}`
+      );
+    } else {
+      throw new Error('Failed to update post due to a server error.');
+    }
+  }
+}
+
+export async function deletePost(postId: number): Promise<void> {
+  const session = await auth();
+  if (session?.user?.role !== Role.ADMIN) {
+    throw new Error('Unauthorized');
+  }
+
+  const post = await prisma.post.findUnique({ where: { id: postId } });
+  if (post) {
+    await prisma.post.delete({ where: { id: postId } });
+    revalidatePath('/dashboard');
+    revalidatePath('/dashboard/content');
+    revalidatePath('/dashboard/analytics');
+    revalidatePath('/blog');
+    revalidatePath(`/blog/${post.slug}`);
+    revalidatePath('/');
+  }
+}
+
+export async function toggleReaction(postId: number, emoji: string) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    throw new Error('You must be signed in to react.');
+  }
+
+  const userId = session.user.id;
+
+  const post = await prisma.post.findUnique({
+    where: { id: postId },
+    select: { slug: true }
+  });
+
+  if (post) {
+    revalidatePath(`/blog/${post.slug}`);
+  }
+}

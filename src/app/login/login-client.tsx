@@ -1,8 +1,9 @@
 'use client';
 
+import React from 'react';
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { signIn } from 'next-auth/react';
+import { signIn, getCsrfToken } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,49 +18,78 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 
+/**
+ * Validation schema for the login form.
+ * Ensures data integrity before the request hits the network.
+ */
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address.' }),
-  password: z.string().min(1, { message: 'Password is required' }),
+  password: z.string().min(1, { message: 'Password is required.' }),
 });
 
 export function LoginClient() {
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl');
   const { toast } = useToast();
+
+  // Safely get callback URL or default to dashboard to prevent open redirects
+  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
+    defaultValues: { email: '', password: '' },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
-      const { email, password } = values;
-      const result = await signIn('credentials', { redirect: false, email, password });
+      // Fetch CSRF token explicitly to prevent MissingCSRF errors in strict environments
+      const csrfToken = await getCsrfToken();
+
+      /**
+       * Auth.js v5 signIn flow. 
+       * redirect: false - allows manual handling of the UI feedback.
+       */
+      const result = await signIn('credentials', {
+        email: values.email,
+        password: values.password,
+        redirect: false,
+        redirectTo: callbackUrl,
+        csrfToken: csrfToken,
+      });
 
       if (result?.error) {
+        // Detailed error feedback for development, masked for production
+        const isAuthError = result.error === 'CredentialsSignin' || result.code === 'credentials';
+        
         toast({
           variant: 'destructive',
           title: 'Login Failed',
-          description: 'Invalid email or password.',
+          description: isAuthError 
+            ? 'Invalid email or password.' 
+            : 'Authentication failed. Please refresh and try again.',
         });
-      } else if (result?.ok) {
-        router.push(callbackUrl || '/dashboard');
+        return; 
+      }
+
+      if (result?.ok) {
+        toast({ title: 'Success', description: 'Redirecting to your dashboard...' });
+
+        // Next.js 16: Ensure session state propagates to Server Components immediately
+        router.refresh(); 
+        router.push(callbackUrl);
       }
     } catch (error) {
+      console.error('[AUTH_SUBMIT_ERROR]:', error);
       toast({
         variant: 'destructive',
-        title: 'An Error Occurred',
-        description: 'Could not connect to the server. Please try again later.',
+        title: 'Connection Error',
+        description: 'Failed to communicate with the auth server. Please check your network.',
       });
     } finally {
       setIsLoading(false);
@@ -67,60 +97,78 @@ export function LoginClient() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
         <div className="flex flex-col space-y-2 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">
-            Sign in to your account
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Enter your credentials to sign in.
-          </p>
+          <h1 className="text-2xl font-semibold tracking-tight">Sign In</h1>
+          <p className="text-sm text-muted-foreground">Enter your credentials below</p>
         </div>
-        <div className="grid gap-6">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
+        
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="name@example.com" {...field} autoComplete="email" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <div className="relative">
                       <Input
-                        type="email"
-                        placeholder="your.email@example.com"
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="••••••••"
                         {...field}
+                        autoComplete="current-password"
+                        className="pr-10"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="********"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Sign In with Email
-              </Button>
-            </form>
-          </Form>
-        </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        tabIndex={-1}
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-4 w-4 text-muted-foreground" />
+                        ) : (
+                          <Eye className="h-4 w-4 text-muted-foreground" />
+                        )}
+                        <span className="sr-only">
+                          {showPassword ? 'Hide password' : 'Show password'}
+                        </span>
+                      </Button>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Verifying...
+                </>
+              ) : (
+                'Sign In'
+              )}
+            </Button>
+          </form>
+        </Form>
         <p className="px-8 text-center text-sm text-muted-foreground">
           Don&apos;t have an account?{' '}
           <Link

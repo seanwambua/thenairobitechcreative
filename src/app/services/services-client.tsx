@@ -1,223 +1,86 @@
 'use client';
-import * as React from 'react';
-import { services, processSteps } from '@/lib/data';
-import { motion } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-import {
-  Briefcase,
-  Computer,
-  Wrench,
-  ScanSearch,
-  LayoutTemplate,
-  Rocket,
-  Scaling,
-  ServerCog,
-  Plus,
-} from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '@/components/ui/hover-card';
-import { Separator } from '@/components/ui/separator';
 
-const iconMap: { [key: string]: LucideIcon } = {
-  ScanSearch,
-  Rocket,
-  Scaling,
-  Briefcase,
-  Computer,
-  Wrench,
-  ServerCog,
-  LayoutTemplate,
+import { partners } from '@/lib/data';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { ServicesSelector } from '@/components/services-selector';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+
+
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+    },
+  },
 };
 
-export function ServicesClient({
-  founderImage,
-  founderName,
-  founderMessage,
-}: {
-  founderImage: string | null;
-  founderName: string | null;
-  founderMessage: string | null;
-}) {
-  const cardVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0 },
-  };
+const cardVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      type: 'spring',
+      stiffness: 100,
+    },
+  },
+};
 
-  const founderInitials = founderName
-    ?.split(' ')
-    .map((n) => n[0])
-    .join('');
-
-  const getIcon = (iconName: string) => {
-    const Icon = iconMap[iconName as keyof typeof iconMap];
-    if (!Icon) {
-      console.warn(`Icon "${iconName}" not found. Using default icon.`);
-      return Plus;
-    }
-    return Icon;
-  };
+export default function ServicesClient() {
 
   return (
-    <>
-      <section className="py-20 lg:py-24">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto mb-16 flex max-w-4xl flex-col items-center justify-center gap-6 text-center md:flex-row md:items-start md:text-left">
-            <div className="flex-1">
-              <h1 className="font-headline text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl">
-                Our Services & Philosophy
-              </h1>
-              <p className="mt-4 text-lg text-muted-foreground">
-                We blend strategy, design, and engineering to transform your
-                vision into a reality that thrives.
-              </p>
-            </div>
-            <HoverCard>
-              <HoverCardTrigger asChild>
-                <div className="group relative">
-                  <Avatar className="h-24 w-24 cursor-pointer transition-all duration-300 md:h-32 md:w-32">
-                    <AvatarImage
-                      src={founderImage ?? undefined}
-                      alt={founderName ?? undefined}
-                      className="object-contain"
-                    />
-                    <AvatarFallback>{founderInitials}</AvatarFallback>
-                  </Avatar>
-                  <div className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-background bg-primary text-primary-foreground shadow-lg transition-transform duration-300 group-hover:scale-125">
-                    <Plus className="h-4 w-4" />
-                  </div>
-                </div>
-              </HoverCardTrigger>
-              <HoverCardContent className="w-80">
-                <div className="flex flex-col gap-4">
-                  <div className="flex flex-col items-center space-y-2">
-                    <Avatar>
-                      <AvatarImage
-                        src={founderImage ?? undefined}
-                        alt={founderName ?? undefined}
-                        className="object-contain"
-                      />
-                      <AvatarFallback>{founderInitials}</AvatarFallback>
-                    </Avatar>
-                    <div className="space-y-1 text-center">
-                      <h4 className="text-sm font-semibold">
-                        Meet the founder
-                      </h4>
-                      <p className="text-sm text-muted-foreground">
-                        {founderName}
-                      </p>
-                    </div>
-                  </div>
-                  <Separator />
-                  <div className="text-sm text-muted-foreground">
-                    <p className="mb-2">&quot;{founderMessage}&quot;</p>
-                    <p className="mb-1 font-semibold text-foreground">
-                      Our Mission
-                    </p>
-                    <p className="mb-2">
-                      To empower African businesses and entrepreneurs with
-                      world-class digital products.
-                    </p>
-                    <p className="mb-1 font-semibold text-foreground">
-                      Our Vision
-                    </p>
-                    <p>
-                      To be the leading catalyst for digital transformation in
-                      Africa.
-                    </p>
-                  </div>
-                </div>
-              </HoverCardContent>
-            </HoverCard>
-          </div>
+    <div className="bg-background text-foreground">
 
-          <div className="mx-auto grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {services.map((service, index) => {
-              const Icon = getIcon(service.icon);
-              return (
+      <main className="container mx-auto px-4 py-12 md:px-6 md:py-20">
+        <ServicesSelector />
+      </main>
+
+      <section className="bg-primary/5 py-20 lg:py-32">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12 p-6">
+            <h4 className="fint-headline text-4xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+              NTC SME HUB
+            </h4>
+            <p className="mt-6 max-w-3xl mx-auto text-lg text-muted-foreground">
+              Our network of trusted affiliates and collaborative partners.
+            </p>
+          </div>
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {partners.map((partner) => (
+              <Link key={partner.name} href={partner.url} target="_blank" rel="noopener noreferrer" className="block">
                 <motion.div
-                  key={service.id}
                   variants={cardVariants}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+                  className="h-full"
                 >
-                  <Card
-                    className={`flex h-full flex-col p-6 transition-all duration-300 hover:border-primary hover:shadow-xl hover:shadow-primary/10`}
-                  >
-                    <CardHeader className="flex-row items-center gap-4 p-0">
-                      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                        <Icon className="h-6 w-6" />
-                      </div>
-                      <CardTitle className="font-headline text-xl font-semibold text-foreground">
-                        {service.title}
-                      </CardTitle>
+                  <Card className="h-full  backdrop-blur-sm border-border/20 shadow-md border-[1px] hover:shadow-[0_20px_25px_-5px_rgba(249,115,22,0.4),_0_8px_10px_-6px_rgba(249,115,22,0.4)] transition-shadow duration-300">
+                    <CardHeader className="flex flex-row items-center gap-4">
+                      <Avatar className="w-12 h-12">
+                        <AvatarImage src={partner.logo} alt={`${partner.name} logo`} />
+                        <AvatarFallback className="text-lg">{partner.name.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <CardTitle className="text-xl font-normal">{partner.name}</CardTitle>
                     </CardHeader>
-                    <CardContent className="flex-1 p-0 pt-4">
-                      <p className="flex-1 text-muted-foreground">
-                        {service.description}
-                      </p>
+                    <CardContent>
+                      <p className="text-muted-foreground text-base">{partner.description}</p>
                     </CardContent>
                   </Card>
                 </motion.div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      <section className="border-t py-20 lg:py-24">
-        <div className="container mx-auto max-w-3xl px-4">
-          <div className="relative mx-auto mb-16 text-center">
-            <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-              How We Do It
-            </h2>
-            <p className="mt-3 text-lg text-muted-foreground">
-              Our collaborative process ensures we build the right thing, the
-              right way.
-            </p>
-          </div>
-
-          <Accordion type="single" collapsible className="w-full">
-            {processSteps.map((step, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <AccordionItem value={`item-${index}`}>
-                  <AccordionTrigger className="text-left text-lg font-semibold hover:no-underline">
-                    <div className="flex items-center gap-4">
-                      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-secondary/10 text-secondary">
-                        {React.createElement(getIcon(step.icon), {
-                          className: 'h-6 w-6',
-                        })}
-                      </div>
-                      {step.title}
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="pl-16 text-base text-muted-foreground">
-                    {step.description}
-                  </AccordionContent>
-                </AccordionItem>
-              </motion.div>
+              </Link>
             ))}
-          </Accordion>
+          </motion.div>
         </div>
       </section>
-    </>
+    </div>
   );
 }

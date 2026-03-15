@@ -1,49 +1,64 @@
 import type { NextAuthConfig } from 'next-auth';
-import { Role } from '@/generated/client';
+import { Role } from '@/lib/roles';
+import { routes } from '@/lib/routes';
 
 export const authConfig: NextAuthConfig = {
   pages: {
-    signIn: '/login',
-    error: '/error',
-    verifyRequest: '/verify-request',
-    newUser: '/register',
-    signOut: '/logout',
+    signIn: routes.login,
+    error: '/unauthorized',
   },
+  providers: [], 
   callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
+    async authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
+      const userRole = auth?.user?.role;
+      const userStatus = auth?.user?.status;
+      
+      const isDashboardRoute = nextUrl.pathname.startsWith(routes.admin.dashboard);
+      const isLoginPage = nextUrl.pathname === routes.login;
 
-      if (isOnDashboard) {
-        if (isLoggedIn) {
-          if (auth.user.role === Role.ADMIN) {
-            return true;
-          } else {
-            return Response.redirect(new URL('/unauthorized', nextUrl));
-          }
+      if (isDashboardRoute) {
+        if (!isLoggedIn) return false; 
+        
+        // Block non-approved users from dashboard
+        if (userStatus !== 'APPROVED' && userRole !== Role.ADMIN) {
+          return Response.redirect(new URL('/unauthorized', nextUrl));
         }
-        return false; // Redirect unauthenticated users to login page
-      } else if (isLoggedIn) {
-        return Response.redirect(new URL('/dashboard', nextUrl));
+
+        // Dashboard is specifically for admins in this app's current logic
+        if (userRole !== Role.ADMIN) {
+          return Response.redirect(new URL('/', nextUrl));
+        }
+        return true;
+      }
+
+      if (isLoginPage && isLoggedIn) {
+        const redirectUrl = userRole === Role.ADMIN 
+          ? routes.admin.dashboard 
+          : '/';
+        return Response.redirect(new URL(redirectUrl, nextUrl));
       }
 
       return true;
     },
-    async session({ session, token }) {
-      if (session.user && token.sub) {
-        session.user.id = token.sub;
-      }
-      if (session.user) {
-        session.user.role = token.role;
-      }
-      return session;
-    },
+
     async jwt({ token, user }) {
       if (user) {
+        token.id = user.id;
         token.role = user.role;
+        token.status = user.status;
       }
       return token;
     },
+
+    async session({ session, token }) {
+      if (session.user && token) {
+        session.user.id = token.id as string;
+        session.user.role = token.role as Role;
+        session.user.status = token.status as string;
+      }
+      return session;
+    },
   },
-  providers: [],
+  trustHost: true,
 };

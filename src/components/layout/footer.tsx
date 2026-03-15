@@ -1,4 +1,4 @@
-import { getSetting } from '@/app/actions/settings';
+import { getSetting } from '@/lib/actions/settings';
 import { FooterUI } from './footer-ui';
 
 export async function Footer() {

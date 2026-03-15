@@ -17,7 +17,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { User } from 'next-auth';
-import { updateUser } from '@/app/actions/users';
+import { updateUser } from '@/lib/actions/users';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),

@@ -6,11 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Upload, X, Loader2 } from 'lucide-react';
-import type { Post } from '@/app/generated/prisma';
+import type { Post } from '@prisma/client';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
-import placeholderImages from '@/app/lib/placeholder-images.json';
-import { updatePost } from '@/app/actions/posts';
+import placeholderImages from '@/lib/placeholder-images.json';
+import { updatePost } from '@/lib/actions/posts';
 
 interface PostImageManagerProps {
   post: Post;

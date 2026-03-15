@@ -1,5 +1,5 @@
 import prisma from '@/lib/prisma';
-import placeholderImages from '@/app/lib/placeholder-images.json';
+import placeholderImages from '@/lib/placeholder-images.json';
 import { Role } from '@/lib/roles';
 import bcrypt from 'bcrypt';
 
@@ -17,13 +17,14 @@ export async function seedDatabase() {
   await prisma.session.deleteMany({});
   await prisma.verificationToken.deleteMany({});
 
-  const hashedPassword = await bcrypt.hash('12345678', 16);
+  const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD!, 12);
 
   const adminUser = await prisma.user.create({
     data: {
       email: 'seanwambua@gmail.com',
       name: 'Sean Wambua',
       role: Role.ADMIN,
+      status: 'APPROVED',
       hashedPassword: hashedPassword,
       image: placeholderImages.testimonial1Image.imageUrl,
     },
@@ -71,58 +72,47 @@ export async function seedDatabase() {
   await prisma.project.createMany({
     data: [
       {
-        title: 'QuantumLeap CRM',
-        description:
-          'AI-powered CRM for predictive analytics and customer insights.',
-        keyFeatures: 'AI Insights,Predictive Analytics,Custom Dashboards',
+        title: 'Interior Design Studio',
+        description: 'A modern collaborative space for interior design founders and SMEs to streamline business operations.',
+        keyFeatures: 'PaaS, collaboration, portals, project audit, legal frameworks, customer service, mvp',
         imageUrl: placeholderImages.project1.imageUrl,
-        imageHint: 'data analytics dashboard',
-        gridSpan: 'sm:col-span-2 lg:col-span-2',
+        imageHint: 'ntc-logo',
+        gridSpan: 'col-span-12 lg:col-span-8',
         icon: 'Boxes',
+        isFavorite: true,
         userId: adminUser.id,
       },
       {
-        title: 'StellarGuard',
-        description: 'Decentralized security for modern apps using blockchain.',
-        keyFeatures: 'Decentralized Security,Blockchain,Threat Intelligence',
+        title: 'SecureCSV',
+        description: 'A financial management reconciliation tool.',
+        keyFeatures: 'financial reconciliation, imani financial sevices',
         imageUrl: placeholderImages.project2.imageUrl,
-        imageHint: 'blockchain security',
-        gridSpan: 'col-span-1',
+        imageHint: 'ntc-logo',
+        gridSpan: 'col-span-12 lg:col-span-4',
         icon: 'ShieldCheck',
+        isFavorite: true,
         userId: adminUser.id,
       },
       {
-        title: 'InnovateU',
-        description:
-          'An e-learning platform that fosters innovation through collaborative projects and mentorship from industry leaders.',
-        keyFeatures: 'E-learning,Collaboration,Mentorship',
+        title: 'IFS - Guru',
+        description: 'A financial management SaaS platform, for building wealth, and improving your fundability, paving a clear, secure path to your financial goals.',
+        keyFeatures: 'budgeting, financial tracking, cashflow analysis, financial statements, financial management, imani financial sevices, mvp',
         imageUrl: placeholderImages.project3.imageUrl,
-        imageHint: 'e-learning platform',
-        gridSpan: 'col-span-1',
+        imageHint: 'ntc-logo',
+        gridSpan: 'col-span-12 lg:col-span-6',
         icon: 'BookOpen',
+        isFavorite: true,
         userId: adminUser.id,
       },
       {
-        title: 'EcoTrack',
-        description:
-          'A mobile app that helps users track and reduce their carbon footprint through smart recommendations and community challenges.',
-        keyFeatures:
-          'Carbon Tracking,Smart Recommendations,Community Challenges',
+        title: 'Innovation Hub',
+        description: 'Seamlessly move from ideation to creation with clarity.',
+        keyFeatures: 'Startup, SMEs, Business Strategy, NTC',
         imageUrl: placeholderImages.project4.imageUrl,
-        imageHint: 'eco friendly app',
-        gridSpan: 'col-span-1',
-        icon: 'Globe',
-        userId: adminUser.id,
-      },
-      {
-        title: 'FinWiz',
-        description:
-          'A personal finance management app that leverages AI to provide personalized budgeting advice and investment opportunities.',
-        keyFeatures: 'AI Budgeting,Investment Tracking,Financial Planning',
-        imageUrl: placeholderImages.project5.imageUrl,
-        imageHint: 'finance app',
-        gridSpan: 'col-span-1 sm:col-span-2 lg:col-span-2',
-        icon: 'LineChart',
+        imageHint: 'ntc-logo',
+        gridSpan: 'col-span-12 lg:col-span-6',
+        icon: 'Rocket',
+        isFavorite: true,
         userId: adminUser.id,
       },
     ],
@@ -130,13 +120,42 @@ export async function seedDatabase() {
 
   await prisma.testimonial.create({
     data: {
-      quote: 'This is a great product!',
-      author: 'Valued Partner',
-      title: 'CEO of a company',
+      quote: 'I absolutely would recommend working with Sean. He is absolutely fantastic. Professional, smart, communicative and really deeply knowledgeable.',
+      author: 'Valued Client',
+      title: 'Founder',
       avatarUrl: placeholderImages.testimonial1Image.imageUrl,
       avatarHint: 'A happy customer',
       userId: adminUser.id,
     },
+  });
+
+  await prisma.asset.createMany({
+    data: [
+    {
+      id:1,
+      name: 'logo',
+      url: 'https://res.cloudinary.com/dm1bn7vkd/image/upload/v1769187527/nairobi_techcreative/ntc-logo_cv0t3n.png',
+      alt: 'logo',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id:2,
+      name: 'heroImage',
+      url: 'https://res.cloudinary.com/dm1bn7vkd/image/upload/v1769188669/nairobi_techcreative/1769188621878_kgkj5u.png',
+      alt: 'heroImage',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id:3,
+      name: 'founderImage',
+      url: 'https://res.cloudinary.com/dm1bn7vkd/image/upload/v1769189197/nairobi_techcreative/IMG_20260123_202554_at0rca.jpg',
+      alt: 'founderImage',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ],
   });
 
   await prisma.settings.createMany({

@@ -7,9 +7,11 @@ import {
 } from '@/components/ui/card';
 import { Briefcase, NotebookText, Star } from 'lucide-react';
 import prisma from '@/lib/prisma';
-import { auth } from '@/auth';
+import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { Role } from '@/lib/roles';
+
+export const dynamic = 'force-dynamic';
 
 export default async function AnalyticsPage() {
   const session = await auth();
