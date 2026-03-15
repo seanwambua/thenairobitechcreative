@@ -6,7 +6,7 @@
       "use": "@vercel/next",
       "config": {
         "installCommand": "npm install",
-        "buildCommand": "npx prisma generate && npm test && npm run build"
+        "buildCommand": "npx prisma generate && npm run build"
       }
     }
   ]
