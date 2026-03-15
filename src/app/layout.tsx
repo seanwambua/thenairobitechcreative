@@ -9,6 +9,8 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { getSetting } from '../lib/actions/settings';
 import { WhatsAppFAB } from '@/components/whatsapp-fab';
+import { logo } from '@/lib/placeholder-images.json';
+
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -23,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: 'The Nairobi Tech Creative Hub',
     description: 'African Solutions, Global Problems.',
     icons: {
-      icon: logoUrl ?? '/favicon.ico',
+      icon: logo.imageUrl,
     },
   };
 }

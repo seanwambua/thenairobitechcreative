@@ -115,8 +115,7 @@ export const pricingPlans = [
     description: ['Remote | In-person'],
     features: ['1 Hr Session'],
     isFeatured: true,
-  },
-  
+  }  
 ];
 
 export const faqs = [
