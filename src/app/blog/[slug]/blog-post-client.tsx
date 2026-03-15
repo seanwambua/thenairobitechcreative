@@ -9,7 +9,8 @@ import { Comments } from '@/components/comments';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Terminal, ArrowLeft } from 'lucide-react';
-import type { Post, Comment as CommentType, User} from '@prisma/client';
+import type { Post, User } from '@prisma/client';
+import { CommentWithUser } from '@/lib/definitions'; // Import the new type
 
 export function BlogPostClient({
   postData,
@@ -20,7 +21,7 @@ export function BlogPostClient({
   error,
 }: {
   postData: (Post) | null;
-  comments: (CommentType & { user: User })[];
+  comments: CommentWithUser[];
   likes: number;
   userHasLiked: boolean;
   currentUser: User | null;

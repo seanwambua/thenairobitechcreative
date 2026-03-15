@@ -1,16 +1,14 @@
 import { getLikes, hasLiked } from '@/lib/actions/likes';
 import { DbUninitializedError } from '@/lib/errors';
 import { BlogPostClient } from './blog-post-client';
-import type { Post, Comment, User } from '@prisma/client';
+import type { Post, User } from '@prisma/client';
+import { CommentWithUser } from '@/lib/definitions'; // Import the new type
 import { DbUninitializedError as DbUninitializedErrorComponent } from '@/components/db-uninitialized-error';
 import { notFound } from 'next/navigation';
 import prisma from '@/lib/prisma';
 import { auth } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
-
-// Define the intersection type for clarity
-type CommentWithUser = Comment & { user: User };
 
 async function getPageData(slug: string): Promise<{
   post: Post | null;
@@ -40,11 +38,10 @@ async function getPageData(slug: string): Promise<{
     }
 
     // 2. Parallel fetch for related data
-    // We fetch comments directly here with 'include' to satisfy the User relation requirement
     const [comments, likes, userHasLiked, currentUser] = await Promise.all([
       prisma.comment.findMany({
         where: { postId: post.id },
-        include: { user: true }, // Crucial: Fixes the TS2322 error
+        include: { user: true },
         orderBy: { createdAt: 'desc' }
       }) as Promise<CommentWithUser[]>,
       getLikes(post.id),

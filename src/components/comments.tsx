@@ -13,14 +13,14 @@ import {
   deleteComment,
   togglePinComment,
 } from '@/lib/actions/comments';
-import type { Comment, User } from '@prisma/client';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { Role } from '@/lib/roles';
+import { CommentWithUser } from '@/lib/definitions'; // Import the new type
 
 interface CommentsProps {
   postId: number;
-  comments: (Comment & { user: User })[];
+  comments: CommentWithUser[];
   postAuthorId: string;
 }
 
@@ -76,15 +76,17 @@ export function Comments({ postId, comments, postAuthorId }: CommentsProps) {
               placeholder="Add a comment..."
               disabled={isPending}
             />
-            <Button 
-              onClick={handleCreateComment} 
-              className="self-end"
-              disabled={isPending || !content.trim()}
-            >
-              Post Comment
-            </Button>
+            <div className="flex justify-end">
+              <Button 
+                onClick={handleCreateComment} 
+                disabled={isPending || !content.trim()}
+              >
+                {isPending ? "Posting..." : "Post Comment"}
+              </Button>
+            </div>
           </div>
         )}
+
         <div className="mt-8 flex flex-col gap-6">
           {comments.map((comment) => (
             <Card 
@@ -105,6 +107,7 @@ export function Comments({ postId, comments, postAuthorId }: CommentsProps) {
                       {comment.user.name?.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
+                  
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <div className="flex flex-col gap-1">
@@ -118,16 +121,14 @@ export function Comments({ postId, comments, postAuthorId }: CommentsProps) {
                           )}
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          {new Date(comment.createdAt).toLocaleDateString(
-                            'en-US',
-                            {
-                              month: 'short',
-                              day: 'numeric',
-                              year: 'numeric',
-                            }
-                          )}
+                          {new Date(comment.createdAt).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric',
+                          })}
                         </p>
                       </div>
+
                       <div className="flex items-center gap-1">
                         {canPin && (
                           <Button
@@ -171,6 +172,7 @@ export function Comments({ postId, comments, postAuthorId }: CommentsProps) {
                         )}
                       </div>
                     </div>
+
                     {editingCommentId === comment.id ? (
                       <div className="mt-4 flex flex-col gap-2">
                         <Textarea

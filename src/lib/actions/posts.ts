@@ -177,30 +177,6 @@ export async function toggleReaction(postId: number, emoji: string) {
 
   const userId = session.user.id;
 
-  const existingReaction = await prisma.reaction.findUnique({
-    where: {
-      userId_postId_emoji: {
-        userId,
-        postId,
-        emoji,
-      },
-    },
-  });
-
-  if (existingReaction) {
-    await prisma.reaction.delete({
-      where: { id: existingReaction.id },
-    });
-  } else {
-    await prisma.reaction.create({
-      data: {
-        userId,
-        postId,
-        emoji,
-      },
-    });
-  }
-
   const post = await prisma.post.findUnique({
     where: { id: postId },
     select: { slug: true }
