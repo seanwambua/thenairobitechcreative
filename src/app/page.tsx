@@ -74,7 +74,7 @@ export default async function Home() {
                         Innovation Suite
                       </h2>
                       <p className="mt-4 text-lg text-zinc-500">
-                        A curated showcase of our most impactful digital transformations.
+                        A curated showcase of our most impactful transformation tools.
                       </p>
                     </div>
                     <div className="sm:p-4 md:p-6">
