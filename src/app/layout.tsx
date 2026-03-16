@@ -19,13 +19,12 @@ const poppins = Poppins({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const logoUrl = await getSetting('logo');
 
   return {
     title: 'The Nairobi Tech Creative Hub',
     description: 'African Solutions, Global Problems.',
     icons: {
-      icon: logo.imageUrl,
+      icon: logo.imageUrl ?? "https://res.cloudinary.com/dm1bn7vkd/image/upload/v1769187527/nairobi_techcreative/ntc-logo_cv0t3n.png",
     },
   };
 }

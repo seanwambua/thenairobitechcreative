@@ -14,6 +14,11 @@ const services = [
     description: 'Aligning technology with your business goals. Ideal for founders and SMEs who need a technical IT partner.',
   },
   {
+    icon: <GitMerge className="h-8 w-8 text-primary" />,
+    title: 'Business Process Development',
+    description: 'Mapping, streamlining, and automating the workflows that run your business. From helpdesk systems to internal tooling, we turn chaotic processes into repeatable, efficient systems.',
+  },
+  {
     icon: <Rocket className="h-8 w-8 text-primary" />,
     title: 'Product Development',
     description: 'Taking your idea from concept to shipped product. We help you define the right MVP, build it iteratively, and validate with real users before scaling.',
@@ -22,11 +27,6 @@ const services = [
     icon: <Server className="h-8 w-8 text-primary" />,
     title: 'DevOps & Infrastructure',
     description: 'Setting up and managing CI/CD pipelines, cloud servers, VPS environments, and monitoring systems. Less downtime, faster deployments, and infrastructure that scales with your business.',
-  },
-  {
-    icon: <GitMerge className="h-8 w-8 text-primary" />,
-    title: 'Business Process Development',
-    description: 'Mapping, streamlining, and automating the workflows that run your business. From helpdesk systems to internal tooling, we turn chaotic processes into repeatable, efficient systems.',
   },
   {
     icon: <LifeBuoy className="h-8 w-8 text-primary" />,
