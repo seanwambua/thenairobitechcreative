@@ -54,6 +54,12 @@ export const services = [
       'Mapping, streamlining, and automating the workflows that run your business. From helpdesk systems to internal tooling, we turn chaotic processes into repeatable, efficient systems.',
   },
   {
+    id: 'finance',
+    title: 'Financial Structure & Systems',
+    description:
+      "Separating your business and personal finances isn't just good practice — it's the foundation everything else is built on. Cash flow, tax planning, investor conversations, scaling decisions — none of it works cleanly until that line is drawn. Whether you're a founder still setting up or a business owner who's been running on gut feel for years, we help you put the right financial structure in place from the ground up. Get the foundation right. Everything else follows.",
+  },
+  {
     id: 'support',
     title: 'Technical Support',
     description: 'Reliable remote technical support to ensure your systems are always running smoothly. We offer fast and efficient solutions to keep your business operational.',
