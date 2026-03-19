@@ -6,7 +6,7 @@ export function OfferingCategories() {
     <section className="container mx-auto px-4 py-12 md:px-6 md:py-20">
       <div className="mx-auto max-w-4xl text-center">
         <h2 className="font-headline text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-          Built for you along business journey...
+          Built for you in every season.
         </h2>
         <p className="mt-4 text-lg text-muted-foreground">
           Whether you're starting with a big idea or ready to scale, The
@@ -26,7 +26,7 @@ export function OfferingCategories() {
             <h3 className="font-headline text-2xl font-bold">Strategy & Ideation</h3>
           </div>
           <p className="mt-4 flex-grow text-muted-foreground">
-            From raw idea to launch-ready. Our coaching program helps you build a
+            From raw idea to launch-ready. Our startup program helps you build a
             solid foundation, turning guesswork into a clear roadmap for your
             business.
           </p>
