@@ -29,6 +29,7 @@ model User {
   comments       Comment[]
   likes          Like[]
   testimonials   Testimonial[]
+  feedback       Feedback[]
 }
 
 enum Role {
@@ -218,4 +219,17 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Feedback {
+  id        Int      @id @default(autoincrement())
+  content   String
+  rating    Int
+  subject   String
+  page      String
+  heardFrom Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

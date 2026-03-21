@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { PostSchema, ProjectSchema, TestimonialSchema, iconNames } from './schemas';
-import type { Comment, User, Feedback } from '@prisma/client';
+import type { Comment, User, Feedback } from '@/app/generated/prisma';
 
 export type NavLink = {
   href: string;

@@ -15,7 +15,7 @@ const FeedbackSchema = z.object({
 });
 
 export async function createFeedback(formData: FormData) {
-  await new Promise(resolve => setTimeout(resolve, 600));
+  await new Promise(resolve => setTimeout(resolve, 1500));
   const session = await auth();
 
   if (!session?.user) {

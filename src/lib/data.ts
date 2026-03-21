@@ -1,24 +1,5 @@
 import { Prisma } from '@prisma/client';
 
-export type PostSummary = Prisma.PostGetPayload<{
-  select: {
-    id: true;
-    slug: true;
-    title: true;
-    description: true;
-    imageUrl: true;
-    imageHint: true;
-    author: true;
-    authorAvatarUrl: true;
-    authorAvatarHint: true;
-    createdAt: true;
-    updatedAt: true;
-    _count: {
-      select: { likes: true; comments: true };
-    };
-  };
-}>;
-
 export const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },

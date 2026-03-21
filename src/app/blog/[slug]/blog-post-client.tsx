@@ -4,12 +4,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
-import { FeedbackFab } from '@/components/feedback-fab';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Terminal, ArrowLeft } from 'lucide-react';
-import type { Post, User } from '@prisma/client';
+import type { Post, User } from '@/app/generated/prisma';
 import { CommentWithUser } from '@/lib/definitions'; // Import the new type
+import { Comments } from '@/components/comments';
 
 export function BlogPostClient({
   postData,
@@ -101,8 +101,8 @@ export function BlogPostClient({
       </div>
 
       <Separator className="my-12" />
+      <Comments comments={comments} postId={0} postAuthorId={''} />
 
-      <FeedbackFab postId={postData.id} comments={comments} />
     </article>
   );
 }

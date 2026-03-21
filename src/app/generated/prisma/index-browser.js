@@ -21,12 +21,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.19.0
- * Query Engine version: 2ba551f319ab1df4bc874a89965d8b3641056773
+ * Prisma Client JS version: 6.19.2
+ * Query Engine version: c2990dca591cba766e3b7ef5d9e8a84796e47ab7
  */
 Prisma.prismaVersion = {
-  client: "6.19.0",
-  engine: "2ba551f319ab1df4bc874a89965d8b3641056773"
+  client: "6.19.2",
+  engine: "c2990dca591cba766e3b7ef5d9e8a84796e47ab7"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -273,9 +273,26 @@ exports.Prisma.VerificationTokenScalarFieldEnum = {
   expires: 'expires'
 };
 
+exports.Prisma.FeedbackScalarFieldEnum = {
+  id: 'id',
+  content: 'content',
+  rating: 'rating',
+  subject: 'subject',
+  page: 'page',
+  heardFrom: 'heardFrom',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  userId: 'userId'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -286,6 +303,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.Role = exports.$Enums.Role = {
   USER: 'USER',
@@ -330,7 +353,8 @@ exports.Prisma.ModelName = {
   Settings: 'Settings',
   Account: 'Account',
   Session: 'Session',
-  VerificationToken: 'VerificationToken'
+  VerificationToken: 'VerificationToken',
+  Feedback: 'Feedback'
 };
 
 /**

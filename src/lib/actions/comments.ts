@@ -20,6 +20,31 @@ async function getComments(postId: number) {
     });
 }
 
+export async function togglePinComment(commentId: number) {
+  await new Promise(resolve => setTimeout(resolve, 400));
+  const session = await auth();
+  if (!session?.user) {
+    return { success: false, message: 'Authentication required.' };
+  }
+  try {
+    const comment = await db.comment.findUnique({ where: { id: commentId } });
+    if (!comment) {
+      return { success: false, message: 'Comment not found.' };
+    }
+    if (comment.userId !== session.user.id && session.user.role !== Role.ADMIN) {
+      return { success: false, message: 'You are not authorized to pin this comment.' };
+    }
+    await db.comment.update({
+      where: { id: commentId },
+      data: { isPinned: !comment.isPinned },
+    });
+    revalidatePath(`/blog/${comment.postId}`);
+    return { success: true, message: 'Comment pinned/unpinned successfully.' };
+  } catch (error) {
+    console.error('Error pinning/unpinning comment:', error);
+    return { success: false, message: 'Failed to pin/unpin comment.' };
+  }
+}
 
 export async function createComment(formData: FormData) {
   await new Promise(resolve => setTimeout(resolve, 400));
