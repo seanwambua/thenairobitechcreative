@@ -7,8 +7,8 @@ import { ServicesSelector } from '@/components/services-selector';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { OfferingCategories } from '@/components/offering-categories';
-
-
+import { Feedback } from '@/components/feedback';
+import { CommentWithUser } from '@/lib/definitions';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -32,7 +32,7 @@ const cardVariants = {
   },
 };
 
-export default function ServicesClient() {
+export default function ServicesClient({ comments }: { comments: CommentWithUser[] }) {
 
   return (
     <div className="bg-background text-foreground">
@@ -41,6 +41,7 @@ export default function ServicesClient() {
         <OfferingCategories />
         <ServicesSelector />
       </main>
+      <Feedback itemId={0} comments={comments} />
     </div>
   );
 }

@@ -30,15 +30,18 @@ export default function StartupCoachingPage() {
             {[{
               title: 'Ideation & Validation',
               description: 'Refine your idea and validate your market.',
-            },{
+            },
+            {
               title: 'Business & Revenue Modeling',
               description: 'Develop a sustainable business model.',
-            },{
-              title: 'Branding & Positioning',
-              description: 'Craft a brand that resonates with your audience.',
-            },{
+            },
+            {
               title: 'Product & Service Definition',
               description: 'Define your core offerings and value proposition.',
+            },
+            {
+              title: 'Branding & Positioning',
+              description: 'Craft a brand that resonates with your audience.',
             },{
               title: 'Go-to-Market Strategy',
               description: 'Plan your launch and customer acquisition.',

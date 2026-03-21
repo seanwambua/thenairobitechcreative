@@ -24,7 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: 'The Nairobi Tech Creative',
     description: 'African Solutions, Global Problems.',
     icons: {
-      icon: logo.imageUrl ?? "https://res.cloudinary.com/dm1bn7vkd/image/upload/v1769187527/nairobi_techcreative/ntc-logo_cv0t3n.png",
+      icon: logo.imageUrl,
     },
   };
 }
@@ -37,6 +37,7 @@ export default async function RootLayout({
   const session = await auth();
   const logoUrl = await getSetting('logo');
   const phoneNumber = process.env.WHATSAPP_PHONE_NUMBER ?? ''
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn('font-body antialiased', poppins.variable)}>
