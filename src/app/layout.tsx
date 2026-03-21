@@ -10,6 +10,7 @@ import { Footer } from '@/components/layout/footer';
 import { getSetting } from '../lib/actions/settings';
 import { WhatsAppFAB } from '@/components/whatsapp-fab';
 import { logo } from '@/lib/placeholder-images.json';
+import { Analytics } from '@vercel/analytics/next';
 
 
 const poppins = Poppins({
@@ -55,6 +56,7 @@ export default async function RootLayout({
           <WhatsAppFAB phoneNumber={phoneNumber} />
           <Toaster />
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
