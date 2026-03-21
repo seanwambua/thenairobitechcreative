@@ -124,3 +124,29 @@ export async function deleteComment(commentId: number) {
     throw new Error('Failed to delete comment.');
   }
 }
+
+export async function togglePinComment(commentId: number) {
+    const session = await auth();
+    if (session?.user?.role !== Role.ADMIN) {
+        throw new Error('Unauthorized');
+    }
+
+    const comment = await prisma.comment.findUnique({
+        where: { id: commentId },
+    });
+
+    if (!comment) {
+        throw new Error('Comment not found');
+    }
+
+    try {
+        await prisma.comment.update({
+            where: { id: commentId },
+            data: { pinned: !comment.pinned },
+        });
+        revalidatePath(`/`);
+    } catch (error) {
+        console.error('Error toggling pin:', error);
+        throw new Error('Failed to toggle pin on comment.');
+    }
+}

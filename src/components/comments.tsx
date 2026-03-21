@@ -34,7 +34,10 @@ export function Comments({ postId, comments, postAuthorId }: CommentsProps) {
   const handleCreateComment = async () => {
     if (content.trim()) {
       startTransition(async () => {
-        await createComment({ postId, content });
+        const formData = new FormData();
+        formData.append('content', content);
+        formData.append('postId', String(postId));
+        await createComment(formData);
         setContent('');
       });
     }

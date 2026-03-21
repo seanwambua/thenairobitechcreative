@@ -57,5 +57,5 @@ export type IconName = (typeof iconNames)[number];
 // Add the new CommentWithUser type
 export type CommentWithUser = Comment & { 
   user: User;
-  isPinned: boolean;
+  isPinned?: boolean;
 };
