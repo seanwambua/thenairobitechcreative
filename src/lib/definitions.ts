@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { PostSchema, ProjectSchema, TestimonialSchema, iconNames } from './schemas';
-import { Comment, User } from '@/app/generated/prisma';
+import type { Comment, User, Feedback } from '@prisma/client';
 
 export type NavLink = {
   href: string;
@@ -58,4 +58,8 @@ export type IconName = (typeof iconNames)[number];
 export type CommentWithUser = Comment & { 
   user: User;
   isPinned?: boolean;
+};
+
+export type FeedbackWithUser = Feedback & { 
+  user: User;
 };

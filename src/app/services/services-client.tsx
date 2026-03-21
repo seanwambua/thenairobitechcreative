@@ -7,7 +7,6 @@ import { ServicesSelector } from '@/components/services-selector';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { OfferingCategories } from '@/components/offering-categories';
-import { Feedback } from '@/components/feedback';
 import { CommentWithUser } from '@/lib/definitions';
 
 const containerVariants = {
@@ -41,7 +40,6 @@ export default function ServicesClient({ comments }: { comments: CommentWithUser
         <OfferingCategories />
         <ServicesSelector />
       </main>
-      <Feedback itemId={0} comments={comments} />
     </div>
   );
 }

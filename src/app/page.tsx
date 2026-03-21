@@ -54,9 +54,9 @@ export default async function Home() {
   }
 
   const heroImage =
-    (settingsResult.status === 'fulfilled'
+    settingsResult.status === 'fulfilled'
       ? settingsResult.value
-      : placeholderImages.hero.imageUrl) ?? '';
+      : placeholderImages.hero.imageUrl;
 
   const logoUrl =
     (logoUrlResult.status === 'fulfilled' ? logoUrlResult.value : null) ?? null;

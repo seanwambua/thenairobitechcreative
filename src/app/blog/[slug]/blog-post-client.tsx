@@ -4,8 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
-
-import { Comments } from '@/components/comments';
+import { FeedbackFab } from '@/components/feedback-fab';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Terminal, ArrowLeft } from 'lucide-react';
@@ -103,11 +102,7 @@ export function BlogPostClient({
 
       <Separator className="my-12" />
 
-      <Comments 
-        postId={postData.id} 
-        comments={comments} 
-        postAuthorId={postData.userId ?? ''}
-      />
+      <FeedbackFab postId={postData.id} comments={comments} />
     </article>
   );
 }

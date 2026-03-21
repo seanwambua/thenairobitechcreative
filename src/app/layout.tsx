@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import './globals.css';
-import { Toaster } from '@/components/ui/toaster';
+import { Toaster } from 'sonner';
 import { cn } from '@/lib/utils';
 import { Providers } from '@/components/providers';
 import { auth } from '@/lib/auth';
@@ -57,7 +57,7 @@ export default async function RootLayout({
             <Footer />
           </div>
           <WhatsAppFAB phoneNumber={phoneNumber} />
-          <Toaster />
+          <Toaster position="top-right" />
           </Providers>
       </body>
     </html>
