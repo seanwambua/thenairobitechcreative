@@ -6,7 +6,7 @@
       "use": "@vercel/next",
       "config": {
         "installCommand": "npm install",
-        "buildCommand": "npm audit fix --force && npx prisma generate && npx prisma db pull && npm run build"
+        "buildCommand": "npm audit fix && npx prisma generate && npx prisma db pull && npm run build"
       }
     }
   ]
