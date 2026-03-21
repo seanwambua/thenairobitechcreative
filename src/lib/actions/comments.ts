@@ -142,7 +142,7 @@ export async function togglePinComment(commentId: number) {
     try {
         await prisma.comment.update({
             where: { id: commentId },
-            data: { pinned: !comment.pinned },
+            data: { isPinned: !comment.isPinned },
         });
         revalidatePath(`/`);
     } catch (error) {
