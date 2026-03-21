@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import type { PostSummary } from '@/lib/data';
+import  { PostSummary } from '@/lib/definitions';;
 import {
   Card,
   CardContent,

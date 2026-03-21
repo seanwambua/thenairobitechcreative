@@ -60,6 +60,19 @@ export type CommentWithUser = Comment & {
   isPinned?: boolean;
 };
 
+export type PostSummary = {
+  id: number;
+  slug: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  imageHint?: string;
+  author: string;
+  authorAvatarHint?: string;
+  authorAvatarUrl: string;
+  createdAt: Date;
+}
+
 export type FeedbackWithUser = Feedback & { 
   user: User;
 };

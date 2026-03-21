@@ -1,5 +1,3 @@
-import { Prisma } from '@prisma/client';
-
 export const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },

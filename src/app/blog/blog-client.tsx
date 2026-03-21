@@ -1,7 +1,7 @@
 'use client';
 
 import { BlogPostCard } from '@/components/blog-post-card';
-import  { PostSummary } from '@/lib/data';
+import  { PostSummary } from '@/lib/definitions';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
 

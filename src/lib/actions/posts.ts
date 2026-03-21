@@ -3,8 +3,8 @@
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { PostSchema, PostInputSchema } from '@/lib/schemas';
-import type { Post } from '@prisma/client';
-import type { PostSummary } from '@/lib/data';
+import type { Post } from '@/app/generated/prisma';
+import  { PostSummary } from '@/lib/definitions';
 import placeholderImages from '@/lib/placeholder-images.json';
 import { z } from 'zod';
 import { auth } from '@/lib/auth';
